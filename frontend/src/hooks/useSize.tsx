@@ -1,25 +1,27 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
-const useSize = (ref: React.MutableRefObject<null>): [number, number] => {
-  const [width, setWidth] = useState<number>(0);
-  const [height, setHeight] = useState<number>(0);
 
-  useEffect(() => {
-    if (ref.current === undefined) return;
+const useSize = (ref:  React.MutableRefObject<null>): [number, number] => {
+    const [width, setWidth] = useState<number>(0)
+    const [height, setHeight] = useState<number>(0)
 
-    const updateSize = () => {
-      const { width, height } = (ref.current as any).getBoundingClientRect();
-      setWidth(width);
-      setHeight(height);
-    };
+    useEffect( () => {
 
-    updateSize();
+        if( ref.current === undefined ) return;
 
-    window.addEventListener('resize', updateSize);
-    return () => window.removeEventListener('resize', updateSize);
-  }, [ref]);
+        const updateSize = () => {
+            const { width, height } = (ref.current as any).getBoundingClientRect()
+            setWidth(width)
+            setHeight(height)
+        }
 
-  return [width, height];
-};
+        updateSize()
+
+        window.addEventListener('resize', updateSize)
+        return () => window.removeEventListener('resize', updateSize)
+    }, [ref])
+
+    return [width, height]
+}
 
 export default useSize;

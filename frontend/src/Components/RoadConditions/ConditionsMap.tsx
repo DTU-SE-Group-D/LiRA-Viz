@@ -23,6 +23,7 @@ interface Props {
     setWayData: React.Dispatch<React.SetStateAction<ChartData<"line", number[], number> | undefined>>;
 }
 
+//part of Road Conditions component
 const ConditionsMap: FC<Props> = ( { type, palette, setPalette, setWayData } ) => {
 
     const { name, max, grid, samples } = type;
