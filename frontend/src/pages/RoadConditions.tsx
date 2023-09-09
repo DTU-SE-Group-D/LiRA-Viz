@@ -12,7 +12,7 @@ import { GraphProvider } from "../context/GraphContext";
 
 import "../css/road_conditions.css";
 
-
+//this is to visualise the Road Conditions (GP) map
 const RoadConditions = () => {
     
     const [palette, setPalette] = useState<Palette>([])
