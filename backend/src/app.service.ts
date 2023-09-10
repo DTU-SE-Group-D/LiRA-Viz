@@ -1,8 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+  @Inject(ConfigService)
+  public config: ConfigService;
+
+  getStatus(): string {
+    return 'OK';
   }
 }
