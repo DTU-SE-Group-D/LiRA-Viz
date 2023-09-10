@@ -23,6 +23,8 @@ jobs:
         run: npm run build
       - name: Tests
         run: npm run test
+      - name: Tests end-to-end
+        run: npm run test:e2e
 
   frontend:
     runs-on: ubuntu-22.04

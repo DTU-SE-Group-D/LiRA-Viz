@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+
+import { RCController } from './rc.controller';
+import { RCService } from './rc.service';
 
 import { KnexModule } from 'nestjs-knex';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { DB_LIRAMAP_CONFIG, POSTGIS_DB_CONFIG } from './database';
+import { DB_LIRAMAP_CONFIG, POSTGIS_DB_CONFIG } from '../database';
 
 const database = (config: any, name: string) => {
   return KnexModule.forRootAsync(
@@ -15,8 +16,8 @@ const database = (config: any, name: string) => {
   );
 };
 
-describe('AppController', () => {
-  let appController: AppController;
+describe('Road Condition Controller', () => {
+  let rcController: RCController;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
@@ -25,16 +26,16 @@ describe('AppController', () => {
         database(POSTGIS_DB_CONFIG, 'postgis'),
         database(DB_LIRAMAP_CONFIG, 'lira-map'),
       ],
-      controllers: [AppController],
-      providers: [AppService, ConfigService],
+      controllers: [RCController],
+      providers: [RCService, ConfigService],
     }).compile();
 
-    appController = app.get<AppController>(AppController);
+    rcController = app.get<RCController>(RCController);
   });
 
-  describe('GET /', () => {
-    it('should return "OK"', () => {
-      expect(appController.getStatus()).toBe('OK');
+  describe('RoadCondition Controller', () => {
+    it('Should be defined', () => {
+      expect(rcController).toBeDefined();
     });
   });
 });
