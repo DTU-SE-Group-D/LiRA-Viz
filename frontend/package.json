@@ -17,6 +17,7 @@
     "d3": "^7.8.5",
     "leaflet": "^1.9.4",
     "react": "^18.2.0",
+    "react-docgen": "^5.4.3",
     "react-chartjs-2": "^4.2.0",
     "react-dom": "^18.2.0",
     "react-gradient-hook": "^1.5.3",
@@ -32,7 +33,9 @@
     "start": "react-scripts start",
     "build": "CI=false react-scripts build",
     "test": "CI=true react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "doc": "styleguidist build --config styleguide.config.js",
+    "doc:open": "styleguidist server --config styleguide.config.js --open"
   },
   "eslintConfig": {
     "extends": [
@@ -61,7 +64,10 @@
     "eslint": "^8.48.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
-    "prettier": "3.0.3"
+    "prettier": "^3.0.3",
+    "react-styleguidist": "^13.1.1",
+    "ts-loader": "^9.4.4",
+    "webpack": "^5.88.2"
   },
   "jest": {
     "moduleNameMapper": {
