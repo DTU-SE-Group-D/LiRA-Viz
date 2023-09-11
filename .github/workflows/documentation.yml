@@ -1,0 +1,112 @@
+# use Ubuntu 22.04 & Node 18
+
+# Seems like the documentation can not be deployed on pull requests, but only on pushes to main.
+# See 5 on https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#creating-a-custom-github-actions-workflow-to-publish-your-site
+
+name: Deploy documentations
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  backend:
+    name: Build backend documentation
+    runs-on: ubuntu-latest
+    # Set working directory of the runner
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+      - name: Install dependencies
+        run: npm ci
+      - name: Build documentation
+        run: npm run doc
+      # Fix permissions of the documentation folder (actions/upload-pages-artifact requirement)
+      - name: Fix permissions
+        run: |
+          chmod -c -R +rX "./documentation/" | while read line; do
+           echo "::warning title=Invalid file permissions automatically fixed::$line"
+          done
+      - name: Save backend documentation
+        uses: actions/upload-artifact@v3
+        with:
+          name: backend-documentation
+          path: backend/documentation/
+          retention-days: 1
+
+  frontend:
+    name: Build frontend documentation
+    runs-on: ubuntu-latest
+    # Set working directory of the runner
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+      - name: Install dependencies
+        run: npm ci
+      - name: Build documentation
+        run: npm run doc
+      # Fix permissions of the documentation folder (actions/upload-pages-artifact requirement)
+      - name: Fix permissions
+        run: |
+          chmod -c -R +rX "./styleguide/" | while read line; do
+           echo "::warning title=Invalid file permissions automatically fixed::$line"
+          done
+      - name: Save frontend documentation
+        uses: actions/upload-artifact@v3
+        with:
+          name: frontend-documentation
+          path: frontend/styleguide/
+          retention-days: 1
+
+  deploy:
+    name: Deploy documentation
+    # Set dependency on backend job
+    needs: [backend, frontend]
+
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download a single artifact
+        uses: actions/download-artifact@v3
+      - name: Show content
+        run: ls -lha
+      - name: Get the index page of the documentation
+        uses: actions/checkout@v3
+        with:
+          repository: DTU-SE-Group-D/doc-builder
+          path: doc-builder
+      - name: Reorder files
+        run: |
+          mkdir -p ./documentation
+          mv -v ./doc-builder/src/index.html ./documentation/index.html
+          mv -v ./frontend-documentation ./documentation/frontend
+          mv -v ./backend-documentation ./documentation/backend
+      - name: Upload documentation
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: documentation
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v2
+        id: deployment
