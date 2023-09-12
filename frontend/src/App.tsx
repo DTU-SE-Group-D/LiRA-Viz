@@ -1,15 +1,28 @@
 import { FC } from 'react';
-// import { BrowserRouter as Router, Route } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Navigate,
+  Route,
+  Routes,
+} from 'react-router-dom';
+
+import Navbar from './Components/Navbar';
+import RoadConditions from './pages/RoadConditions';
 import Conditions from './pages/Conditions';
 
 import './App.css';
-import RoadConditions from './pages/RoadConditions';
 
 const App: FC = () => {
   return (
     <div className="App">
-      <Conditions />
-      <RoadConditions />
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route index element={<Navigate to="/conditions" replace />} />
+          <Route path="/conditions" Component={Conditions} />
+          <Route path="/road_conditions" Component={RoadConditions} />
+        </Routes>
+      </Router>
     </div>
   );
 };

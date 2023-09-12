@@ -1,38 +1,66 @@
+:root {
+  --background: #2e2e2e;
+  --background-2: rgb(58, 58, 58);
+  --background-3: rgba(85, 85, 97, 0.5);
+  --background-3-hover: #555561cc;
+
+  --highlight-background: rgba(0, 0, 255, 0.1);
+  --highlight-text: rgb(55, 180, 255);
+  --highlight-text-2: rgba(55, 180, 255, 0.8);
+
+  --orange-background: rgba(218, 120, 55, 0.1);
+  --orange-text: rgb(218, 120, 55);
+
+  --grey: rgba(100, 100, 100, 0.5);
+  --lightgrey: rgba(130, 130, 130, 0.5);
+
+  --navbar-height: 50px;
+  --navbar-z-index: 999999;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500&display=swap');
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  overflow: visible;
+  background: var(--background);
+}
+
 .App {
+  padding: 0;
+  margin: 0;
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  background-color: var(--background);
+  height: 100vh;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.btn {
+  background: rgba(0, 0, 0, 0.15);
+  padding: 12px 0px;
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.btn:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.btn-checked {
+  background: var(--highlight-background);
+  color: var(--highlight-text);
+}
+
+/*
+   ekki@dtu.dk: Added to make map appear gray so that
+   the colour of road conditions pops and car measurements
+   pops out a bit more
+ */
+.leaflet-tile-pane {
+  /* -webkit-filter: grayscale(100%); /* don't think we need that */
+  filter: grayscale(100%);
 }
