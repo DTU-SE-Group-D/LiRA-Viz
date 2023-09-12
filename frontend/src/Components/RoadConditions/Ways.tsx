@@ -2,7 +2,7 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { TRGB } from 'react-gradient-hook/lib/types';
 import { HotlineOptions } from 'react-leaflet-hotline';
-import { HotlineEventHandlers } from 'react-leaflet-hotline/lib/types';
+import { HotlineEventHandlers } from 'react-leaflet-hotline/dist/types/types';
 import { useGraph } from '../../context/GraphContext';
 import { WaysConditions } from '../../models/path';
 import { getWaysConditions } from '../../queries/conditions';

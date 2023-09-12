@@ -10,7 +10,7 @@ import { Condition, Node, WayId } from '../../../models/path';
 import DistRenderer from '../../../assets/hotline/DistRenderer';
 import { DistData } from '../../../assets/hotline/hotline';
 import HoverHotPolyline from '../../../assets/hotline/HoverHotPolyline';
-import { HotlineEventFn, HotlineEventHandlers } from 'react-leaflet-hotline/lib/types';
+import { HotlineEventFn, HotlineEventHandlers } from 'react-leaflet-hotline/dist/types/types';
 import useZoom from '../Hooks/useZoom';
 import { useHoverContext } from "../../../context/GraphHoverContext";
 
