@@ -31,7 +31,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "CI=false react-scripts build",
-    "test": "react-scripts test",
+    "test": "CI=true react-scripts test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -62,5 +62,10 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "prettier": "3.0.3"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "react-leaflet": "<rootDir>/src/mocks/reactLeafletMock.tsx"
+    }
   }
 }
