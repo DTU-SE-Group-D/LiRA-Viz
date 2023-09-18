@@ -1,7 +1,7 @@
 import { LatLng, Map } from 'leaflet';
 import { HotlineOptions, Renderer } from 'react-leaflet-hotline';
 
-import { Condition, Node, WayId } from '../../models/path';
+import { Condition, WayId } from '../../models/path';
 import { DotHover } from '../graph/types';
 import { DistData, DistPoint } from './hotline';
 import Edge from './Edge';
@@ -52,7 +52,9 @@ export default class DistRenderer extends Renderer<DistData> {
       this.dotHover !== undefined && this.dotHover.label !== way_id ? 0.3 : 1;
     try {
       gradient.addColorStop(dist, `rgba(${edge.get().join(',')},${opacity})`);
-    } catch {}
+    } catch {
+      // eslint-disable-next-line no-empty
+    }
   }
 
   /**
@@ -72,7 +74,9 @@ export default class DistRenderer extends Renderer<DistData> {
       else if (d.way_dist >= 1 || i >= conditions.length)
         return conditions[conditions.length - 1].value;
 
-      while (conditions[i].way_dist <= d.way_dist && ++i < conditions.length) {}
+      while (conditions[i].way_dist <= d.way_dist && ++i < conditions.length) {
+        // eslint-disable-next-line no-empty
+      }
 
       if (i === 0) return conditions[0].value;
       else if (i >= conditions.length - 1)

@@ -33,7 +33,7 @@ const ConditionsMap: FC<Props> = ({
   const { name, max, grid, samples } = type;
 
   const ref = useRef(null);
-  const [width, _] = useSize(ref);
+  const [width] = useSize(ref);
 
   const onClick = useCallback((way_id: string, way_length: number) => {
     console.log('onclick called');
