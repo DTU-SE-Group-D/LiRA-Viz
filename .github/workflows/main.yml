@@ -1,7 +1,12 @@
 # use Ubuntu 22.04 & Node 18
 name: Build & Test
 
-on: [pull_request]
+on:
+  pull_request:
+  push:
+    branches:
+      - dev
+      - master
 
 jobs:
   backend:
