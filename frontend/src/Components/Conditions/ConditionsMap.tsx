@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import ReactSlider from 'react-slider';
 
-import { MapContainer, TileLayer, ScaleControl, GeoJSON } from 'react-leaflet';
+import { GeoJSON, MapContainer, ScaleControl, TileLayer } from 'react-leaflet';
 import { Layer, PathOptions } from 'leaflet';
 
 import { Feature, FeatureCollection } from 'geojson';
@@ -79,6 +79,7 @@ const noToYearMonth = (
     const years = Math.floor((month - 1) / 12);
     return { year: dateRange.start.year + years, month: normalizedMonth };
   }
+  return undefined;
 };
 
 const yearMonthtoText = (yearMonth: YearMonth | undefined): string => {

@@ -1,5 +1,3 @@
-import React from 'react';
-
 function MapContainer(props: any) {
   const { children } = props;
 
