@@ -1,4 +1,4 @@
-import { LatLngBounds, Map } from 'leaflet';
+import { LatLngBounds } from 'leaflet';
 import { useState } from 'react';
 import { useMapEvents } from 'react-leaflet';
 
