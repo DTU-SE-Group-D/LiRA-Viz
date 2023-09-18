@@ -1,19 +1,19 @@
-import { FC, useCallback, useEffect, useMemo, useRef } from 'react';
+import { FC, useEffect, useMemo, useRef } from 'react';
 import {
-  ChartData,
-  Chart,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
   ActiveElement,
+  CategoryScale,
+  Chart,
+  ChartData,
   ChartEvent,
   ChartOptions,
   ChartTypeRegistry,
+  Legend,
+  LinearScale,
+  LineElement,
   Plugin,
+  PointElement,
+  Title,
+  Tooltip,
 } from 'chart.js';
 import { Color, Palette } from 'react-leaflet-hotline';
 import { Line } from 'react-chartjs-2';
@@ -104,7 +104,7 @@ const ConditionsGraph: FC<Props> = ({ type, data, palette }) => {
       onClick: (
         event: ChartEvent,
         elts: ActiveElement[],
-        chart: Chart<keyof ChartTypeRegistry, number[], unknown>,
+        _chart: Chart<keyof ChartTypeRegistry, number[], unknown>,
       ) => {
         if (elts.length === 0) return;
         const elt = elts[0]; // doesnt work if multiple datasets

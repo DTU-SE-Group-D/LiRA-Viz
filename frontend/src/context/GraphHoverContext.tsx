@@ -8,8 +8,7 @@ import {
 
 import { Map } from 'leaflet';
 
-import useMinMaxAxis from '../hooks/useMinMaxAxis';
-import { AddMinMaxFunc, DotHover, RemMinMaxFunc } from '../assets/graph/types';
+import { DotHover } from '../assets/graph/types';
 
 interface HoverContextProps {
   dotHover: DotHover | undefined;

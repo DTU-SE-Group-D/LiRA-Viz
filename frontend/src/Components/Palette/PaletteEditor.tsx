@@ -1,7 +1,6 @@
-import { FC, MouseEvent, useState } from 'react';
+import { FC, useState } from 'react';
 import { Gradient } from 'react-gradient-hook';
 import { CursorOptions } from 'react-gradient-hook/lib/types';
-import { useMap } from 'react-leaflet';
 import { Palette } from 'react-leaflet-hotline';
 
 import '../../css/palette.css';

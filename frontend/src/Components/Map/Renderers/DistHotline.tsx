@@ -1,8 +1,6 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { LeafletEvent, Polyline } from 'leaflet';
 import { HotlineOptions, useCustomHotline } from 'react-leaflet-hotline';
-
-import { useGraph } from '../../../context/GraphContext';
 
 import { Condition, Node, WayId } from '../../../models/path';
 
