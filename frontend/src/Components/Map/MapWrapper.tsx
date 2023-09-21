@@ -8,7 +8,6 @@ import { MAP_OPTIONS } from './constants';
 //container for map and its attributes
 const MapWrapper = (props: any) => {
   const { children } = props;
-
   const { center, zoom, minZoom, maxZoom, scaleWidth } = MAP_OPTIONS;
 
   return (
