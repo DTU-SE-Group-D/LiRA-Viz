@@ -9,6 +9,8 @@ import { Feature, FeatureCollection } from 'geojson';
 import Zoom from '../Map/Zoom';
 import { MAP_OPTIONS } from './constants';
 
+import Search from 'react-leaflet-search';
+
 import { getConditions } from '../../queries/fetchConditions';
 
 import '../../css/slider.css';
@@ -439,7 +441,7 @@ const ConditionsMap = (props: any) => {
         </MapContainer>
         {children}
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '200px auto' }}>
+      {/* <div style={{ display: 'grid', gridTemplateColumns: '200px auto' }}>
         <select
           className="sweetalert-input"
           defaultValue={mode}
@@ -452,73 +454,7 @@ const ConditionsMap = (props: any) => {
             </option>
           ))}
         </select>
-
-        {rangeAll !== undefined &&
-          rangeAll.start !== undefined &&
-          rangeAll.end !== undefined && (
-            <ReactSlider
-              className="horizontal-slider"
-              thumbClassName="example-thumb"
-              trackClassName="example-track"
-              markClassName="example-mark"
-              min={0}
-              max={noMonth(rangeAll)}
-              marks={true}
-              renderMark={(props: any) => (
-                <div {...props}>
-                  {yearMonthtoText(noToYearMonth(props.key, rangeAll))}
-                </div>
-              )}
-              defaultValue={[0, noMonth(rangeAll)]}
-              ariaLabel={['Lower thumb', 'Upper thumb']}
-              ariaValuetext={(state) =>
-                `Thumb value ${yearMonthtoText(
-                  noToYearMonth(state.valueNow, rangeAll),
-                )}`
-              }
-              renderThumb={(props, state) => (
-                <div {...props}>
-                  {yearMonthtoText(noToYearMonth(state.valueNow, rangeAll))}
-                </div>
-              )}
-              pearling
-              minDistance={0}
-              onChange={(value) => rangeChange(value)}
-            />
-          )}
-      </div>
-      {mode === 'ALL' && (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'center',
-          }}
-        >
-          Colors indicate condition types (not their values): &nbsp;{' '}
-          <div style={{ color: getTypeColor(KPI) }}>KPI</div> &nbsp; &nbsp;
-          <div style={{ color: getTypeColor(DI) }}>DI</div> &nbsp; &nbsp;
-          <div style={{ color: getTypeColor(IRI) }}>IRI</div> &nbsp; &nbsp;
-          <div style={{ color: getTypeColor(Mu) }}>&mu;</div> &nbsp; &nbsp;
-          <div style={{ color: getTypeColor(Enrg) }}>E</div> &nbsp; &nbsp;
-        </div>
-      )}
-      {mode !== 'ALL' && (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'center',
-          }}
-        >
-          Colors indicate condition values from &nbsp;
-          <span style={{ color: green }}>green (good)</span>&nbsp;
-          <span style={{ color: greenyellow }}>over</span>&nbsp;
-          <span style={{ color: yellow }}>yellow (medium)</span>&nbsp;
-          <span style={{ color: orange }}>to</span>&nbsp;
-          <span style={{ color: red }}>red (bad)</span>!
-        </div>
-      )}
+      </div> */}
     </div>
   );
 };
