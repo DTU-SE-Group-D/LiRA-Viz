@@ -16,7 +16,6 @@ const App: FC = () => {
   return (
     <div className="App">
       <Router>
-        <Navbar />
         <Routes>
           <Route index element={<Navigate to="/conditions" replace />} />
           <Route path="/conditions" Component={Conditions} />

@@ -10,7 +10,7 @@
 .map-zoom {
   position: absolute;
   right: 55px;
-  z-index: calc(var(--navbar-z-index) - 2);
+  z-index: calc(var(--navbar-z-index) - 4);
   color: var(--background);
   font-family: 'Noto Sans JP', sans-serif;
   font-size: 2em;
