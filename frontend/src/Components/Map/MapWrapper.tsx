@@ -32,7 +32,7 @@ const MapWrapper = (props: any) => {
         position="bottomright"
         maxWidth={scaleWidth}
       />
-      {children}
+      ;{children}
     </MapContainer>
   );
 };

@@ -3,6 +3,9 @@ import { NavLink } from 'react-router-dom';
 
 import '../css/navbar.css';
 
+import Search from './Map/Search';
+import '../css/search.css';
+
 interface NavBtnProps {
   to: string;
   name: string;
@@ -20,9 +23,7 @@ const Navbar: FC = () => {
   return (
     <div className="nav-wrapper">
       <div className="nav-container">
-        <div className="nav-block">
-          <NavBtn to="/road_conditions" name="Inspect Road" />
-        </div>
+        <Search />
       </div>
     </div>
   );
