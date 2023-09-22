@@ -1,4 +1,9 @@
 .nav-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-content: space-around;
   position: sticky;
   top: 0;
   left: 0;
@@ -10,13 +15,17 @@
 }
 
 .nav-container {
-  width: 90%;
+  width: 20%;
   height: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  margin: auto;
+  margin-top: 1%;
+  align-self: flex-start;
+}
+
+.filter-container {
+  width: 10%;
+  height: 100%;
+  margin-top: 1%;
+  align-self: flex-start;
 }
 
 .nav-tab {
@@ -25,7 +34,7 @@
   text-decoration: none;
   margin: 0px 30px;
   padding: 6px 11px;
-  border-radius: 6px;
+  border-radius: 15%;
 }
 
 .nav-tab:hover {

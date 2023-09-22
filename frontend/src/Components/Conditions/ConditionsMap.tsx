@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import ReactSlider from 'react-slider';
 
 import { GeoJSON, MapContainer, ScaleControl, TileLayer } from 'react-leaflet';
 import { Layer, PathOptions } from 'leaflet';
@@ -9,7 +8,10 @@ import { Feature, FeatureCollection } from 'geojson';
 import Zoom from '../Map/Zoom';
 import { MAP_OPTIONS } from './constants';
 
-import Search from 'react-leaflet-search';
+import Navbar from '../../Components/Navbar';
+import Search from '../Map/Search';
+import '../../css/navbar.css';
+import '../../css/search.css';
 
 import { getConditions } from '../../queries/fetchConditions';
 
@@ -407,6 +409,25 @@ const ConditionsMap = (props: any) => {
 
   return (
     <div style={{ height: '100%' }}>
+      <div className="nav-wrapper">
+        <div className="nav-container">
+          <Search />
+        </div>
+        <div className="filter-container">
+          <select
+            className="sweetalert-input"
+            defaultValue={mode}
+            onChange={inputChange}
+            style={{ width: '100px' }}
+          >
+            {conditionTypes.map((value) => (
+              <option value={value} key={value}>
+                {value}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
       <div style={{ height: '85%' }}>
         <MapContainer
           preferCanvas={true}
@@ -420,7 +441,7 @@ const ConditionsMap = (props: any) => {
           <TileLayer
             maxNativeZoom={maxZoom}
             maxZoom={maxZoom}
-            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            attribution='&copy; Powered by <a href="https://www.geoapify.com/" target="_blank">Geoapify</a> | <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
 
@@ -431,7 +452,6 @@ const ConditionsMap = (props: any) => {
               onEachFeature={onEachFeature}
             />
           )}
-
           <Zoom />
           <ScaleControl
             imperial={false}
@@ -441,20 +461,6 @@ const ConditionsMap = (props: any) => {
         </MapContainer>
         {children}
       </div>
-      {/* <div style={{ display: 'grid', gridTemplateColumns: '200px auto' }}>
-        <select
-          className="sweetalert-input"
-          defaultValue={mode}
-          onChange={inputChange}
-          style={{ width: '200px' }}
-        >
-          {conditionTypes.map((value) => (
-            <option value={value} key={value}>
-              {value}
-            </option>
-          ))}
-        </select>
-      </div> */}
     </div>
   );
 };
