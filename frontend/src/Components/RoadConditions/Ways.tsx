@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useState } from 'react';
-import { TRGB } from 'react-gradient-hook/lib/types';
+
 import { HotlineOptions } from 'react-leaflet-hotline';
 import { HotlineEventHandlers } from 'react-leaflet-hotline/dist/types/types';
 import { useGraph } from '../../context/GraphContext';
@@ -9,12 +9,11 @@ import useZoom from '../Map/Hooks/useZoom';
 import DistHotline from '../Map/Renderers/DistHotline';
 
 interface IWays {
-  palette: TRGB[];
   type: string;
   onClick?: (way_id: string, way_length: number) => void;
 }
 
-const Ways: FC<IWays> = ({ palette, type, onClick }) => {
+const Ways: FC<IWays> = ({ type, onClick }) => {
   const zoom = useZoom();
   const { minY, maxY } = useGraph();
 
@@ -22,11 +21,10 @@ const Ways: FC<IWays> = ({ palette, type, onClick }) => {
 
   const options = useMemo<HotlineOptions>(
     () => ({
-      palette,
       min: minY,
       max: maxY,
     }),
-    [palette, minY, maxY],
+    [minY, maxY],
   );
 
   const handlers = useMemo<HotlineEventHandlers>(
