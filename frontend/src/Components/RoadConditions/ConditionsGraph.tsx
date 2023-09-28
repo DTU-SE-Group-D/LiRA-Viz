@@ -15,7 +15,6 @@ import {
   Title,
   Tooltip,
 } from 'chart.js';
-import { Color, Palette } from 'react-leaflet-hotline';
 import { Line } from 'react-chartjs-2';
 
 import { ConditionType } from '../../models/graph';
@@ -66,36 +65,16 @@ const options = ({ name, min, max }: ConditionType): ChartOptions<'line'> => ({
 interface Props {
   type: ConditionType;
   data: ChartData<'line', number[], number> | undefined;
-  palette: Palette;
 }
 
-const ConditionsGraph: FC<Props> = ({ type, data, palette }) => {
+const ConditionsGraph: FC<Props> = ({ type, data }) => {
   const ref = useRef<Chart<'line', number[], number>>(null);
-
-  const addPaletteChart =
-    (palette: Palette) =>
-    (chart: Chart<keyof ChartTypeRegistry, number[], unknown>) => {
-      const dataset = chart.data.datasets[0];
-      const gradient = chart.ctx.createLinearGradient(
-        0,
-        chart.chartArea.bottom,
-        0,
-        0,
-      );
-      console.log(...palette);
-      palette.forEach((c: Color) => {
-        gradient.addColorStop(c.t, `rgb(${c.r}, ${c.g}, ${c.b})`);
-      });
-      dataset.borderColor = gradient;
-      dataset.backgroundColor = gradient;
-    };
 
   useEffect(() => {
     if (ref.current === null) return;
     const chart = ref.current;
-    addPaletteChart(palette)(chart);
     chart.update();
-  }, [ref, data, palette]);
+  }, [ref, data]);
 
   // attach events to the graph options
   const graphOptions: ChartOptions<'line'> = useMemo(
