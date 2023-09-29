@@ -13,6 +13,8 @@ import { ConditionType } from '../models/graph';
 const RoadConditions = () => {
   const [wayData, setWayData] = useState<ChartData<'line', number[], number>>();
 
+  console.log(wayData);
+
   const type: ConditionType = {
     name: 'IRI',
     min: 0,
@@ -25,7 +27,8 @@ const RoadConditions = () => {
     <GraphProvider>
       <div className="road-conditions-wrapper">
         <ConditionsMap type={type} setWayData={setWayData} />
-        <ConditionsGraph type={type} data={wayData} />
+        {/*<ConditionsGraph type={type} data={wayData} />*/}
+        <ConditionsGraph />
       </div>
     </GraphProvider>
   );

@@ -4,7 +4,8 @@
 }
 
 .leaflet-container {
-  height: 177%;
+  height: 100%;
+  /*height: 174%;*/
 }
 
 .map-zoom {
