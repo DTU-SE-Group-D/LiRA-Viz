@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { ChartData } from 'chart.js';
 //
 import ConditionsMap from '../Components/RoadConditions/ConditionsMap';
@@ -11,7 +12,9 @@ import { ConditionType } from '../models/graph';
 
 //this is to visualise the Road Conditions (GP) map
 const RoadConditions = () => {
-  const [wayData, setWayData] = useState<ChartData<'line', number[], number>>();
+  //---------------------------TRIAL 1-----------------------------------------
+
+  /*const [wayData, setWayData] = useState<ChartData<'line', number[], number>>();
 
   console.log(wayData);
 

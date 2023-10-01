@@ -111,8 +111,9 @@
 //
 // export default ConditionsGraph;
 //
-
+import '../../css/road_conditions.css';
 import { Line } from 'react-chartjs-2';
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -146,13 +147,57 @@ const dummyData = {
     },
   ],
 };
+console.log(dummyData);
+
+const colorCode = '#1478BD';
+const state = {
+  data: {
+    labels: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
+    datasets: [
+      {
+        backgroundColor: colorCode,
+        borderColor: colorCode,
+        borderWidth: 2,
+        data: [65, 59, 80, 81, 56, 65, 59, 80, 81, 56, 40, 56],
+      },
+    ],
+  },
+  options: {
+    plugins: {
+      legend: {
+        display: true,
+        label: 'data',
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+        beginAtZero: false,
+        ticks: {
+          color: colorCode,
+        },
+      },
+      y: {
+        grid: {
+          display: false,
+        },
+        beginAtZero: true,
+        ticks: {
+          color: colorCode,
+        },
+      },
+    },
+  },
+};
 
 function ConditionsGraph() {
   return (
-    <div>
+    <div className="road-conditions-graph">
       <h1>MARCO WAS HERE</h1>
       <h1>Line Chart Example</h1>
-      <Line data={dummyData} />
+      <Line data={state.data} options={state.options} />
     </div>
   );
 }
