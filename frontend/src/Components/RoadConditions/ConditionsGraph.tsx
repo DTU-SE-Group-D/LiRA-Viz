@@ -195,8 +195,8 @@ const state = {
 function ConditionsGraph() {
   return (
     <div className="road-conditions-graph">
-      <h1>MARCO WAS HERE</h1>
-      <h1>Line Chart Example</h1>
+      {/*<h1>MARCO WAS HERE</h1>*/}
+      {/*<h1>Line Chart Example</h1>*/}
       <Line data={state.data} options={state.options} />
     </div>
   );
