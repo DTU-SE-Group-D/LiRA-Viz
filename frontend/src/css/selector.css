@@ -1,0 +1,19 @@
+.input-selector-container {
+  z-index: calc(var(--navbar-z-index) - 2);
+  position: absolute;
+  margin: 20px 102px;
+  width: 120px;
+  height: 30px;
+}
+
+.input-selector-container .input {
+  width: 100%;
+  height: 100%;
+  background: var(--background);
+  color: white;
+  cursor: pointer;
+  font-size: 15px;
+  border: none;
+  border-radius: 5px;
+  padding: 0 10px;
+}
