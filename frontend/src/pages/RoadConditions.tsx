@@ -28,7 +28,7 @@ const RoadConditions = () => {
   return (
     <GraphProvider>
       <div className="road-conditions-wrapper">
-        <ConditionsMap type={type} setWayData={setWayData} />
+        {/*<ConditionsMap type={type} setWayData={setWayData} />*/}
         {/*<ConditionsGraph type={type} data={wayData} />*/}
         <ConditionsGraph />
       </div>

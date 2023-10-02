@@ -1,3 +1,4 @@
+/*
 .road-conditions-wrapper {
   height: calc(100vh - var(--navbar-height));
   display: grid;
@@ -7,6 +8,34 @@
 .road-conditions-graph {
   position: relative;
   width: 100vw;
-  display: flex; /* Add this to enable flexbox layout */
-  justify-content: space-evenly; /* Center the content horizontally */
+  display: flex; !* Add this to enable flexbox layout *!
+  justify-content: space-evenly; !* Center the content horizontally *!
+}*/
+
+/* ResizableDivsComponent.css */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 300px; /* Initial height */
+}
+
+.top,
+.bottom {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #000;
+  overflow: auto;
+}
+
+.resizable-border {
+  cursor: row-resize;
+  width: 100%;
+  border-bottom: 2px solid #000;
+}
+
+.resizable-border.resizing {
+  border-color: red; /* Highlight border on resizing */
 }
