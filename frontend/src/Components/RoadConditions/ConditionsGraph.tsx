@@ -112,7 +112,7 @@
 // export default ConditionsGraph;
 //
 import '../../css/road_conditions.css';
-// import { Line } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 
 import {
   Chart as ChartJS,
@@ -225,20 +225,7 @@ const ConditionsGraph: React.FC = () => {
     };
   }, [isResizing]);
 
-  return (
-    <div className="container" id="container">
-      <div className="top">
-        <p>Content for the top div</p>
-      </div>
-      <div
-        className={`resizable-border ${isResizing ? 'resizing' : ''}`}
-        onMouseDown={() => setIsResizing(true)}
-      ></div>
-      <div className="bottom">
-        <p>Content for the bottom div</p>
-      </div>
-    </div>
-  );
+  return <Line data={state.data} options={state.options} />;
 };
 
 /*return (

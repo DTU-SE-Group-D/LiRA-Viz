@@ -1,5 +1,5 @@
 import { ChartData } from 'chart.js';
-//
+
 import ConditionsMap from '../Components/RoadConditions/ConditionsMap';
 import ConditionsGraph from '../Components/RoadConditions/ConditionsGraph';
 
@@ -7,12 +7,10 @@ import { GraphProvider } from '../context/GraphContext';
 
 import '../css/road_conditions.css';
 import { ConditionType } from '../models/graph';
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 //this is to visualise the Road Conditions (GP) map
 const RoadConditions = () => {
-  //---------------------------TRIAL 1-----------------------------------------
-
   const [wayData, setWayData] = useState<ChartData<'line', number[], number>>();
 
   console.log(wayData);
@@ -25,14 +23,52 @@ const RoadConditions = () => {
     samples: 40,
   };
 
+  const [isResizing, setIsResizing] = useState(false);
+
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      if (isResizing) {
+        const container = document.getElementById('container');
+        const mouseY = event.clientY;
+        if (container) {
+          const topRect = container.getBoundingClientRect();
+          const newTopHeight = mouseY - topRect.top;
+          container.style.height = `${newTopHeight}px`;
+        }
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizing]);
+
   return (
-    <GraphProvider>
-      <div className="road-conditions-wrapper">
-        {/*<ConditionsMap type={type} setWayData={setWayData} />*/}
+    // <GraphProvider>
+    <div className="road-conditions-page-wrapper" id="container">
+      <div className="top" id="top-inside-container">
+        <ConditionsMap type={type} setWayData={setWayData} />
+      </div>
+      <div
+        className={`resizable-border ${isResizing ? 'resizing' : ''}`}
+        onMouseDown={() => setIsResizing(true)}
+      ></div>
+      <div className="bottom" id="bottom-inside-container">
         {/*<ConditionsGraph type={type} data={wayData} />*/}
         <ConditionsGraph />
       </div>
-    </GraphProvider>
+    </div>
+    // </GraphProvider>
   );
 };
 
