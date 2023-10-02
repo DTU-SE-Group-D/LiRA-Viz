@@ -112,7 +112,7 @@
 // export default ConditionsGraph;
 //
 import '../../css/road_conditions.css';
-import { Line } from 'react-chartjs-2';
+// import { Line } from 'react-chartjs-2';
 
 import {
   Chart as ChartJS,
@@ -124,6 +124,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 ChartJS.register(
   CategoryScale,
@@ -150,6 +151,7 @@ const dummyData = {
 console.log(dummyData);
 
 const colorCode = '#1478BD';
+// @ts-ignore
 const state = {
   data: {
     labels: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
@@ -192,14 +194,60 @@ const state = {
   },
 };
 
-function ConditionsGraph() {
+const ConditionsGraph: React.FC = () => {
+  const [isResizing, setIsResizing] = useState(false);
+
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      if (isResizing) {
+        const container = document.getElementById('container');
+        const mouseY = event.clientY;
+        if (container) {
+          const containerRect = container.getBoundingClientRect();
+          const newHeight = mouseY - containerRect.top;
+          container.style.height = `${newHeight}px`;
+        }
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizing]);
+
   return (
+    <div className="container" id="container">
+      <div className="top">
+        <p>Content for the top div</p>
+      </div>
+      <div
+        className={`resizable-border ${isResizing ? 'resizing' : ''}`}
+        onMouseDown={() => setIsResizing(true)}
+      ></div>
+      <div className="bottom">
+        <p>Content for the bottom div</p>
+      </div>
+    </div>
+  );
+};
+
+/*return (
     <div className="road-conditions-graph">
-      {/*<h1>MARCO WAS HERE</h1>*/}
-      {/*<h1>Line Chart Example</h1>*/}
+      {/!*<h1>MARCO WAS HERE</h1>*!/}
+      {/!*<h1>Line Chart Example</h1>*!/}
       <Line data={state.data} options={state.options} />
     </div>
   );
-}
+};*/
 
 export default ConditionsGraph;
