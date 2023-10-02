@@ -1,32 +1,24 @@
-/*
-.road-conditions-wrapper {
+.road-conditions-page-wrapper {
   height: calc(100vh - var(--navbar-height));
-  display: grid;
-  grid-template-rows: auto min(40vh, 400px);
+  display: flex;
+  flex-direction: column;
 }
 
 .road-conditions-graph {
   position: relative;
   width: 100vw;
-  display: flex; !* Add this to enable flexbox layout *!
-  justify-content: space-evenly; !* Center the content horizontally *!
-}*/
-
-/* ResizableDivsComponent.css */
-
-.container {
   display: flex;
-  flex-direction: column;
-  height: 300px; /* Initial height */
+  justify-content: center;
+  align-items: center;
 }
 
 .top,
 .bottom {
   flex: 1;
   display: flex;
+  width: 100vw;
+  position: relative;
   justify-content: center;
-  align-items: center;
-  border: 1px solid #000;
   overflow: auto;
 }
 
