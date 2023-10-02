@@ -1,4 +1,7 @@
 module.exports = {
+  propsParser: require('react-docgen-typescript').withDefaultConfig({
+    skipChildrenPropWithoutDoc: false,
+  }).parse,
   components: ['src/App.tsx', 'src/Components/**/*.{tsx,jsx,js,ts}'],
   ignore: [
     '**/__tests__/**',
