@@ -19,6 +19,10 @@ interface HoverContextProps {
 
 const HoverContext = createContext({} as HoverContextProps);
 
+/**
+ * The context provider for the hover context. It contains the dotHover context and the map.
+ * This context is used in the original website to draw a circle at a certain point on the line.
+ */
 export const HoverProvider = ({ children }: any) => {
   const [dotHover, setDotHover] = useState<DotHover>();
   const [map, setMap] = useState<Map>();

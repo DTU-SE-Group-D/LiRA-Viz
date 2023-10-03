@@ -21,13 +21,25 @@ const getWeight = (z: number | undefined) =>
   z === undefined ? 0 : Math.max(z > 8 ? z - 6 : z - 5, 2);
 
 interface IDistHotline {
+  /** the way ids of the line to render */
   way_ids: WayId[];
+  /** the coordinates and the length of the line to render */
   geometry: Node[][];
+  /** the conditions of the line to render */
   conditions: Condition[][];
+  /** The option of the gradient line */
   options?: HotlineOptions;
+  /** The event handlers of the gradient line */
   eventHandlers?: HotlineEventHandlers;
 }
 
+/**
+ * A small utility function to create a handler for a specific event.
+ *
+ * @param eventHandlers the default event handlers
+ * @param event the event to handle
+ * @param opacity the opacity to set to the line
+ */
 const handler = (
   eventHandlers: HotlineEventHandlers | undefined,
   event: keyof HotlineEventHandlers,
@@ -40,6 +52,12 @@ const handler = (
   };
 };
 
+/**
+ * Draw a gradient line using the value of a specific road condition.
+ * It uses the react-leaflet-hotline library. The dot hover can be
+ * used to draw a circle at a certain point on the line (See the original
+ * version of the project and ReactJS context mechanism).
+ */
 const DistHotline: FC<IDistHotline> = ({
   way_ids,
   geometry,
@@ -58,6 +76,7 @@ const DistHotline: FC<IDistHotline> = ({
     [options, zoom],
   );
 
+  // create an event handler for each event to handle for a line
   const handlers: HotlineEventHandlers = useMemo(
     () => ({
       ...eventHandlers,
@@ -67,8 +86,13 @@ const DistHotline: FC<IDistHotline> = ({
     [eventHandlers],
   );
 
+  // create the custom gradient line
   const { hotline } = useCustomHotline<Node, DistData>(
+    // the custom renderer to use. Instead of having the road condition values in the data,
+    // we have the road condition values in the conditions array and the distance
+    // of the condition are in the data array.
     DistRenderer,
+    // This is a custom polyline that can handle the hover event
     HoverHotPolyline,
     {
       data: geometry,
@@ -82,6 +106,7 @@ const DistHotline: FC<IDistHotline> = ({
     conditions,
   );
 
+  // set the hover state of the polyline
   useEffect(() => {
     if (hotline === undefined) return;
     (hotline as HoverHotPolyline<Node, DistData>).setHover(dotHover);
