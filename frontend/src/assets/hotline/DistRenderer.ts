@@ -6,6 +6,10 @@ import { DotHover } from '../graph/types';
 import { DistData, DistPoint } from './hotline';
 import Edge from './Edge';
 
+/**
+ * A renderer that allow the condition to be projected between two GPS points
+ * (knowing the distance from the start of the way)
+ */
 export default class DistRenderer extends Renderer<DistData> {
   way_ids: string[];
   conditions: Condition[][];
