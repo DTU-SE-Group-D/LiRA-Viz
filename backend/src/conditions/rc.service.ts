@@ -65,9 +65,9 @@ export class RCService {
     type: string,
   ): Promise<Condition[]> {
     return Conditions(this.knex_liramap)
-      .select('fk_way_id', 'type', 'value', 'compute_time')
+      .select('distance01 as way_dist', 'value')
       .where({ type: type, fk_way_id: dbId })
-      .orderBy('compute_time');
+      .orderBy('distance01');
   }
 
   async getZoomConditions(

@@ -10,7 +10,7 @@ import '../../css/road_conditions.css';
 interface Props {
   type: ConditionType;
   setWayData: React.Dispatch<
-    React.SetStateAction<ChartData<'line', number[], number> | undefined>
+    React.SetStateAction<ChartData<'scatter', number[], number> | undefined>
   >;
 }
 
@@ -28,6 +28,7 @@ const ConditionsMap: FC<Props> = ({ type, setWayData }) => {
         labels: wc.map((p) => p.way_dist * way_length),
         datasets: [
           {
+            //@ts-ignore
             type: 'line' as const,
             label: way_id,
             borderColor: 'rgb(255, 99, 132)',
