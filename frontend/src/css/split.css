@@ -2,9 +2,6 @@
     height: calc(100vh - var(--navbar-height));
 }
 
-
-
-
 .gutter {
     background-color: #eee;
     background-repeat: no-repeat;
