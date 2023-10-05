@@ -1,20 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { GeoJSON, MapContainer, ScaleControl, TileLayer } from 'react-leaflet';
+import { GeoJSON } from 'react-leaflet';
 import { Layer, PathOptions } from 'leaflet';
-
 import { Feature, FeatureCollection } from 'geojson';
 
-import Zoom from '../Map/Zoom';
-import { MAP_OPTIONS } from './constants';
-
 import Search from '../Map/Search';
+import MapWrapper from '../Map/MapWrapper';
+
 import '../../css/navbar.css';
 import '../../css/search.css';
+import '../../css/slider.css';
 
 import { getConditions } from '../../queries/fetchConditions';
-
-import '../../css/slider.css';
 
 const ALL = 'ALL';
 const KPI = 'KPI';
@@ -194,8 +191,6 @@ const getConditionColor = (properties: GeoJSON.GeoJsonProperties): string => {
 
 const ConditionsMap = (props: any) => {
   const { children } = props;
-
-  const { center, zoom, minZoom, maxZoom, scaleWidth } = MAP_OPTIONS;
 
   const geoJsonRef = useRef<any>();
 
@@ -432,22 +427,7 @@ const ConditionsMap = (props: any) => {
         </div>
       </div>
       <div style={{ height: '85%' }}>
-        <MapContainer
-          preferCanvas={true}
-          center={center}
-          zoom={zoom}
-          minZoom={minZoom}
-          maxZoom={maxZoom}
-          scrollWheelZoom={true}
-          zoomControl={false}
-        >
-          <TileLayer
-            maxNativeZoom={maxZoom}
-            maxZoom={maxZoom}
-            attribution='&copy; Powered by <a href="https://www.geoapify.com/" target="_blank">Geoapify</a> | <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-
+        <MapWrapper>
           {dataAll !== undefined && (
             <GeoJSON
               ref={geoJsonRef}
@@ -455,13 +435,7 @@ const ConditionsMap = (props: any) => {
               onEachFeature={onEachFeature}
             />
           )}
-          <Zoom />
-          <ScaleControl
-            imperial={false}
-            position="bottomright"
-            maxWidth={scaleWidth}
-          />
-        </MapContainer>
+        </MapWrapper>
         {children}
       </div>
     </div>
