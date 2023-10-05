@@ -3,7 +3,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectConnection, Knex } from 'nestjs-knex';
 import { Condition, LatLngDist, WayId, WaysConditions } from 'src/models';
 import groupBy from '../util';
-import { RoadConditions, Ways, ZoomConditions, Conditions2 } from '../tables';
+import {
+  RoadConditions,
+  Ways,
+  ZoomConditions,
+  Conditions2,
+  Conditions,
+} from '../tables';
 
 import knexPostgis = require('knex-postgis');
 
@@ -52,6 +58,16 @@ export class RCService {
       .select('way_id', 'way_dist', 'value')
       .where({ type: type, way_id: way_id })
       .orderBy('way_dist');
+  }
+
+  async getWay2RoadConditions(
+    dbId: string,
+    type: string,
+  ): Promise<Condition[]> {
+    return Conditions(this.knex_liramap)
+      .select('fk_way_id', 'type', 'value', 'compute_time')
+      .where({ type: type, fk_way_id: dbId })
+      .orderBy('compute_time');
   }
 
   async getZoomConditions(
