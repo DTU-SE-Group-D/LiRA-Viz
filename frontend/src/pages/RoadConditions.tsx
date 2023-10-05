@@ -31,8 +31,10 @@ const RoadConditions = () => {
       <Split
         className="split"
         direction="vertical"
+        sizes={[45, 55]}
         minSize={150}
         snapOffset={10}
+        // dragInterval={50}
       >
         <ConditionsMap type={type} setWayData={setWayData} />
         {/*<ConditionsGraph type={type} data={wayData} />**/}
