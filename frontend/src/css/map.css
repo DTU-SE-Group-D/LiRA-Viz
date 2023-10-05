@@ -4,13 +4,13 @@
 }
 
 .leaflet-container {
-  height: 115%;
+  height: 100%;
 }
 
 .map-zoom {
   position: absolute;
   right: 55px;
-  z-index: calc(var(--navbar-z-index) - 4);
+  z-index: calc(var(--navbar-z-index) - 2);
   color: var(--background);
   font-family: 'Noto Sans JP', sans-serif;
   font-size: 2em;

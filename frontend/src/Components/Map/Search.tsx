@@ -1,6 +1,4 @@
-// Copied from README... in progress!!
-
-import React, { useState } from 'react';
+import React from 'react';
 
 import {
   GeoapifyGeocoderAutocomplete,
@@ -9,19 +7,20 @@ import {
 import '@geoapify/geocoder-autocomplete/styles/minimal.css';
 import '../../css/search.css';
 
-//import fetch from 'node-fetch'; // npm install node-fetch
-// v
+interface Props {
+  /**
+   * value: text input in the search bar
+   * onPlaceSelect: function taking argument "value"
+   */
 
-// const response = await fetch(https://api.geoapify.com/v1/geocode/autocomplete?text=YOUR_TEXT&format=json&apiKey=YOUR_API_KEY);
-// const data = await response.json();
+  onPlaceSelect: (value: any) => void;
+}
 
-// console.log(data);
+/**
+ * Component rendering Search bar
+ */
 
-const Search: React.FC = () => {
-  function onPlaceSelect(value: any) {
-    console.log(value);
-  }
-
+const Search: React.FC<Props> = ({ onPlaceSelect }) => {
   function onSuggestionChange(value: any) {
     console.log(value);
   }
@@ -57,7 +56,7 @@ const Search: React.FC = () => {
       <GeoapifyGeocoderAutocomplete
         placeholder="Enter address here"
         // value={value}
-        // type={type}
+        type={'street'}
         // lang={language}
         // position={position}
         // countryCodes={countryCodes}
