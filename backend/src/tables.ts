@@ -33,6 +33,7 @@ export const ZoomConditions = (k: Knex) =>
 // ekki@dtu.dk: This is for PostGIS in the LiRAMap (LiraVis) database
 export interface Condition_Coverage {
   id: string;
+  fk_way_id: string;
   type: string;
   value: number;
   section_geom: Geometry;
