@@ -5,6 +5,9 @@ import ConditionsGraph from '../Components/RoadConditions/ConditionsGraph';
 
 import { GraphProvider } from '../context/GraphContext';
 
+import Split from 'react-split';
+
+import '../css/split.css';
 import '../css/road_conditions.css';
 import { ConditionType } from '../models/graph';
 import React, { useEffect, useState } from 'react';
@@ -54,9 +57,13 @@ const RoadConditions = () => {
   }, [isResizing]);
 
   return (
-    // <GraphProvider>
-    <div className="road-conditions-page-wrapper" id="container">
-      <div className="top" id="top-inside-container">
+    <GraphProvider>
+      <Split
+        className="split"
+        direction="vertical"
+        minSize={150}
+        snapOffset={10}
+      >
         <ConditionsMap type={type} setWayData={setWayData} />
       </div>
       <div
@@ -66,9 +73,8 @@ const RoadConditions = () => {
       <div className="bottom" id="bottom-inside-container">
         {/*<ConditionsGraph type={type} data={wayData} />*/}
         <ConditionsGraph />
-      </div>
-    </div>
-    // </GraphProvider>
+      </Split>
+    </GraphProvider>
   );
 };
 
