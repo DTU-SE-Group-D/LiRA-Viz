@@ -6,7 +6,6 @@ import {
   Routes,
 } from 'react-router-dom';
 
-import Navbar from './Components/Navbar';
 import RoadConditions from './pages/RoadConditions';
 import Conditions from './pages/Conditions';
 
