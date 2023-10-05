@@ -3,7 +3,6 @@ import { ChartData } from 'chart.js';
 import MapWrapper from '../Map/MapWrapper';
 import Ways from './Ways';
 import { FC, useCallback, useRef } from 'react';
-import useSize from '../../hooks/useSize';
 import { getConditions } from '../../queries/conditions';
 import { Condition } from '../../models/path';
 import '../../css/road_conditions.css';
