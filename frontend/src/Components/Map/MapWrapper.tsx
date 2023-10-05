@@ -7,8 +7,11 @@ import {
 
 import '../../css/map.css';
 import { MAP_OPTIONS } from './constants';
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import Selector from './Inputs/Selector';
+import { IRoad } from '../../models/path';
+import { getRoads } from '../../queries/road';
+import Roads from './Roads';
 
 /**
  *  properties
@@ -23,6 +26,13 @@ interface IMapWrapper {
  */
 const MapWrapper: FC<IMapWrapper> = ({ children }) => {
   const { center, zoom, minZoom, maxZoom, scaleWidth } = MAP_OPTIONS;
+
+  const [roads, setRoads] = useState<IRoad[]>();
+
+  // get the actual roads
+  useEffect(() => {
+    getRoads(setRoads);
+  }, []);
 
   return (
     <>
@@ -45,6 +55,7 @@ const MapWrapper: FC<IMapWrapper> = ({ children }) => {
           attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        <Roads roads={roads} />
         <ZoomControl position="topright" />
         <ScaleControl
           imperial={false}
