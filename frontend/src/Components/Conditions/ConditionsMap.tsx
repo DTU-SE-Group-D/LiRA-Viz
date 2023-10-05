@@ -8,7 +8,6 @@ import { Feature, FeatureCollection } from 'geojson';
 import Zoom from '../Map/Zoom';
 import { MAP_OPTIONS } from './constants';
 
-import Navbar from '../../Components/Navbar';
 import Search from '../Map/Search';
 import '../../css/navbar.css';
 import '../../css/search.css';
@@ -411,7 +410,11 @@ const ConditionsMap = (props: any) => {
     <div style={{ height: '100%' }}>
       <div className="nav-wrapper">
         <div className="nav-container">
-          <Search />
+          <Search
+            onPlaceSelect={(value: any) => {
+              console.log(value);
+            }}
+          />
         </div>
         <div className="filter-container">
           <select
