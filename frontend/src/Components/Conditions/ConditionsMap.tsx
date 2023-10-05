@@ -12,6 +12,9 @@ import '../../css/search.css';
 import '../../css/slider.css';
 
 import { getConditions } from '../../queries/fetchConditions';
+import { IRoad } from '../../models/path';
+import { getRoads } from '../../queries/road';
+import Roads from '../Map/Roads';
 
 const ALL = 'ALL';
 const KPI = 'KPI';
@@ -401,6 +404,13 @@ const ConditionsMap = (props: any) => {
     }
   };
 
+  const [roads, setRoads] = useState<IRoad[]>();
+
+  // get the actual roads
+  useEffect(() => {
+    getRoads(setRoads);
+  }, []);
+
   return (
     <div style={{ height: '100%' }}>
       <div className="nav-wrapper">
@@ -428,6 +438,7 @@ const ConditionsMap = (props: any) => {
       </div>
       <div style={{ height: '85%' }}>
         <MapWrapper>
+          <Roads roads={roads} />
           {dataAll !== undefined && (
             <GeoJSON
               ref={geoJsonRef}
