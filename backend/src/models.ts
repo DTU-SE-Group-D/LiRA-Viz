@@ -113,3 +113,17 @@ export interface BoundedCondition {
   length: number;
   coordinates: LatLonDist[];
 }
+
+export interface Road {
+  // the name of the road
+  way_name: string;
+  // the ids of the ways of each branch of the way. Can be the two directions or when a road
+  // split into two branches
+  // Example:
+  //            /---<---\
+  // -----------         -----------
+  //            \--->---/
+  way_ids: WayId[][];
+  // the geometry of each way
+  geometries: Record<WayId, LatLng[]>;
+}
