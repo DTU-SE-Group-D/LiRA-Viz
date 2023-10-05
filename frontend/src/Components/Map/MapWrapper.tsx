@@ -1,13 +1,28 @@
-import { MapContainer, TileLayer, ScaleControl } from 'react-leaflet';
-
-import Zoom from './Zoom';
+import {
+  MapContainer,
+  ScaleControl,
+  TileLayer,
+  ZoomControl,
+} from 'react-leaflet';
 
 import '../../css/map.css';
 import { MAP_OPTIONS } from './constants';
+import React, { FC } from 'react';
 
-//container for map and its attributes
-const MapWrapper = (props: any) => {
-  const { children } = props;
+/**
+ *  properties
+ */
+interface IMapWrapper {
+  /** The children to add on the map */
+  children?: React.ReactNode;
+}
+
+/**
+ * MapWrapper is the component to show a map.
+ *
+ * @param children The children to add on the map
+ */
+const MapWrapper: FC<IMapWrapper> = ({ children }) => {
   const { center, zoom, minZoom, maxZoom, scaleWidth } = MAP_OPTIONS;
 
   return (
@@ -23,10 +38,10 @@ const MapWrapper = (props: any) => {
       <TileLayer
         maxNativeZoom={maxZoom}
         maxZoom={maxZoom}
-        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <Zoom />
+      <ZoomControl position="topright" />
       <ScaleControl
         imperial={false}
         position="bottomright"
