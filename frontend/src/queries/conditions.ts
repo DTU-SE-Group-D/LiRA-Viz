@@ -18,6 +18,14 @@ export const getConditions = (
   post('/conditions/way', { wayId, type }, setConditions);
 };
 
+export const getConditionsWay2 = (
+  dbId: string,
+  type: string,
+  setConditions: (data: Condition[]) => void,
+) => {
+  post('/conditions/way2', { dbId, type }, setConditions);
+};
+
 export const getBoundedWaysConditions = async (
   bounds: MapBounds,
   type: string,
