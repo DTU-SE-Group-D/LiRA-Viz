@@ -15,7 +15,7 @@ import {
   Title,
   Tooltip,
 } from 'chart.js';
-import { Line } from 'react-chartjs-2';
+import { Scatter } from 'react-chartjs-2';
 
 import { ConditionType } from '../../models/graph';
 
@@ -28,8 +28,55 @@ Chart.register(
   Tooltip,
   Legend,
 );
+//const colorCode = '#1478BD';
 
-const options = ({ name, min, max }: ConditionType): ChartOptions<'line'> => ({
+// const dummyData = {
+//   data: {
+//     labels: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
+//     datasets: [
+//       {
+//         backgroundColor: colorCode,
+//         borderColor: colorCode,
+//         borderWidth: 2,
+//         data: [65, 59, 80, 81, 56, 65, 59, 80, 81, 56, 40, 56],
+//       },
+//     ],
+//   },
+//   options: {
+//     plugins: {
+//       legend: {
+//         display: true,
+//         label: 'data',
+//       },
+//     },
+//     scales: {
+//       x: {
+//         grid: {
+//           display: false,
+//         },
+//         beginAtZero: false,
+//         ticks: {
+//           color: colorCode,
+//         },
+//       },
+//       y: {
+//         grid: {
+//           display: false,
+//         },
+//         beginAtZero: true,
+//         ticks: {
+//           color: colorCode,
+//         },
+//       },
+//     },
+//   },
+// };
+
+const options = ({
+  name,
+  min,
+  max,
+}: ConditionType): ChartOptions<'scatter'> => ({
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
@@ -64,11 +111,11 @@ const options = ({ name, min, max }: ConditionType): ChartOptions<'line'> => ({
 
 interface Props {
   type: ConditionType;
-  data: ChartData<'line', number[], number> | undefined;
+  data: ChartData<'scatter', number[], number> | undefined;
 }
 
 const ConditionsGraph: FC<Props> = ({ type, data }) => {
-  const ref = useRef<Chart<'line', number[], number>>(null);
+  const ref = useRef<Chart<'scatter', number[], number>>(null);
 
   useEffect(() => {
     if (ref.current === null) return;
@@ -77,7 +124,7 @@ const ConditionsGraph: FC<Props> = ({ type, data }) => {
   }, [ref, data]);
 
   // attach events to the graph options
-  const graphOptions: ChartOptions<'line'> = useMemo(
+  const graphOptions: ChartOptions<'scatter'> = useMemo(
     () => ({
       ...options(type),
       onClick: (
@@ -94,7 +141,7 @@ const ConditionsGraph: FC<Props> = ({ type, data }) => {
     [],
   );
 
-  const plugins: Plugin<'line'>[] = [
+  const plugins: Plugin<'scatter'>[] = [
     {
       id: 'id',
     },
@@ -103,7 +150,12 @@ const ConditionsGraph: FC<Props> = ({ type, data }) => {
   return (
     <div className="road-conditions-graph">
       {data && (
-        <Line ref={ref} data={data} options={graphOptions} plugins={plugins} />
+        <Scatter
+          ref={ref}
+          data={data}
+          options={graphOptions}
+          plugins={plugins}
+        />
       )}
     </div>
   );
