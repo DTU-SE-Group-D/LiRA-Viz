@@ -26,36 +26,6 @@ const RoadConditions = () => {
     samples: 40,
   };
 
-  const [isResizing, setIsResizing] = useState(false);
-
-  useEffect(() => {
-    const handleMouseMove = (event: MouseEvent) => {
-      if (isResizing) {
-        const container = document.getElementById('container');
-        const mouseY = event.clientY;
-        if (container) {
-          const topRect = container.getBoundingClientRect();
-          const newTopHeight = mouseY - topRect.top;
-          container.style.height = `${newTopHeight}px`;
-        }
-      }
-    };
-
-    const handleMouseUp = () => {
-      setIsResizing(false);
-    };
-
-    if (isResizing) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-    }
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isResizing]);
-
   return (
     <GraphProvider>
       <Split
@@ -65,13 +35,7 @@ const RoadConditions = () => {
         snapOffset={10}
       >
         <ConditionsMap type={type} setWayData={setWayData} />
-      </div>
-      <div
-        className={`resizable-border ${isResizing ? 'resizing' : ''}`}
-        onMouseDown={() => setIsResizing(true)}
-      ></div>
-      <div className="bottom" id="bottom-inside-container">
-        {/*<ConditionsGraph type={type} data={wayData} />*/}
+        {/*<ConditionsGraph type={type} data={wayData} />**/}
         <ConditionsGraph />
       </Split>
     </GraphProvider>
