@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { InjectConnection, Knex } from 'nestjs-knex';
 import { Condition } from 'src/models';
-import { Conditions2, Conditions } from '../tables';
-
+import { Conditions, Conditions2 } from '../tables';
 import knexPostgis = require('knex-postgis');
 
 @Injectable()

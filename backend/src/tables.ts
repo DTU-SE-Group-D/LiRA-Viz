@@ -2,14 +2,15 @@ import { Knex } from 'knex';
 
 import { Geometry } from 'geojson';
 
-interface Way {
+interface IWay {
   id: string;
   geom: any;
   ref: string;
   official_ref: string;
 }
 
-export const Ways = (k: Knex) => k.from<Way>('way');
+// @deprecated
+export const Way = (k: Knex) => k.from<IWay>('way');
 
 interface RoadCondition {
   pk: any;
@@ -45,3 +46,13 @@ export const Conditions = (k: Knex) =>
 
 export const Conditions2 = (k: Knex) =>
   k.from<Condition_Coverage>('coverage_values');
+
+interface IWays {
+  OSM_Id: number[];
+  way_name: string;
+  section_geom: any;
+  node_start: number;
+  node_end: number;
+}
+
+export const Ways = (k: Knex) => k.from<IWays>('ways');
