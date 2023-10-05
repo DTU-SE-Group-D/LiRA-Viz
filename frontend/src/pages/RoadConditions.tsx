@@ -10,7 +10,7 @@ import Split from 'react-split';
 import '../css/split.css';
 import '../css/road_conditions.css';
 import { ConditionType } from '../models/graph';
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 //this is to visualise the Road Conditions (GP) map
 const RoadConditions = () => {
@@ -37,8 +37,7 @@ const RoadConditions = () => {
         // dragInterval={50}
       >
         <ConditionsMap type={type} setWayData={setWayData} />
-        {/*<ConditionsGraph type={type} data={wayData} />**/}
-        <ConditionsGraph />
+        <ConditionsGraph type={type} data={wayData} />
       </Split>
     </GraphProvider>
   );
