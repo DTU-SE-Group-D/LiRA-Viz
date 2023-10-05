@@ -71,3 +71,31 @@ export interface WaysConditions {
   geometry: Node[][];
   conditions: Condition[][];
 }
+
+export interface LatLon {
+  lat: number;
+  lon: number;
+}
+
+// A road is a collection of road segments (which are of collection ways that are connected to each other).
+export interface IRoad {
+  // the name of the road
+  way_name: string;
+  // the ids of the ways of each branch of the way. Can be the two directions or when a road
+  // split into two branches
+  // Example:
+  //            /---<---\
+  // -----------         -----------
+  //            \--->---/
+  way_ids: WayId[][];
+  // the geometry of each way
+  geometries: Record<WayId, LatLon[]>;
+}
+
+// A road segment is a collection of ways that are connected to each other.
+export interface IRoadSegment {
+  // ways that are connected to each other
+  way_ids: WayId[];
+  // the geometry of each way
+  geometries: Record<WayId, LatLon[]>;
+}

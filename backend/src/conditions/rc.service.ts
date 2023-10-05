@@ -3,8 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectConnection, Knex } from 'nestjs-knex';
 import { Condition, LatLngDist, WayId, WaysConditions } from 'src/models';
 import groupBy from '../util';
-import { RoadConditions, Ways, ZoomConditions, Conditions2 } from '../tables';
-
+import { Conditions2, RoadConditions, Way, ZoomConditions } from '../tables';
 import knexPostgis = require('knex-postgis');
 
 @Injectable()
@@ -17,7 +16,7 @@ export class RCService {
   async getWays(
     wayIds: string[],
   ): Promise<[{ [key: WayId]: LatLngDist[] }, { [key: WayId]: number }]> {
-    const ways = await Ways(this.knex)
+    const ways = await Way(this.knex)
       .select(
         'id as way_id',
         this.knex.raw(

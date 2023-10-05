@@ -23,6 +23,7 @@ export interface RideMeta {
 // 	message: string
 // }
 
+// @Deprecated please use LatLon
 export interface LatLng {
   lat: number;
   lng: number;
