@@ -92,8 +92,8 @@ const options = ({
         text: 'distance (m)',
       },
       ticks: {
-        maxTicksLimit: 30,
-        stepSize: 200,
+        // maxTicksLimit: 11,
+        stepSize: 10,
         callback: (tick: string | number) =>
           Math.round(parseFloat(tick.toString())),
       },

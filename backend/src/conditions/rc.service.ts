@@ -60,14 +60,24 @@ export class RCService {
       .orderBy('way_dist');
   }
 
-  async getWay2RoadConditions(
-    dbId: string,
-    type: string,
-  ): Promise<Condition[]> {
+  async getWay2RoadConditions(dbId: string): Promise<Condition[]> {
     return Conditions(this.knex_liramap)
-      .select('distance01 as way_dist', 'value')
-      .where({ type: type, fk_way_id: dbId })
-      .orderBy('distance01');
+      .select(
+        'cond1.fk_way_id',
+        'cond1.value as KPI',
+        'cond2.value as DI',
+        'cond1.distance01 as way_dist',
+      )
+      .join(
+        'condition_coverages as cond2',
+        'cond1.distance01',
+        '=',
+        'cond2.distance01',
+      )
+      .where('cond1.type', 'KPI')
+      .where('cond2.type', 'DI')
+      .where('cond1.fk_way_id', dbId)
+      .orderBy('cond1.distance01');
   }
 
   async getZoomConditions(

@@ -59,8 +59,10 @@ export interface ValueLatLng extends LatLng {
 }
 
 export interface Condition {
+  fk_way_id: string;
+  KPI: number;
+  DI: number;
   way_dist: number;
-  value: number;
 }
 
 export type WayId = string;
