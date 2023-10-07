@@ -24,11 +24,9 @@ export class RCController {
   }
 
   @Get('way2')
-  getWay2Conditions(
-    @Query() query: { dbId: string; type: string },
-  ): Promise<Condition[]> {
-    const { dbId, type } = query;
-    return this.service.getWay2RoadConditions(dbId, type);
+  getWay2Conditions(@Query() query: { dbId: string }): Promise<Condition[]> {
+    const { dbId } = query;
+    return this.service.getWay2RoadConditions(dbId);
   }
 
   @Get('')

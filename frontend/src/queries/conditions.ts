@@ -20,10 +20,9 @@ export const getConditions = (
 
 export const getConditionsWay2 = (
   dbId: string,
-  type: string,
   setConditions: (data: Condition[]) => void,
 ) => {
-  post('/conditions/way2', { dbId, type }, setConditions);
+  post('/conditions/way2', { dbId }, setConditions);
 };
 
 export const getBoundedWaysConditions = async (

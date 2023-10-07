@@ -41,7 +41,7 @@ export interface Condition_Coverage {
 }
 
 export const Conditions = (k: Knex) =>
-  k.from<Condition_Coverage>('condition_coverages');
+  k.from<Condition_Coverage>('condition_coverages as cond1');
 
 export const Conditions2 = (k: Knex) =>
   k.from<Condition_Coverage>('coverage_values');

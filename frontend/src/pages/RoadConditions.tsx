@@ -21,7 +21,7 @@ const RoadConditions = () => {
   console.log(wayData);
 
   useEffect(() => {
-    getConditionsWay2('12e920a5-368c-4484-a0a3-e8a626ec49fe', 'KPI', (wc) => {
+    getConditionsWay2('12e920a5-368c-4484-a0a3-e8a626ec49fe', (wc) => {
       console.log(wc);
       setWayData({
         labels: wc.map((p) => p.way_dist * 100),
@@ -29,22 +29,35 @@ const RoadConditions = () => {
           {
             //@ts-ignore
             type: 'line' as const,
-            label: 'way_id',
+            label: 'road XYZ 1',
             borderColor: 'rgb(255, 99, 132)',
             borderWidth: 2,
             fill: false,
             tension: 0.2,
-            data: wc.map((p) => p.value),
+            data: wc.map((p) => p.KPI),
+            yAxisID: 'y1',
+          },
+          {
+            //@ts-ignore
+            type: 'line' as const,
+            label: 'road XYZ 2',
+            borderColor: 'rgb(120, 245, 23)',
+            borderWidth: 2,
+            fill: false,
+            tension: 0.2,
+            data: wc.map((p) => p.DI),
+            yAxisID: 'y2',
           },
         ],
       });
     });
   }, []);
 
+  //TODO to review these parameters and how they affect the graph (passed as arguments)
   const type: ConditionType = {
-    name: 'IRI',
-    min: 0,
-    max: 10,
+    name: 'KPI',
+    min: 3,
+    max: 6,
     grid: true,
     samples: 40,
   };
