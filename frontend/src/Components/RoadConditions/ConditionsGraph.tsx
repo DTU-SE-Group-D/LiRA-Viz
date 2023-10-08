@@ -17,8 +17,6 @@ import {
 } from 'chart.js';
 import { Scatter } from 'react-chartjs-2';
 
-import { ConditionType } from '../../models/graph';
-
 Chart.register(
   CategoryScale,
   LinearScale,
@@ -30,53 +28,7 @@ Chart.register(
 );
 //const colorCode = '#1478BD';
 
-// const dummyData = {
-//   data: {
-//     labels: ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
-//     datasets: [
-//       {
-//         backgroundColor: colorCode,
-//         borderColor: colorCode,
-//         borderWidth: 2,
-//         data: [65, 59, 80, 81, 56, 65, 59, 80, 81, 56, 40, 56],
-//       },
-//     ],
-//   },
-//   options: {
-//     plugins: {
-//       legend: {
-//         display: true,
-//         label: 'data',
-//       },
-//     },
-//     scales: {
-//       x: {
-//         grid: {
-//           display: false,
-//         },
-//         beginAtZero: false,
-//         ticks: {
-//           color: colorCode,
-//         },
-//       },
-//       y: {
-//         grid: {
-//           display: false,
-//         },
-//         beginAtZero: true,
-//         ticks: {
-//           color: colorCode,
-//         },
-//       },
-//     },
-//   },
-// };
-
-const options = ({
-  name,
-  min,
-  max,
-}: ConditionType): ChartOptions<'scatter'> => ({
+const options = (): ChartOptions<'scatter'> => ({
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
@@ -92,29 +44,38 @@ const options = ({
         text: 'distance (m)',
       },
       ticks: {
-        // maxTicksLimit: 11,
         stepSize: 10,
         callback: (tick: string | number) =>
           Math.round(parseFloat(tick.toString())),
       },
     },
-    y: {
+    //TODO will be a variable passed from parent
+    KPI: {
+      type: 'linear',
+      position: 'left',
+      display: 'auto',
       title: {
         display: true,
-        text: name,
+        text: 'KPI',
       },
-      min: min,
-      max: max,
+    },
+    DI: {
+      type: 'linear',
+      position: 'right',
+      display: 'auto',
+      title: {
+        display: true,
+        text: 'DI',
+      },
     },
   },
 });
 
 interface Props {
-  type: ConditionType;
   data: ChartData<'scatter', number[], number> | undefined;
 }
 
-const ConditionsGraph: FC<Props> = ({ type, data }) => {
+const ConditionsGraph: FC<Props> = ({ data }) => {
   const ref = useRef<Chart<'scatter', number[], number>>(null);
 
   useEffect(() => {
@@ -126,7 +87,7 @@ const ConditionsGraph: FC<Props> = ({ type, data }) => {
   // attach events to the graph options
   const graphOptions: ChartOptions<'scatter'> = useMemo(
     () => ({
-      ...options(type),
+      ...options(),
       onClick: (
         event: ChartEvent,
         elts: ActiveElement[],

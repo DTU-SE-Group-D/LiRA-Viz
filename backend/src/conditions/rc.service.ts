@@ -3,13 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectConnection, Knex } from 'nestjs-knex';
 import { Condition, LatLngDist, WayId, WaysConditions } from 'src/models';
 import groupBy from '../util';
-import {
-  RoadConditions,
-  Ways,
-  ZoomConditions,
-  Conditions2,
-  Conditions,
-} from '../tables';
+import { Ways, ZoomConditions, Conditions2, Conditions } from '../tables';
 
 import knexPostgis = require('knex-postgis');
 
@@ -50,34 +44,27 @@ export class RCService {
     ];
   }
 
-  async getWayRoadConditions(
-    way_id: string,
-    type: string,
-  ): Promise<Condition[]> {
-    return RoadConditions(this.knex)
-      .select('way_id', 'way_dist', 'value')
-      .where({ type: type, way_id: way_id })
-      .orderBy('way_dist');
-  }
-
-  async getWay2RoadConditions(dbId: string): Promise<Condition[]> {
-    return Conditions(this.knex_liramap)
-      .select(
-        'cond1.fk_way_id',
-        'cond1.value as KPI',
-        'cond2.value as DI',
-        'cond1.distance01 as way_dist',
-      )
-      .join(
-        'condition_coverages as cond2',
-        'cond1.distance01',
-        '=',
-        'cond2.distance01',
-      )
-      .where('cond1.type', 'KPI')
-      .where('cond2.type', 'DI')
-      .where('cond1.fk_way_id', dbId)
-      .orderBy('cond1.distance01');
+  async getWayRoadConditions(dbId: string): Promise<Condition[]> {
+    return (
+      Conditions(this.knex_liramap)
+        .select(
+          'cond1.value as KPI',
+          'cond2.value as DI',
+          'cond1.distance01 as way_dist',
+        )
+        .join(
+          'condition_coverages as cond2',
+          'cond1.distance01',
+          '=',
+          'cond2.distance01',
+        )
+        .where('cond1.type', 'KPI')
+        .where('cond2.type', 'DI')
+        .where(this.knex_liramap.raw('cond1.fk_way_id = cond2.fk_way_id'))
+        // .where('cond1.distance01', '<>', 0)
+        .where('cond1.fk_way_id', dbId)
+        .orderBy('cond1.distance01')
+    );
   }
 
   async getZoomConditions(

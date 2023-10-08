@@ -1,5 +1,5 @@
 import { MapBounds } from '../models/map';
-import { Condition, WaysConditions } from '../models/path';
+import { ConditionKPIDI, WaysConditions } from '../models/path';
 import { asyncPost, post } from './fetch';
 
 export const getWaysConditions = (
@@ -10,19 +10,11 @@ export const getWaysConditions = (
   post('/conditions/ways', { type, zoom }, setWays);
 };
 
-export const getConditions = (
-  wayId: string,
-  type: string,
-  setConditions: (data: Condition[]) => void,
-) => {
-  post('/conditions/way', { wayId, type }, setConditions);
-};
-
-export const getConditionsWay2 = (
+export const getConditionsWay = (
   dbId: string,
-  setConditions: (data: Condition[]) => void,
+  setConditions: (data: ConditionKPIDI[]) => void,
 ) => {
-  post('/conditions/way2', { dbId }, setConditions);
+  post('/conditions/way', { dbId }, setConditions);
 };
 
 export const getBoundedWaysConditions = async (
