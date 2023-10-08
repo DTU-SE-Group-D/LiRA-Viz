@@ -13,7 +13,7 @@
 .road-image,
 .map-area {
   /* background-color: #eee; Example color for the middle area */
-  height: 60vh; /* Occupying half of the page vertically */
+  height: 100%; /* Occupying half of the page vertically */
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -79,6 +79,14 @@
   left: 2px;
   top: 2px;
   transition: 0.4s;
+}
+
+.road-conditions-graph {
+  position: relative;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Style to change the background color when switched on */
