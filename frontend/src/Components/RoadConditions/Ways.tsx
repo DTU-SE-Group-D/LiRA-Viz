@@ -1,11 +1,9 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 
 import { HotlineOptions } from 'react-leaflet-hotline';
 import { HotlineEventHandlers } from 'react-leaflet-hotline/dist/types/types';
 import { useGraph } from '../../context/GraphContext';
 import { WaysConditions } from '../../models/path';
-import { getWaysConditions } from '../../queries/conditions';
-import useZoom from '../Map/Hooks/useZoom';
 import DistHotline from '../Map/Renderers/DistHotline';
 
 interface IWays {
@@ -14,10 +12,11 @@ interface IWays {
 }
 
 const Ways: FC<IWays> = ({ type, onClick }) => {
-  const zoom = useZoom();
+  console.log(type);
+
   const { minY, maxY } = useGraph();
 
-  const [ways, setWays] = useState<WaysConditions>();
+  const [ways, _] = useState<WaysConditions>();
 
   const options = useMemo<HotlineOptions>(
     () => ({
@@ -35,15 +34,6 @@ const Ways: FC<IWays> = ({ type, onClick }) => {
     }),
     [ways],
   );
-
-  useEffect(() => {
-    if (zoom === undefined) return;
-    const z = Math.max(0, zoom - 12);
-    getWaysConditions(type, z, (data: WaysConditions) => {
-      console.log(data);
-      setWays(data);
-    });
-  }, [zoom]);
 
   return (
     <>
