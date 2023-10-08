@@ -16,6 +16,7 @@ import { getConditionsWay } from '../queries/conditions';
 const RoadConditions = () => {
   const [wayData, setWayData] =
     useState<ChartData<'scatter', number[], number>>();
+  const [triggerUpdate, setTriggerUpdate] = useState<number>(0);
 
   console.log(wayData);
 
@@ -60,9 +61,12 @@ const RoadConditions = () => {
         sizes={[45, 55]}
         minSize={150}
         snapOffset={10}
+        onDragEnd={() => {
+          setTriggerUpdate((prev) => prev + 1);
+        }}
         // dragInterval={50}
       >
-        <ConditionsMap />
+        <ConditionsMap triggerUpdate={triggerUpdate} />
         <ConditionsGraph data={wayData} />
       </Split>
     </GraphProvider>

@@ -16,6 +16,7 @@ const ForceMapUpdate: React.FC<Props> = ({ triggerUpdate, position }) => {
   const map = useMap();
 
   useEffect(() => {
+    console.log('hello');
     map.invalidateSize();
   }, [triggerUpdate]);
 
