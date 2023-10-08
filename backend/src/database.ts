@@ -2,8 +2,6 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 const {
-  DB_USER_POSTGIS,
-  DB_PWD_POSTGIS,
   DB_LIRAMAP_HOST,
   DB_LIRAMAP_PORT,
   DB_LIRAMAP_NAME,
@@ -38,18 +36,6 @@ const BASE_CONFIG = {
     debug(msg: any) {
       console.log('debug', msg);
     },
-  },
-};
-
-export const POSTGIS_DB_CONFIG = {
-  ...BASE_CONFIG,
-  connection: {
-    host: 'liradb.postgres.database.azure.com',
-    port: 5432,
-    user: DB_USER_POSTGIS,
-    password: DB_PWD_POSTGIS,
-    database: 'postgis',
-    ssl: true,
   },
 };
 

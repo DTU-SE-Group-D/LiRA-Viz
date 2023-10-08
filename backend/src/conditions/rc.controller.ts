@@ -1,19 +1,11 @@
 import { Controller, Get, Query } from '@nestjs/common';
 
-import { Condition, WaysConditions } from 'src/models';
+import { Condition } from 'src/models';
 import { RCService } from './rc.service';
 
 @Controller('conditions')
 export class RCController {
   constructor(private readonly service: RCService) {}
-
-  @Get('ways')
-  getWaysConditions(
-    @Query() query: { type: string; zoom: string },
-  ): Promise<WaysConditions> {
-    const { type, zoom } = query;
-    return this.service.getWaysConditions(type, zoom);
-  }
 
   @Get('way')
   getWayConditions(@Query() query: { dbId: string }): Promise<Condition[]> {

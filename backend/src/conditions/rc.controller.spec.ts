@@ -5,7 +5,7 @@ import { RCService } from './rc.service';
 
 import { KnexModule } from 'nestjs-knex';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { DB_LIRAMAP_CONFIG, POSTGIS_DB_CONFIG } from '../database';
+import { DB_LIRAMAP_CONFIG } from '../database';
 
 const database = (config: any, name: string) => {
   return KnexModule.forRootAsync(
@@ -23,7 +23,6 @@ describe('Road Condition Controller', () => {
     const app: TestingModule = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot(),
-        database(POSTGIS_DB_CONFIG, 'postgis'),
         database(DB_LIRAMAP_CONFIG, 'lira-map'),
       ],
       controllers: [RCController],
