@@ -1,52 +1,18 @@
 import { Injectable } from '@nestjs/common';
 
 import { InjectConnection, Knex } from 'nestjs-knex';
-import { Condition, LatLngDist, WayId, WaysConditions } from 'src/models';
-import groupBy from '../util';
-import { Ways, ZoomConditions, Conditions2, Conditions } from '../tables';
+import { Condition } from 'src/models';
+import { Conditions2, Conditions } from '../tables';
 
 import knexPostgis = require('knex-postgis');
 
 @Injectable()
 export class RCService {
-  constructor(
-    @InjectConnection('postgis') private readonly knex: Knex,
-    @InjectConnection('lira-map') private readonly knex_liramap: Knex,
-  ) {}
-
-  async getWays(
-    wayIds: string[],
-  ): Promise<[{ [key: WayId]: LatLngDist[] }, { [key: WayId]: number }]> {
-    const ways = await Ways(this.knex)
-      .select(
-        'id as way_id',
-        this.knex.raw(
-          "ST_AsGeoJSON((ST_DumpPoints(geom)).geom)::json->'coordinates' as pos",
-        ),
-        this.knex.raw(
-          'ST_LineLocatePoint(geom, (ST_DumpPoints(geom)).geom) as way_dist',
-        ),
-        this.knex.raw('ST_Length(geom::geography) as length'),
-      )
-      .whereIn('id', wayIds)
-      .orderBy(this.knex.raw('id::integer') as any);
-
-    return [
-      groupBy<any, LatLngDist>(ways, 'way_id', (cur: any) => ({
-        lat: cur.pos[1],
-        lng: cur.pos[0],
-        way_dist: cur.way_dist,
-      })),
-      ways.reduce((acc, cur) => {
-        acc[cur.way_id] = cur.length;
-        return acc;
-      }, {}),
-    ];
-  }
+  constructor(@InjectConnection('lira-map') private readonly liramap: Knex) {}
 
   async getWayRoadConditions(dbId: string): Promise<Condition[]> {
     return (
-      Conditions(this.knex_liramap)
+      Conditions(this.liramap)
         .select(
           'cond1.value as KPI',
           'cond2.value as DI',
@@ -60,48 +26,10 @@ export class RCService {
         )
         .where('cond1.type', 'KPI')
         .where('cond2.type', 'DI')
-        .where(this.knex_liramap.raw('cond1.fk_way_id = cond2.fk_way_id'))
+        .where(this.liramap.raw('cond1.fk_way_id = cond2.fk_way_id'))
         // .where('cond1.distance01', '<>', 0)
         .where('cond1.fk_way_id', dbId)
         .orderBy('cond1.distance01')
-    );
-  }
-
-  async getZoomConditions(
-    type: string,
-    zoom: string,
-  ): Promise<{ [key: WayId]: Condition[] }> {
-    const res = await ZoomConditions(this.knex)
-      .select('way_id', 'way_dist', 'value')
-      .where({ type: type, zoom: parseInt(zoom, 10) })
-      .orderBy('way_dist');
-    return groupBy(res, 'way_id', ({ way_dist, value }) => ({
-      way_dist,
-      value,
-    }));
-  }
-
-  async getWaysConditions(type: string, zoom: string): Promise<WaysConditions> {
-    const zoomConditions = await this.getZoomConditions(type, zoom);
-    const wayIds = Object.keys(zoomConditions);
-    const [ways, way_lengths] = await this.getWays(wayIds);
-
-    return wayIds.reduce(
-      (acc, way_id) => {
-        {
-          acc.way_ids.push(way_id);
-          acc.way_lengths.push(way_lengths[way_id]);
-          acc.geometry.push(ways[way_id]);
-          acc.conditions.push(zoomConditions[way_id]);
-        }
-        return acc;
-      },
-      {
-        way_ids: [],
-        way_lengths: [],
-        geometry: [],
-        conditions: [],
-      } as WaysConditions,
     );
   }
 
@@ -115,7 +43,7 @@ export class RCService {
     valid_after: string,
     computed_after: string,
   ) {
-    const db = this.knex_liramap;
+    const db = this.liramap;
     const st = knexPostgis(db);
 
     let res;

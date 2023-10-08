@@ -26,7 +26,6 @@ Chart.register(
   Tooltip,
   Legend,
 );
-//const colorCode = '#1478BD';
 
 const options = (): ChartOptions<'scatter'> => ({
   responsive: true,
