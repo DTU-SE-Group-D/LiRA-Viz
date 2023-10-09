@@ -5,11 +5,13 @@ import { Layer, PathOptions } from 'leaflet';
 import { Feature, FeatureCollection } from 'geojson';
 
 import Search from '../Map/Search';
+import MonthFilter from '../Map/MonthFilter';
 import MapWrapper from '../Map/MapWrapper';
 
 import '../../css/navbar.css';
 import '../../css/search.css';
 import '../../css/slider.css';
+import 'react-datepicker/dist/react-datepicker.css';
 
 import { getConditions } from '../../queries/fetchConditions';
 import { IRoad } from '../../models/path';
@@ -54,44 +56,6 @@ const lessOrEqualThan = (
   } else {
     return yearMonth1.month <= yearMonth2.month;
   }
-};
-
-const noMonth = (dateRange: DateRange): number => {
-  if (dateRange.start === undefined || dateRange.end === undefined) {
-    return NaN;
-  } else {
-    if (!lessOrEqualThan(dateRange.start, dateRange.end)) {
-      return NaN;
-    } else {
-      return (
-        (dateRange.end.year - dateRange.start.year) * 12 +
-        dateRange.end.month -
-        dateRange.start.month
-      );
-    }
-  }
-};
-
-const noToYearMonth = (
-  no: number,
-  dateRange: DateRange,
-): YearMonth | undefined => {
-  if (dateRange.start !== undefined) {
-    const month = dateRange.start.month + no;
-    const normalizedMonth = ((month - 1) % 12) + 1;
-    const years = Math.floor((month - 1) / 12);
-    return { year: dateRange.start.year + years, month: normalizedMonth };
-  }
-  return undefined;
-};
-
-const yearMonthtoText = (yearMonth: YearMonth | undefined): string => {
-  if (yearMonth === undefined) {
-    return '??/??';
-  }
-  return (
-    yearMonth.month.toString() + '/' + yearMonth.year.toString().substring(2)
-  );
 };
 
 const getTypeColor = (type: string): string => {
@@ -205,18 +169,28 @@ const ConditionsMap = (props: any) => {
 
   const [mode, setMode] = useState<string>('ALL');
 
+  const newSelectedRange: DateRange = {};
+
   const inputChange = ({ target }: any) => {
     setMode(target.value);
   };
 
-  const rangeChange = (values: number[]) => {
-    if (values.length === 2) {
-      const newSelectedRange: DateRange = {
-        start: noToYearMonth(values[0], rangeAll),
-        end: noToYearMonth(values[1], rangeAll),
-      };
-      setRangeSelected(newSelectedRange);
+  function dateChange(date: any) {
+    const YearMonth: YearMonth = {
+      year: date.getFullYear(),
+      month: date.getMonth() + 1, // +1 why
+    };
+
+    return YearMonth;
+  }
+
+  const rangeChange = (d: YearMonth, start: boolean) => {
+    if (start) {
+      newSelectedRange.start = d;
+    } else {
+      newSelectedRange.end = d;
     }
+    setRangeSelected(newSelectedRange);
   };
 
   useEffect(() => {
@@ -434,6 +408,16 @@ const ConditionsMap = (props: any) => {
               </option>
             ))}
           </select>
+        </div>
+        <div className="nav-container">
+          <MonthFilter
+            onStartChange={(date: any) => {
+              rangeChange(dateChange(date), true);
+            }}
+            onEndChange={(date: any) => {
+              rangeChange(dateChange(date), false);
+            }}
+          />
         </div>
       </div>
       <div style={{ height: '85%' }}>
