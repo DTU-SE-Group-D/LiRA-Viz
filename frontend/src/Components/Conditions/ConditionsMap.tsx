@@ -420,7 +420,7 @@ const ConditionsMap = (props: any) => {
           />
         </div>
       </div>
-      <div style={{ height: '85%' }}>
+      <div style={{ height: '100%' }}>
         <MapWrapper>
           <Roads roads={roads} />
           {dataAll !== undefined && (
