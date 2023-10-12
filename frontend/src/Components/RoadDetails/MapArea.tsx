@@ -21,14 +21,20 @@ const MapArea: React.FC<Props> = ({ triggerUpdate }) => {
   }, []);
 
   return (
-    <div className="map-area">
-      <div className="map_area" style={{ height: '100%' }}>
+    <div
+      className="map-area"
+      style={{ display: 'flex', flexDirection: 'column' }}
+    >
+      <div className="map_area" style={{ flex: 1, overflow: 'hidden' }}>
         <MapWrapper>
           <Roads roads={roads} />
           <ForceMapUpdate triggerUpdate={triggerUpdate} />
         </MapWrapper>
       </div>
-      <div className="imageGallery_container">
+      <div
+        className="imageGallery_container"
+        style={{ height: '95px', overflow: 'hidden' }}
+      >
         <ImageGallery /> {/* Use the imageGallery component */}
       </div>
     </div>

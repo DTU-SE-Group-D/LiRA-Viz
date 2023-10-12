@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 interface Image {
   id: number;
@@ -70,18 +70,20 @@ const images: Image[] = [
 
 const ImageGallery: React.FC = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
+  const galleryRef = useRef<HTMLDivElement>(null);
 
   const openImageInNewTab = (imageUrl: string) => {
     window.open(imageUrl, '_blank');
   };
 
   const handleScroll = (scrollOffset: number) => {
-    const newScrollPosition = scrollPosition + scrollOffset;
+    if (!galleryRef.current) return;
 
-    // Calculate the maximum scroll limit based on the total image width
-    const maxScrollLimit = (images.length - 11.4) * 124; // 120 is the width of each image
+    const currentScroll = galleryRef.current.scrollLeft;
+    const maxScrollLimit =
+      galleryRef.current.scrollWidth - galleryRef.current.clientWidth;
 
-    // Ensure the scroll stays within bounds
+    const newScrollPosition = currentScroll + scrollOffset;
     const boundedScrollPosition = Math.max(
       0,
       Math.min(newScrollPosition, maxScrollLimit),
@@ -90,41 +92,43 @@ const ImageGallery: React.FC = () => {
     setScrollPosition(boundedScrollPosition);
   };
 
+  const scrollLeft = () => {
+    handleScroll(-600);
+  };
+
+  const scrollRight = () => {
+    handleScroll(600);
+  };
+
+  useEffect(() => {
+    if (galleryRef.current) {
+      galleryRef.current.scrollLeft = scrollPosition;
+    }
+  }, [scrollPosition]);
+
   return (
     <div className="image-gallery-container">
-      <div className="image-gallery-page">
-        <div
-          className="image-container"
-          style={{ transform: `translateX(-${scrollPosition}px)` }}
-        >
-          {images.map((image) => (
-            <img
-              key={image.id}
-              src={image.url}
-              alt={`Image ${image.id}`}
-              onClick={() => openImageInNewTab(image.url)}
-              className="image-thumbnail"
-            />
-          ))}
-        </div>
-      </div>
-      <button
-        className={`arrow-button left-arrow ${
-          scrollPosition === 0 ? 'disabled' : ''
-        }`}
-        onClick={() => handleScroll(-120)}
-        disabled={scrollPosition === 0}
-      >
-        &#9658;
+      <button className="arrow-button left-arrow" onClick={scrollLeft}>
+        &lt;
       </button>
-      <button
-        className={`arrow-button right-arrow ${
-          scrollPosition === (images.length - 1) * 124 ? 'disabled' : ''
-        }`}
-        onClick={() => handleScroll(120)}
-        disabled={scrollPosition === (images.length - 1) * 124}
+      <div
+        className="image-gallery-page"
+        ref={galleryRef}
+        style={{ justifyContent: images.length <= 9 ? 'center' : 'flex-start' }}
       >
-        &#9658;
+        {images.map((image) => (
+          <div className="image-container" key={image.id}>
+            <img
+              className="image-thumbnail"
+              src={image.url}
+              alt="Gallery Thumbnail"
+              onClick={() => openImageInNewTab(image.url)}
+            />
+          </div>
+        ))}
+      </div>
+      <button className="arrow-button right-arrow" onClick={scrollRight}>
+        &gt;
       </button>
     </div>
   );

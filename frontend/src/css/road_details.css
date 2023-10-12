@@ -1,3 +1,4 @@
+/* prettier-ignore-file */
 /* src/styles.css */
 
 /* Define styles for the top bar */
@@ -17,6 +18,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  overflow-x: hidden;
 }
 
 /* Define styles for the plot area */
@@ -162,11 +164,16 @@ input[type='checkbox'] {
 
 .imageGallery_container {
   background-color: #999;
-  height: 14vh;
   margin-top: auto;
   overflow: auto;
   white-space: nowrap;
   overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .image-gallery-container {
@@ -174,18 +181,38 @@ input[type='checkbox'] {
   flex-direction: column; /* Stack children vertically */
   justify-content: center; /* Center children vertically */
   position: relative;
+  scroll-behavior: smooth;
 }
 
 .image-gallery-page {
   display: flex;
+  transition: scroll 0.5s;
   overflow-x: auto; /* Enable horizontal scrolling */
   max-width: 100%; /* Set a maximum width */
+  white-space: nowrap;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  /* For Firefox */
+  -ms-overflow-style: none;
+  /* For Internet Explorer and Edge */
+  overflow-y: hidden; /*This gets rid of that annoying scroll rect on the right side of the gallery*/
+}
+
+.image-gallery-page::-webkit-scrollbar {
+  display: none;
+}
+
+.image-gallery-page.center-images .image-container {
+  justify-content: center;
+  display: flex;
+  width: 100%;
 }
 
 .image-container {
   display: flex;
   align-items: center;
   margin-left: 0.5vh;
+  transition: transform 0.3s ease-out;
 }
 
 .image-thumbnail {
@@ -194,8 +221,8 @@ input[type='checkbox'] {
   object-fit: cover; /* Preserve aspect ratio and cover the container */
   cursor: pointer;
   transition: transform 0.3s ease-in-out;
-  margin-right: 4px;
-  margin-top: 0.5vh;
+  margin-right: 2px;
+  margin-top: -11px;
   text-align: center;
 }
 
@@ -212,14 +239,29 @@ input[type='checkbox'] {
   align-items: center;
   justify-content: center;
   font-size: 13px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 1000;
+  top: 15px;
   /* color: #222; */
 }
 
 .left-arrow {
   left: 10px;
-  transform: rotate(180deg);
 }
 
 .right-arrow {
   right: 10px;
+}
+
+.image-gallery-container:hover .arrow-button {
+  opacity: 1;
+}
+
+.arrow-button:hover {
+  background-color: #f7f7f7; /* Slightly darker background on hover */
+}
+
+.image-gallery-page.center-images {
+  justify-content: center;
 }
