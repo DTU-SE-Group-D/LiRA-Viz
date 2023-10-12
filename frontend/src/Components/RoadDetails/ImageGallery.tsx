@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
 interface Image {
   id: number;
@@ -70,28 +70,52 @@ const images: Image[] = [
 
 const ImageGallery: React.FC = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [showArrows, setShowArrows] = useState(true);
 
   const openImageInNewTab = (imageUrl: string) => {
     window.open(imageUrl, '_blank');
   };
 
   const handleScroll = (scrollOffset: number) => {
-    const newScrollPosition = scrollPosition + scrollOffset;
+    if (!containerRef.current) return;
 
-    // Calculate the maximum scroll limit based on the total image width
-    const maxScrollLimit = (images.length - 11.4) * 124; // 120 is the width of each image
+    const containerWidth = containerRef.current.clientWidth;
+    const totalImageWidth = images.length * 124; // 120 for the image width and 4 for margin
 
-    // Ensure the scroll stays within bounds
-    const boundedScrollPosition = Math.max(
-      0,
-      Math.min(newScrollPosition, maxScrollLimit),
-    );
+    const centerOffset = (containerWidth - totalImageWidth) / 2;
 
-    setScrollPosition(boundedScrollPosition);
+    let newScrollPosition = scrollPosition + scrollOffset;
+
+    // If scrolling to the left, don't go past half the container's width
+    if (scrollOffset < 0) {
+      newScrollPosition = Math.max(newScrollPosition, centerOffset);
+    }
+    // If scrolling to the right, don't go past the width of the images minus half the container's width
+    else {
+      newScrollPosition = Math.min(
+        newScrollPosition,
+        totalImageWidth - containerWidth + centerOffset,
+      );
+    }
+
+    setScrollPosition(newScrollPosition);
   };
 
+  useEffect(() => {
+    if (containerRef.current) {
+      const containerWidth = containerRef.current.clientWidth;
+      const totalImageWidth = images.length * 124;
+      if (totalImageWidth <= containerWidth) {
+        setShowArrows(false);
+      } else {
+        setShowArrows(true);
+      }
+    }
+  }, []);
+
   return (
-    <div className="image-gallery-container">
+    <div className="image-gallery-container" ref={containerRef}>
       <div className="image-gallery-page">
         <div
           className="image-container"
@@ -108,24 +132,28 @@ const ImageGallery: React.FC = () => {
           ))}
         </div>
       </div>
-      <button
-        className={`arrow-button left-arrow ${
-          scrollPosition === 0 ? 'disabled' : ''
-        }`}
-        onClick={() => handleScroll(-120)}
-        disabled={scrollPosition === 0}
-      >
-        &#9658;
-      </button>
-      <button
-        className={`arrow-button right-arrow ${
-          scrollPosition === (images.length - 1) * 124 ? 'disabled' : ''
-        }`}
-        onClick={() => handleScroll(120)}
-        disabled={scrollPosition === (images.length - 1) * 124}
-      >
-        &#9658;
-      </button>
+      {showArrows && (
+        <>
+          <button
+            className={`arrow-button left-arrow ${
+              scrollPosition === 0 ? 'disabled' : ''
+            }`}
+            onClick={() => handleScroll(-120)}
+            disabled={scrollPosition === 0}
+          >
+            &#9658;
+          </button>
+          <button
+            className={`arrow-button right-arrow ${
+              scrollPosition === (images.length - 1) * 124 ? 'disabled' : ''
+            }`}
+            onClick={() => handleScroll(120)}
+            disabled={scrollPosition === (images.length - 1) * 124}
+          >
+            &#9658;
+          </button>
+        </>
+      )}
     </div>
   );
 };

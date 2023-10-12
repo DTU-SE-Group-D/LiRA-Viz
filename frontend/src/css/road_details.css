@@ -1,6 +1,3 @@
-/* src/styles.css */
-
-/* Define styles for the top bar */
 .top-bar {
   background-color: #333; /* Example color for the top bar */
   height: 50px;
@@ -170,22 +167,32 @@ input[type='checkbox'] {
 }
 
 .image-gallery-container {
-  display: flex; /* Add display: flex */
-  flex-direction: column; /* Stack children vertically */
-  justify-content: center; /* Center children vertically */
+  display: flex;
+  justify-content: center; 
+  align-items: center;
   position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding-left: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 .image-gallery-page {
   display: flex;
-  overflow-x: auto; /* Enable horizontal scrolling */
-  max-width: 100%; /* Set a maximum width */
+  justify-content: center;
+  align-items: center;
+  overflow-x: scroll;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 .image-container {
   display: flex;
-  align-items: center;
-  margin-left: 0.5vh;
+  justify-content: center; /* This will center the images */
+  flex-wrap: nowrap; /* This will prevent images from wrapping to the next line */
+  transition: transform 0.3s ease;
+  overflow-y: hidden; /*Added this to stop vertical scroll rect to appear when hovering over images - SL*/
 }
 
 .image-thumbnail {
@@ -194,19 +201,24 @@ input[type='checkbox'] {
   object-fit: cover; /* Preserve aspect ratio and cover the container */
   cursor: pointer;
   transition: transform 0.3s ease-in-out;
-  margin-right: 4px;
+  margin-right: 2px;
   margin-top: 0.5vh;
   text-align: center;
+  margin-left: 2px;
+  flex-shrink: 0;
+  display: inline-block;
 }
 
 .arrow-button {
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.8);
   border: none;
   height: 50px;
   width: 50px;
+  top: 30%;
   border-radius: 50%;
   position: absolute;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -216,10 +228,21 @@ input[type='checkbox'] {
 }
 
 .left-arrow {
-  left: 10px;
+  left: 50px;
   transform: rotate(180deg);
+  transform: translateY(-50%) rotate(180deg);
 }
 
 .right-arrow {
-  right: 10px;
+  right: 50px;
+  transform: translateY(-50%);
+}
+
+.arrow-button.disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.image-thumbnail:first-child {
+  margin-left: 0;
 }
