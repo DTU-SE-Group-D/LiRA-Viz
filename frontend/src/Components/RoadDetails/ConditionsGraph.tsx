@@ -15,6 +15,7 @@ import {
   Title,
   Tooltip,
 } from 'chart.js';
+import 'chart.js/auto';
 import { Scatter } from 'react-chartjs-2';
 
 Chart.register(

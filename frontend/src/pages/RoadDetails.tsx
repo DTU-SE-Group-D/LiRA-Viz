@@ -23,8 +23,8 @@ const RoadDetails = () => {
         labels: wc.map((p) => p.way_dist * 100),
         datasets: [
           {
-            //@ts-ignore
-            type: 'line' as const,
+            type: 'scatter' as const,
+            showLine: true,
             label: 'KPI',
             borderColor: 'rgb(255, 99, 132)',
             borderWidth: 2,
@@ -34,8 +34,8 @@ const RoadDetails = () => {
             yAxisID: 'KPI',
           },
           {
-            //@ts-ignore
-            type: 'line' as const,
+            type: 'scatter' as const,
+            showLine: true,
             label: 'DI',
             borderColor: 'rgb(120, 245, 23)',
             borderWidth: 2,
