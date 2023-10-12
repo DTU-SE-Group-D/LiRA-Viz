@@ -17,6 +17,8 @@ import { getConditions } from '../../queries/fetchConditions';
 import { IRoad } from '../../models/path';
 import { getRoads } from '../../queries/road';
 import Roads from '../Map/Roads';
+import { LatLng } from '../../models/models';
+import ForceMapUpdate from '../Map/ForceMapUpdate';
 
 const ALL = 'ALL';
 const KPI = 'KPI';
@@ -385,6 +387,8 @@ const ConditionsMap = (props: any) => {
     getRoads(setRoads);
   }, []);
 
+  const [moveToPosition, setMoveToPosition] = useState<LatLng>();
+
   return (
     <div style={{ height: '100%' }}>
       <div className="nav-wrapper">
@@ -392,6 +396,14 @@ const ConditionsMap = (props: any) => {
           <Search
             onPlaceSelect={(value: any) => {
               console.log(value);
+              const coordinates = value?.geometry?.coordinates;
+              if (coordinates) {
+                const position = {
+                  lat: coordinates[Math.floor(coordinates.length / 2)][1],
+                  lng: coordinates[Math.floor(coordinates.length / 2)][0],
+                };
+                setMoveToPosition(position);
+              }
             }}
           />
         </div>
@@ -423,6 +435,7 @@ const ConditionsMap = (props: any) => {
       <div style={{ height: '100%' }}>
         <MapWrapper>
           <Roads roads={roads} />
+          <ForceMapUpdate position={moveToPosition} />
           {dataAll !== undefined && (
             <GeoJSON
               ref={geoJsonRef}

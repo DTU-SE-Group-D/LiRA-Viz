@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 
 interface Props {
   /** A modification of this value is used to trigger an update of the map */
-  triggerUpdate: number;
+  triggerUpdate?: number;
   /** The coordinates of the map center*/
   position?: LatLng;
 }
