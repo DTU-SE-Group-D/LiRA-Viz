@@ -164,6 +164,9 @@ input[type='checkbox'] {
   overflow: auto;
   white-space: nowrap;
   overflow: hidden;
+  overflow-x: auto; 
+  overflow-y: hidden;
+  scroll-behavior: smooth;
 }
 
 .image-gallery-container {
@@ -171,28 +174,24 @@ input[type='checkbox'] {
   justify-content: center; 
   align-items: center;
   position: relative;
-  overflow: hidden;
-  width: 100%;
-  padding-left: 15px;
-  padding-left: 15px;
-  padding-right: 15px;
+  scroll-behavior: smooth;
 }
 
 .image-gallery-page {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow-x: scroll;
-  padding-left: 15px;
-  padding-right: 15px;
+  transition: scroll .5s;
+  overflow-x: auto; /* Enable horizontal scrolling */
+  max-width: 100%; /* Set a maximum width */
+  white-space: nowrap;
+  scroll-behavior: smooth;
+  overflow-y: hidden; /*This gets rid of that annoying scroll rect on the right side of the gallery*/
 }
 
 .image-container {
   display: flex;
-  justify-content: center; /* This will center the images */
-  flex-wrap: nowrap; /* This will prevent images from wrapping to the next line */
-  transition: transform 0.3s ease;
-  overflow-y: hidden; /*Added this to stop vertical scroll rect to appear when hovering over images - SL*/
+  align-items: center;
+  margin-left: 0.5vh;
+  transition: transform 0.3s ease-out;
 }
 
 .image-thumbnail {
@@ -201,8 +200,8 @@ input[type='checkbox'] {
   object-fit: cover; /* Preserve aspect ratio and cover the container */
   cursor: pointer;
   transition: transform 0.3s ease-in-out;
-  margin-right: 2px;
-  margin-top: 0.5vh;
+  margin-right: 4px;
+  margin-top: -30px;
   text-align: center;
   margin-left: 2px;
   flex-shrink: 0;
@@ -224,25 +223,31 @@ input[type='checkbox'] {
   align-items: center;
   justify-content: center;
   font-size: 13px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 1000;
+  top: 15px;
   /* color: #222; */
 }
 
 .left-arrow {
-  left: 50px;
-  transform: rotate(180deg);
-  transform: translateY(-50%) rotate(180deg);
+  left: 10px;
 }
 
 .right-arrow {
-  right: 50px;
-  transform: translateY(-50%);
+  right: 10px;
 }
 
-.arrow-button.disabled {
-  opacity: 0;
-  pointer-events: none;
+.image-gallery-container:hover .arrow-button {
+  opacity: 1;
 }
 
-.image-thumbnail:first-child {
-  margin-left: 0;
+.arrow-button:hover {
+  background-color: #f7f7f7;  /* Slightly darker background on hover */
 }
+
+.image-gallery-page.center-images {
+  justify-content: center;
+}
+
+

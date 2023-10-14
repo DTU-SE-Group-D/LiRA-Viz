@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 interface Image {
   id: number;
@@ -70,53 +70,60 @@ const images: Image[] = [
 
 const ImageGallery: React.FC = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [showArrows, setShowArrows] = useState(true);
+  const [centerImages, setCenterImages] = useState(false);
+  const galleryRef = useRef<HTMLDivElement>(null);
 
   const openImageInNewTab = (imageUrl: string) => {
     window.open(imageUrl, '_blank');
   };
 
   const handleScroll = (scrollOffset: number) => {
-    if (!containerRef.current) return;
+    const newScrollPosition = scrollPosition + scrollOffset;
+    const maxScrollLimit = (images.length - 11.4) * 120;
 
-    const containerWidth = containerRef.current.clientWidth;
-    const totalImageWidth = images.length * 124; // 120 for the image width and 4 for margin
+    const boundedScrollPosition = Math.max(
+      0,
+      Math.min(newScrollPosition, maxScrollLimit),
+    );
 
-    const centerOffset = (containerWidth - totalImageWidth) / 2;
-
-    let newScrollPosition = scrollPosition + scrollOffset;
-
-    // If scrolling to the left, don't go past half the container's width
-    if (scrollOffset < 0) {
-      newScrollPosition = Math.max(newScrollPosition, centerOffset);
-    }
-    // If scrolling to the right, don't go past the width of the images minus half the container's width
-    else {
-      newScrollPosition = Math.min(
-        newScrollPosition,
-        totalImageWidth - containerWidth + centerOffset,
-      );
-    }
-
-    setScrollPosition(newScrollPosition);
+    setScrollPosition(boundedScrollPosition);
   };
 
   useEffect(() => {
-    if (containerRef.current) {
-      const containerWidth = containerRef.current.clientWidth;
-      const totalImageWidth = images.length * 124;
-      if (totalImageWidth <= containerWidth) {
-        setShowArrows(false);
+    const checkImagesWidth = () => {
+      const galleryWidth = galleryRef.current?.offsetWidth || 0;
+      let totalWidth = 0;
+
+      const imageElements =
+        galleryRef.current?.querySelectorAll('.image-thumbnail');
+      imageElements?.forEach((imgElement) => {
+        // Telling TypeScript that imgElement is an HTMLElement
+        const img = imgElement as HTMLElement;
+        totalWidth += img.offsetWidth;
+      });
+
+      if (totalWidth <= galleryWidth) {
+        setCenterImages(true);
       } else {
-        setShowArrows(true);
+        setCenterImages(false);
       }
-    }
-  }, []);
+    };
+
+    checkImagesWidth();
+
+    window.addEventListener('resize', checkImagesWidth);
+
+    return () => {
+      window.removeEventListener('resize', checkImagesWidth);
+    };
+  }, [images]);
 
   return (
-    <div className="image-gallery-container" ref={containerRef}>
-      <div className="image-gallery-page">
+    <div className="image-gallery-container">
+      <div
+        className={`image-gallery-page ${centerImages ? 'center-images' : ''}`}
+        ref={galleryRef}
+      >
         <div
           className="image-container"
           style={{ transform: `translateX(-${scrollPosition}px)` }}
@@ -132,28 +139,24 @@ const ImageGallery: React.FC = () => {
           ))}
         </div>
       </div>
-      {showArrows && (
-        <>
-          <button
-            className={`arrow-button left-arrow ${
-              scrollPosition === 0 ? 'disabled' : ''
-            }`}
-            onClick={() => handleScroll(-120)}
-            disabled={scrollPosition === 0}
-          >
-            &#9658;
-          </button>
-          <button
-            className={`arrow-button right-arrow ${
-              scrollPosition === (images.length - 1) * 124 ? 'disabled' : ''
-            }`}
-            onClick={() => handleScroll(120)}
-            disabled={scrollPosition === (images.length - 1) * 124}
-          >
-            &#9658;
-          </button>
-        </>
-      )}
+      <button
+        className={`arrow-button left-arrow ${
+          scrollPosition === 0 ? 'disabled' : ''
+        }`}
+        onClick={() => handleScroll(-120)}
+        disabled={scrollPosition === 0}
+      >
+        &#9668;
+      </button>
+      <button
+        className={`arrow-button right-arrow ${
+          scrollPosition === (images.length - 11.4) * 120 ? 'disabled' : ''
+        }`}
+        onClick={() => handleScroll(120)}
+        disabled={scrollPosition === (images.length - 11.4) * 120}
+      >
+        &#9658;
+      </button>
     </div>
   );
 };
