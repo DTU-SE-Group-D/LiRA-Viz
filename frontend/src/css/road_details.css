@@ -1,3 +1,4 @@
+/* prettier-ignore-file */
 /* src/styles.css */
 
 /* Define styles for the top bar */
@@ -167,7 +168,7 @@ input[type='checkbox'] {
   overflow: auto;
   white-space: nowrap;
   overflow: hidden;
-  overflow-x: auto; 
+  overflow-x: auto;
   overflow-y: hidden;
   scroll-behavior: smooth;
 }
@@ -182,7 +183,7 @@ input[type='checkbox'] {
 
 .image-gallery-page {
   display: flex;
-  transition: scroll .5s;
+  transition: scroll 0.5s;
   overflow-x: auto; /* Enable horizontal scrolling */
   max-width: 100%; /* Set a maximum width */
   white-space: nowrap;
@@ -241,11 +242,9 @@ input[type='checkbox'] {
 }
 
 .arrow-button:hover {
-  background-color: #f7f7f7;  /* Slightly darker background on hover */
+  background-color: #f7f7f7; /* Slightly darker background on hover */
 }
 
 .image-gallery-page.center-images {
   justify-content: center;
 }
-
-
