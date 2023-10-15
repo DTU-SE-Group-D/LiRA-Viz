@@ -1,3 +1,6 @@
+/* src/styles.css */
+
+/* Define styles for the top bar */
 .top-bar {
   background-color: #333; /* Example color for the top bar */
   height: 50px;
@@ -170,9 +173,9 @@ input[type='checkbox'] {
 }
 
 .image-gallery-container {
-  display: flex;
-  justify-content: center; 
-  align-items: center;
+  display: flex; /* Add display: flex */
+  flex-direction: column; /* Stack children vertically */
+  justify-content: center; /* Center children vertically */
   position: relative;
   scroll-behavior: smooth;
 }
@@ -203,21 +206,16 @@ input[type='checkbox'] {
   margin-right: 4px;
   margin-top: -30px;
   text-align: center;
-  margin-left: 2px;
-  flex-shrink: 0;
-  display: inline-block;
 }
 
 .arrow-button {
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: #fff;
   border: none;
   height: 50px;
   width: 50px;
-  top: 30%;
   border-radius: 50%;
   position: absolute;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
-  box-sizing: border-box;
   cursor: pointer;
   display: flex;
   align-items: center;
