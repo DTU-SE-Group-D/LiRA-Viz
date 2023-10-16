@@ -17,6 +17,7 @@ import {
 } from 'chart.js';
 import 'chart.js/auto';
 import { Scatter } from 'react-chartjs-2';
+import zoomPlugin from 'chartjs-plugin-zoom';
 
 Chart.register(
   CategoryScale,
@@ -26,6 +27,7 @@ Chart.register(
   Title,
   Tooltip,
   Legend,
+  zoomPlugin,
 );
 
 const options = (): ChartOptions<'scatter'> => ({
@@ -35,6 +37,31 @@ const options = (): ChartOptions<'scatter'> => ({
     legend: {
       position: 'top' as const,
       labels: { color: 'white' },
+    },
+    zoom: {
+      pan: {
+        enabled: true,
+        mode: 'x',
+        //to enable in drag to zoom option
+        // modifierKey: 'ctrl',
+      },
+      limits: {
+        x: { min: -5, max: 105, minRange: 25 },
+        y: { min: -5, max: 10 },
+      },
+      zoom: {
+        // drag to zoom option could be a solution
+        // drag: {
+        //   enabled: true,
+        // },
+        pinch: {
+          enabled: true, // Enable pinch zooming
+        },
+        wheel: {
+          enabled: true, // Enable wheel zooming
+        },
+        mode: 'x',
+      },
     },
   },
   scales: {
