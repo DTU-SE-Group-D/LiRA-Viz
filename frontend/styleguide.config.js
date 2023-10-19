@@ -1,8 +1,18 @@
+const webpackConfig = require('react-scripts/config/webpack.config.js');
+
 module.exports = {
-  propsParser: require('react-docgen-typescript').withDefaultConfig({
-    skipChildrenPropWithoutDoc: false,
-  }).parse,
+  title: 'Frontend Components',
+  propsParser: require('react-docgen-typescript').withCustomConfig(
+    `${process.cwd()}/tsconfig.json`,
+    {
+      skipChildrenPropWithoutDoc: false,
+    },
+  ).parse,
   components: ['src/App.tsx', 'src/Components/**/*.{tsx,jsx,js,ts}'],
+  webpackConfig: {
+    ...webpackConfig(process.env.NODE_ENV),
+    cache: false, // DON'T REMOVE THIS!!!!!!
+  },
   ignore: [
     '**/__tests__/**',
     '**/*.test.{js,jsx,ts,tsx}',
