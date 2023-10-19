@@ -1,4 +1,4 @@
-// The TopBar for RoadDetails page
+// The TopBar for Inspect page
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 
