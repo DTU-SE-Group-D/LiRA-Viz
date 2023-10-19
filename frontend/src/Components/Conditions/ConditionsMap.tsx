@@ -1,55 +1,20 @@
-import { useEffect, useRef, useState } from 'react';
-
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { GeoJSON } from 'react-leaflet';
-import { Layer, PathOptions } from 'leaflet';
-import { Feature, FeatureCollection } from 'geojson';
-
-import Search from '../Map/Inputs/Search';
-import MonthFilter from '../Map/Inputs/MonthFilter';
+import { PathOptions } from 'leaflet';
+import { FeatureCollection } from 'geojson';
 
 import MapWrapper from '../Map/MapWrapper';
-import Selector from '../Map/Inputs/Selector';
-
-import '../../css/navbar.css';
-import '../../css/search.css';
-import '../../css/month_filter.css';
-import '../../css/slider.css';
-import '../../css/selector.css';
-import 'react-datepicker/dist/react-datepicker.css';
-
-import { getConditions } from '../../queries/fetchConditions';
-import { IRoad } from '../../models/path';
-import { getRoads } from '../../queries/road';
-import Roads from '../Map/Roads';
-import { LatLng } from '../../models/models';
-import ForceMapUpdate from '../Map/ForceMapUpdate';
-
-const ALL = 'ALL';
-const KPI = 'KPI';
-const DI = 'DI';
-const IRI = 'IRI';
-const IRInew = 'IRI_new';
-const Mu = 'Mu';
-const Enrg = 'E_norm';
-
-const conditionTypes = [
-  ALL,
-  KPI,
+import {
+  DateRange,
   DI,
-  IRI, // IRInew,
-  Mu,
   Enrg,
-];
-
-interface YearMonth {
-  year: number;
-  month: number;
-}
-
-interface DateRange {
-  start?: YearMonth;
-  end?: YearMonth;
-}
+  IRI,
+  IRInew,
+  KPI,
+  Mu,
+  YearMonth,
+} from '../../models/conditions';
+import { getAllConditions } from '../../queries/conditions';
 
 const lessOrEqualThan = (
   yearMonth1: YearMonth,
@@ -68,139 +33,103 @@ const getTypeColor = (type: string): string => {
   switch (type) {
     case KPI:
       return 'red';
-
     case DI:
       return 'green';
-
     case IRI:
     case IRInew:
       return 'yellow';
-
     case Mu:
       return 'cyan';
-
     case Enrg:
       return 'magenta';
-
     default:
       return 'grey';
   }
 };
-const green = '#09BD09'; //"#00FF00"
-const greenyellow = '#02FC02'; // "#BFFF00"
-const yellow = '#FFFF00';
-const orange = '#FFBF00';
-const red = '#FF0000';
+
+/**
+ * Return the color depending on the value
+ * @param value the value
+ * @param g the color is green if value <= g
+ * @param gy otherwise the color is greenyellow if value <= gy
+ * @param y otherwise the color is yellow if value <= y
+ * @param o otherwise the color is orange if value <= o. Otherwise, the color is red
+ * @returns {string} the color
+ */
+const getColorForValue = (
+  value: number,
+  g: number,
+  gy: number,
+  y: number,
+  o: number,
+): string => {
+  return value <= g
+    ? '#09BD09' // green
+    : value <= gy
+    ? '#02FC02' // greenyellow
+    : value <= y
+    ? '#FFFF00' // yellow
+    : value <= o
+    ? '#ff9900' // orange
+    : '#FF0000';
+};
 
 const getConditionColor = (properties: GeoJSON.GeoJsonProperties): string => {
   if (properties !== null) {
     const type = properties.type;
     const value = properties.value;
-    // const motorway = properties.motorway;
 
     if (type !== undefined && type !== 'ALL') {
-      // if (motorway === undefined || !motorway) {
-      // gradient for municpality roads
       switch (type) {
         case KPI:
-          return value <= 4.0
-            ? green
-            : value <= 6.0
-            ? greenyellow
-            : value <= 7.0
-            ? yellow
-            : value <= 8.0
-            ? orange
-            : red;
+          return getColorForValue(value, 4.0, 6.0, 7.0, 8.0);
         case DI:
-          return value <= 1.2
-            ? green
-            : value <= 1.5
-            ? greenyellow
-            : value <= 2.0
-            ? yellow
-            : value <= 2.5
-            ? orange
-            : red;
+          return getColorForValue(value, 1.2, 1.5, 2.0, 2.5);
         case IRI:
         case IRInew:
-          return value <= 1.5 ? green : value <= 2.5 ? yellow : red;
+          return getColorForValue(value, 1.5, 1.5, 2.5, 2.5);
         case Mu:
-          return value >= 0.8
-            ? green
-            : value >= 0.5
-            ? greenyellow
-            : value >= 0.3
-            ? yellow
-            : value >= 0.2
-            ? orange
-            : red;
+          // The minus are a small trick to be able to use the getColorForValue
+          return getColorForValue(-value, -0.8, -0.5, -0.3, -0.2);
         case Enrg:
-          return value <= 0.05
-            ? green
-            : value <= 0.1
-            ? greenyellow
-            : value <= 0.15
-            ? yellow
-            : value <= 0.25
-            ? orange
-            : red;
+          return getColorForValue(value, 0.05, 0.1, 0.15, 0.25);
       }
-      /* } else {
-                // gradient for motorways
-                switch (type) {
-                    case KPI:
-                        return value <= 2.0 ? green : (value <= 4.5 ? yellow : red)
-                    case DI:
-                        return value <= 1.0 ? green : (value <= 3.0 ? yellow : red)
-                    case IRI:
-                        return value <= 1.0 ? green : (value <= 2.0 ? yellow : red)
-                }
-            } */
     }
   }
   return 'grey';
 };
 
-const ConditionsMap = (props: any) => {
-  const { children } = props;
+interface ConditionsMapProps {
+  /** The children of the component **/
+  children: React.ReactNode;
+  /** The mode of the conditions to show **/
+  mode: string;
+  /** The range of date to use to filter the conditions **/
+  rangeSelected: DateRange;
+}
 
+/**
+ * Component rendering the map with the conditions
+ */
+const ConditionsMap: FC<ConditionsMapProps> = ({
+  children,
+  mode,
+  rangeSelected,
+}) => {
   const geoJsonRef = useRef<any>();
-
+  // All the data, get from the backend
   const [dataAll, setDataAll] = useState<FeatureCollection>();
-
+  // The date range across which the data is
   const [rangeAll, setRangeAll] = useState<DateRange>({});
-
-  const [rangeSelected, setRangeSelected] = useState<DateRange>({});
-
-  const [mode, setMode] = useState<string>('ALL');
-
-  const newSelectedRange: DateRange = {};
-
-  const inputChange = ({ target }: any) => {
-    setMode(target.value);
-  };
-
-  function dateChange(date: any) {
-    const YearMonth: YearMonth = {
-      year: date.getFullYear(),
-      month: date.getMonth() + 1, // +1 why
-    };
-
-    return YearMonth;
-  }
-
-  const rangeChange = (d: YearMonth, start: boolean) => {
-    if (start) {
-      newSelectedRange.start = d;
-    } else {
-      newSelectedRange.end = d;
-    }
-    setRangeSelected(newSelectedRange);
+  // The default data to show in the GeoJSON component
+  const defaultData: FeatureCollection = {
+    type: 'FeatureCollection',
+    features: [],
   };
 
   useEffect(() => {
-    getConditions((data) => {
+    // Load the conditions from the backend
+    getAllConditions((data) => {
       const range: DateRange = {};
       data.features.forEach((f) => {
         if (f.properties !== null && f.properties.valid_time !== undefined) {
@@ -222,245 +151,100 @@ const ConditionsMap = (props: any) => {
           }
         }
       });
-      setRangeAll(range);
       setDataAll(data);
+      setRangeAll(range);
     });
   }, []);
 
+  // Update the data when parameters change
   useEffect(() => {
+    if (dataAll === undefined || dataAll.features === undefined) return;
+    if (geoJsonRef === undefined || geoJsonRef.current === undefined) return;
+
     const setConditions = (data: FeatureCollection) => {
-      if (geoJsonRef !== undefined && geoJsonRef.current !== undefined) {
-        geoJsonRef.current.clearLayers();
-        geoJsonRef.current.addData(data);
-        geoJsonRef.current.setStyle(style);
-      }
+      geoJsonRef.current.clearLayers();
+      geoJsonRef.current.addData(data);
     };
 
-    const style = (
-      feature:
-        | GeoJSON.Feature<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>
-        | undefined,
-    ): PathOptions => {
-      const mapStyle: PathOptions = {
-        weight: 4,
-        opacity: 1,
-        color: 'grey',
-        // fillcolor: 'red',
-        // fillOpacity: 0.7
-      };
-
-      if (
-        feature !== undefined &&
-        feature.properties !== null &&
-        feature.properties.type !== undefined
-      ) {
-        if (mode === 'ALL') {
-          mapStyle.color = getTypeColor(feature.properties.type);
-          mapStyle.opacity = 0.5;
-          switch (feature.properties.type) {
-            case KPI:
-              mapStyle.dashArray = '12 12';
-              break;
-            case DI:
-              mapStyle.dashArray = '20 20';
-              break;
-            case IRI:
-            case IRInew:
-              mapStyle.dashArray = '28 28';
-              break;
-            case Mu:
-              mapStyle.dashArray = '15 15';
-              break;
-            case Enrg:
-              mapStyle.dashArray = '22 22';
-          }
-        } else if (feature.properties.value !== undefined) {
-          mapStyle.color = getConditionColor(feature.properties);
-        }
-      }
-
-      return mapStyle;
+    // filter the data
+    const featureCollection: FeatureCollection = {
+      type: 'FeatureCollection',
+      features: dataAll.features.filter(
+        (f) =>
+          f.properties !== null &&
+          (mode === 'ALL' || f.properties.type === mode) &&
+          (f.properties.valid_yearmonth === undefined ||
+            ((rangeSelected.start === undefined ||
+              lessOrEqualThan(
+                rangeSelected.start,
+                f.properties.valid_yearmonth,
+              )) &&
+              (rangeSelected.end === undefined ||
+                lessOrEqualThan(
+                  f.properties.valid_yearmonth,
+                  rangeSelected.end,
+                )))),
+      ),
     };
-
-    if (mode === 'ALL') {
-      if (dataAll !== undefined) {
-        const featureCollection: FeatureCollection = {
-          type: 'FeatureCollection',
-          features:
-            dataAll.features !== undefined
-              ? dataAll.features.filter(
-                  (f) =>
-                    f.properties !== null &&
-                    (f.properties.valid_yearmonth === undefined ||
-                      ((rangeSelected.start === undefined ||
-                        lessOrEqualThan(
-                          rangeSelected.start,
-                          f.properties.valid_yearmonth,
-                        )) &&
-                        (rangeSelected.end === undefined ||
-                          lessOrEqualThan(
-                            f.properties.valid_yearmonth,
-                            rangeSelected.end,
-                          )))),
-                )
-              : [],
-        };
-        setConditions(featureCollection);
-      }
-    } else {
-      const featureCollection: FeatureCollection = {
-        type: 'FeatureCollection',
-        features:
-          dataAll !== undefined
-            ? dataAll.features !== undefined
-              ? dataAll.features.filter(
-                  (f) =>
-                    f.properties !== null &&
-                    f.properties.type === mode &&
-                    (f.properties.valid_yearmonth === undefined ||
-                      ((rangeSelected.start === undefined ||
-                        lessOrEqualThan(
-                          rangeSelected.start,
-                          f.properties.valid_yearmonth,
-                        )) &&
-                        (rangeSelected.end === undefined ||
-                          lessOrEqualThan(
-                            f.properties.valid_yearmonth,
-                            rangeSelected.end,
-                          )))),
-                )
-              : []
-            : [],
-      };
-      setConditions(featureCollection);
-    }
+    setConditions(featureCollection);
   }, [dataAll, mode, rangeAll, rangeSelected]);
 
-  const onEachFeature = (feature: Feature, layer: Layer) => {
-    if (layer.on !== undefined) {
-      layer.on({
-        // mouseover: ... ,
-        // mouseout: ... ,
-        click: (e) => {
-          console.log(e.target);
-          console.log(feature);
-        },
-      });
-    }
-    if (
-      feature !== undefined &&
-      feature.properties !== null &&
-      feature.properties.type !== undefined &&
-      feature.properties.value !== undefined &&
-      feature.properties.value !== null
-    ) {
-      layer.bindPopup(
-        'Condition type: ' +
-          feature.properties.type +
-          '<br>' +
-          'Value: ' +
-          feature.properties.value.toPrecision(3) +
-          '<br>' +
-          (feature.properties.std !== undefined &&
-          feature.properties.std !== null
-            ? '&sigma;: ' + feature.properties.std.toPrecision(3) + '<br>'
-            : '') +
-          'Valid for ' +
-          feature.properties.valid_time +
-          '<br>' +
-          'Computed on ' +
-          feature.properties.compute_time +
-          '<br>' +
-          (feature.properties.motorway !== undefined &&
-          feature.properties.motorway
-            ? 'Motorway: yes <br>'
-            : '') +
-          'Trip (task id): ' +
-          feature.properties.task_id +
-          '<br>' +
-          'Condition id: ' +
-          feature.properties.id,
-      );
-    }
-  };
-
-  const [roads, setRoads] = useState<IRoad[]>();
-
-  // get the actual roads
-  useEffect(() => {
-    getRoads(setRoads);
-  }, []);
-
-  const [moveToPosition, setMoveToPosition] = useState<LatLng>();
-
   return (
-    <div style={{ height: '100%' }}>
-      <div className="nav-wrapper">
-        <div className="nav-container">
-          <Search
-            onPlaceSelect={(value: any) => {
-              console.log(value);
-              const coordinates = value?.geometry?.coordinates;
-              if (coordinates) {
-                const position = {
-                  lat: coordinates[Math.floor(coordinates.length / 2)][1],
-                  lng: coordinates[Math.floor(coordinates.length / 2)][0],
-                };
-                setMoveToPosition(position);
+    <MapWrapper>
+      {children}
+      {dataAll !== undefined && (
+        <GeoJSON
+          ref={geoJsonRef}
+          data={defaultData}
+          style={(
+            feature:
+              | GeoJSON.Feature<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>
+              | undefined,
+          ): PathOptions => {
+            // Set the style of the GeoJSON component (line color, opacity...)
+            const mapStyle: PathOptions = {
+              weight: 4,
+              opacity: 1,
+              color: 'grey',
+            };
+
+            if (
+              feature !== undefined &&
+              feature.properties !== null &&
+              feature.properties.type !== undefined
+            ) {
+              // When in mode 'ALL' show dashline using a color for each type
+              if (mode === 'ALL') {
+                mapStyle.color = getTypeColor(feature.properties.type);
+                mapStyle.opacity = 0.5;
+                switch (feature.properties.type) {
+                  case KPI:
+                    mapStyle.dashArray = '12 12';
+                    break;
+                  case DI:
+                    mapStyle.dashArray = '20 20';
+                    break;
+                  case IRI:
+                  case IRInew:
+                    mapStyle.dashArray = '28 28';
+                    break;
+                  case Mu:
+                    mapStyle.dashArray = '15 15';
+                    break;
+                  case Enrg:
+                    mapStyle.dashArray = '22 22';
+                }
+              } else if (feature.properties.value !== undefined) {
+                // otherwise use a specific color gradient for each type
+                mapStyle.color = getConditionColor(feature.properties);
               }
-            }}
-          />
-        </div>
-        <div className="filter-container">
-          <div className="input-selector-container">
-            <select
-              className="input"
-              defaultValue={mode}
-              onChange={inputChange}
-            >
-              {conditionTypes.map((value) => (
-                <option value={value} key={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-            <p className="labelling">Condition Type</p>
-          </div>
-        </div>
-        <div className="filter-container">
-          <Selector
-            options={['ALL', 'Critical', 'High', 'Medium', 'Low']}
-            onSelect={(e) => console.log(e)}
-          />
-          <p className="labelling"> Severity </p>
-        </div>
-        <div className="picker-container">
-          <MonthFilter
-            onStartChange={(date: any) => {
-              rangeChange(dateChange(date), true);
-            }}
-            onEndChange={(date: any) => {
-              rangeChange(dateChange(date), false);
-            }}
-          />
-          <p className="labelling"> Start Date → End Date</p>
-        </div>
-      </div>
-      <div style={{ height: '100%' }}>
-        <MapWrapper>
-          <Roads roads={roads} />
-          <ForceMapUpdate position={moveToPosition} />
-          {dataAll !== undefined && (
-            <GeoJSON
-              ref={geoJsonRef}
-              data={dataAll}
-              onEachFeature={onEachFeature}
-            />
-          )}
-        </MapWrapper>
-        {children}
-      </div>
-    </div>
+            }
+
+            return mapStyle;
+          }}
+        />
+      )}
+    </MapWrapper>
   );
 };
 

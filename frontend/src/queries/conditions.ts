@@ -1,6 +1,7 @@
 import { MapBounds } from '../models/map';
 import { ConditionKPIDI, WaysConditions } from '../models/path';
-import { asyncPost, post } from './fetch';
+import { asyncPost, get, post } from './fetch';
+import { FeatureCollection } from 'geojson';
 
 export const getWaysConditions = (
   type: string,
@@ -28,4 +29,10 @@ export const getBoundedWaysConditions = async (
     type,
     zoom,
   });
+};
+
+export const getAllConditions = (
+  callback: (data: FeatureCollection) => void,
+) => {
+  get('/conditions', callback);
 };

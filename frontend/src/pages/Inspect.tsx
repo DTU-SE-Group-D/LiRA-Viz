@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import '../css/road_details.css'; // Import the CSS file
 import MapArea from '../Components/RoadDetails/MapArea';
@@ -10,7 +10,10 @@ import { ChartData } from 'chart.js';
 import { getConditionsWay } from '../queries/conditions';
 import '../css/split.css';
 
-const RoadDetails = () => {
+/**
+ * Component rendering the inspect page
+ */
+const Inspect: FC = () => {
   const [showMapImageMode, setShowRoadImageMode] = useState(false);
   const [wayData, setWayData] =
     useState<ChartData<'scatter', number[], number>>();
@@ -87,4 +90,4 @@ const RoadDetails = () => {
   );
 };
 
-export default RoadDetails;
+export default Inspect;
