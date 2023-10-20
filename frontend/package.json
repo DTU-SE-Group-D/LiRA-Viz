@@ -72,7 +72,10 @@
     "react-docgen-typescript": "^2.2.2",
     "react-styleguidist": "^13.1.1",
     "ts-loader": "^9.4.4",
-    "webpack": "^5.88.2"
+    "webpack": "^5.88.2",
+    "@babel/traverse": ">=7.23.2",
+    "nth-check": ">=2.0.1",
+    "postcss": ">=8.4.31"
   },
   "jest": {
     "moduleNameMapper": {
