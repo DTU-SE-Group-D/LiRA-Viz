@@ -70,7 +70,6 @@ const images: Image[] = [
 
 const ImageGallery: React.FC = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
-  const [centerImages, setCenterImages] = useState(false);
   const galleryRef = useRef<HTMLDivElement>(null);
 
   const openImageInNewTab = (imageUrl: string) => {
@@ -78,9 +77,13 @@ const ImageGallery: React.FC = () => {
   };
 
   const handleScroll = (scrollOffset: number) => {
-    const newScrollPosition = scrollPosition + scrollOffset;
-    const maxScrollLimit = (images.length - 11.4) * 120;
+    if (!galleryRef.current) return;
 
+    const currentScroll = galleryRef.current.scrollLeft;
+    const maxScrollLimit =
+      galleryRef.current.scrollWidth - galleryRef.current.clientWidth;
+
+    const newScrollPosition = currentScroll + scrollOffset;
     const boundedScrollPosition = Math.max(
       0,
       Math.min(newScrollPosition, maxScrollLimit),
@@ -89,73 +92,43 @@ const ImageGallery: React.FC = () => {
     setScrollPosition(boundedScrollPosition);
   };
 
+  const scrollLeft = () => {
+    handleScroll(-600);
+  };
+
+  const scrollRight = () => {
+    handleScroll(600);
+  };
+
   useEffect(() => {
-    const checkImagesWidth = () => {
-      const galleryWidth = galleryRef.current?.offsetWidth || 0;
-      let totalWidth = 0;
-
-      const imageElements =
-        galleryRef.current?.querySelectorAll('.image-thumbnail');
-      imageElements?.forEach((imgElement) => {
-        // Telling TypeScript that imgElement is an HTMLElement
-        const img = imgElement as HTMLElement;
-        totalWidth += img.offsetWidth;
-      });
-
-      if (totalWidth <= galleryWidth) {
-        setCenterImages(true);
-      } else {
-        setCenterImages(false);
-      }
-    };
-
-    checkImagesWidth();
-
-    window.addEventListener('resize', checkImagesWidth);
-
-    return () => {
-      window.removeEventListener('resize', checkImagesWidth);
-    };
-  }, [images]);
+    if (galleryRef.current) {
+      galleryRef.current.scrollLeft = scrollPosition;
+    }
+  }, [scrollPosition]);
 
   return (
     <div className="image-gallery-container">
-      <div
-        className={`image-gallery-page ${centerImages ? 'center-images' : ''}`}
-        ref={galleryRef}
-      >
-        <div
-          className="image-container"
-          style={{ transform: `translateX(-${scrollPosition}px)` }}
-        >
-          {images.map((image) => (
-            <img
-              key={image.id}
-              src={image.url}
-              alt={`Image ${image.id}`}
-              onClick={() => openImageInNewTab(image.url)}
-              className="image-thumbnail"
-            />
-          ))}
-        </div>
-      </div>
-      <button
-        className={`arrow-button left-arrow ${
-          scrollPosition === 0 ? 'disabled' : ''
-        }`}
-        onClick={() => handleScroll(-120)}
-        disabled={scrollPosition === 0}
-      >
-        &#9668;
+      <button className="arrow-button left-arrow" onClick={scrollLeft}>
+        &lt;
       </button>
-      <button
-        className={`arrow-button right-arrow ${
-          scrollPosition === (images.length - 11.4) * 120 ? 'disabled' : ''
-        }`}
-        onClick={() => handleScroll(120)}
-        disabled={scrollPosition === (images.length - 11.4) * 120}
+      <div
+        className="image-gallery-page"
+        ref={galleryRef}
+        style={{ justifyContent: images.length <= 9 ? 'center' : 'flex-start' }}
       >
-        &#9658;
+        {images.map((image) => (
+          <div className="image-container" key={image.id}>
+            <img
+              className="image-thumbnail"
+              src={image.url}
+              alt="Gallery Thumbnail"
+              onClick={() => openImageInNewTab(image.url)}
+            />
+          </div>
+        ))}
+      </div>
+      <button className="arrow-button right-arrow" onClick={scrollRight}>
+        &gt;
       </button>
     </div>
   );

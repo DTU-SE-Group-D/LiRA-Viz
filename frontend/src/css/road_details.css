@@ -18,6 +18,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  overflow-x: hidden;
 }
 
 /* Define styles for the plot area */
@@ -171,6 +172,9 @@ input[type='checkbox'] {
   overflow-x: auto;
   overflow-y: hidden;
   scroll-behavior: smooth;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .image-gallery-container {
@@ -188,8 +192,23 @@ input[type='checkbox'] {
   max-width: 100%; /* Set a maximum width */
   white-space: nowrap;
   scroll-behavior: smooth;
+  scrollbar-width: none; 
+    /* For Firefox */
+  -ms-overflow-style: none; 
+    /* For Internet Explorer and Edge */
   overflow-y: hidden; /*This gets rid of that annoying scroll rect on the right side of the gallery*/
 }
+
+.image-gallery-page::-webkit-scrollbar {
+  display: none;
+}
+
+.image-gallery-page.center-images .image-container {
+    justify-content: center;
+    display: flex;
+    width: 100%;
+}
+
 
 .image-container {
   display: flex;
@@ -204,8 +223,8 @@ input[type='checkbox'] {
   object-fit: cover; /* Preserve aspect ratio and cover the container */
   cursor: pointer;
   transition: transform 0.3s ease-in-out;
-  margin-right: 4px;
-  margin-top: -30px;
+  margin-right: 2px;
+  margin-top: -11px;
   text-align: center;
 }
 
