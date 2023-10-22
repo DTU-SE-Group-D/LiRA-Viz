@@ -192,10 +192,10 @@ input[type='checkbox'] {
   max-width: 100%; /* Set a maximum width */
   white-space: nowrap;
   scroll-behavior: smooth;
-  scrollbar-width: none; 
-    /* For Firefox */
-  -ms-overflow-style: none; 
-    /* For Internet Explorer and Edge */
+  scrollbar-width: none;
+  /* For Firefox */
+  -ms-overflow-style: none;
+  /* For Internet Explorer and Edge */
   overflow-y: hidden; /*This gets rid of that annoying scroll rect on the right side of the gallery*/
 }
 
@@ -204,11 +204,10 @@ input[type='checkbox'] {
 }
 
 .image-gallery-page.center-images .image-container {
-    justify-content: center;
-    display: flex;
-    width: 100%;
+  justify-content: center;
+  display: flex;
+  width: 100%;
 }
-
 
 .image-container {
   display: flex;
