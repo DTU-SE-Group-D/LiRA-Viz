@@ -10,7 +10,6 @@ import {
   Legend,
   LinearScale,
   LineElement,
-  Plugin,
   PointElement,
   Title,
   Tooltip,
@@ -30,7 +29,7 @@ Chart.register(
   zoomPlugin,
 );
 
-const options = (): ChartOptions<'scatter'> => ({
+const options = (minAndMax: number[]): ChartOptions<'scatter'> => ({
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
@@ -46,14 +45,15 @@ const options = (): ChartOptions<'scatter'> => ({
         // modifierKey: 'ctrl',
       },
       limits: {
-        x: { min: -5, max: 105, minRange: 25 },
-        y: { min: -5, max: 10 },
+        x: { min: 0, max: 100, minRange: 20 },
+        y: { min: 0, max: 10 },
       },
       zoom: {
-        // drag to zoom option could be a solution
+        // vv drag to zoom option could be a solution vv
         // drag: {
         //   enabled: true,
         // },
+        //  ^^ here ^^
         pinch: {
           enabled: true, // Enable pinch zooming
         },
@@ -81,6 +81,8 @@ const options = (): ChartOptions<'scatter'> => ({
       type: 'linear',
       position: 'left',
       display: 'auto',
+      min: Math.floor(minAndMax[0]),
+      max: Math.ceil(minAndMax[1]),
       title: {
         display: true,
         text: 'KPI',
@@ -90,6 +92,8 @@ const options = (): ChartOptions<'scatter'> => ({
       type: 'linear',
       position: 'right',
       display: 'auto',
+      min: Math.floor(minAndMax[2]),
+      max: Math.ceil(minAndMax[3]),
       title: {
         display: true,
         text: 'DI',
@@ -100,9 +104,10 @@ const options = (): ChartOptions<'scatter'> => ({
 
 interface Props {
   data: ChartData<'scatter', number[], number> | undefined;
+  minAndMax: number[];
 }
 
-const ConditionsGraph: FC<Props> = ({ data }) => {
+const ConditionsGraph: FC<Props> = ({ data, minAndMax }) => {
   const ref = useRef<Chart<'scatter', number[], number>>(null);
 
   useEffect(() => {
@@ -114,7 +119,7 @@ const ConditionsGraph: FC<Props> = ({ data }) => {
   // attach events to the graph options
   const graphOptions: ChartOptions<'scatter'> = useMemo(
     () => ({
-      ...options(),
+      ...options(minAndMax),
       onClick: (
         event: ChartEvent,
         elts: ActiveElement[],
@@ -126,25 +131,12 @@ const ConditionsGraph: FC<Props> = ({ data }) => {
         console.log(pointIndex, event, elts);
       },
     }),
-    [],
+    [minAndMax],
   );
-
-  const plugins: Plugin<'scatter'>[] = [
-    {
-      id: 'id',
-    },
-  ];
 
   return (
     <div className="road-conditions-graph">
-      {data && (
-        <Scatter
-          ref={ref}
-          data={data}
-          options={graphOptions}
-          plugins={plugins}
-        />
-      )}
+      {data && <Scatter ref={ref} data={data} options={graphOptions} />}
     </div>
   );
 };
