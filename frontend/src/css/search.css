@@ -3,7 +3,7 @@
   line-height: 36px;
   height: 36px;
   padding: 0 31px 0 7px;
-  width: 200px;
+  width: 80%;
 
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 5px;
@@ -65,7 +65,7 @@
 
 .geoapify-close-button {
   position: absolute;
-  right: 25px;
+  right: 8px;
   width: 30px;
   top: 0px;
 

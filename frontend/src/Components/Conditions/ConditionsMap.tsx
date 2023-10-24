@@ -7,10 +7,13 @@ import { Feature, FeatureCollection } from 'geojson';
 import Search from '../Map/Search';
 import MonthFilter from '../Map/MonthFilter';
 import MapWrapper from '../Map/MapWrapper';
+import Selector from '../Map/Inputs/Selector';
 
 import '../../css/navbar.css';
 import '../../css/search.css';
+import '../../css/month_filter.css';
 import '../../css/slider.css';
+import '../../css/selector.css';
 import 'react-datepicker/dist/react-datepicker.css';
 
 import { getConditions } from '../../queries/fetchConditions';
@@ -408,20 +411,29 @@ const ConditionsMap = (props: any) => {
           />
         </div>
         <div className="filter-container">
-          <select
-            className="sweetalert-input"
-            defaultValue={mode}
-            onChange={inputChange}
-            style={{ width: '100px' }}
-          >
-            {conditionTypes.map((value) => (
-              <option value={value} key={value}>
-                {value}
-              </option>
-            ))}
-          </select>
+          <div className="input-selector-container">
+            <select
+              className="input"
+              defaultValue={mode}
+              onChange={inputChange}
+            >
+              {conditionTypes.map((value) => (
+                <option value={value} key={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+            <p className="labelling">Condition Type</p>
+          </div>
         </div>
-        <div className="nav-container">
+        <div className="filter-container">
+          <Selector
+            options={['ALL', 'Critical', 'High', 'Medium', 'Low']}
+            onSelect={(e) => console.log(e)}
+          />
+          <p className="labelling"> Severity </p>
+        </div>
+        <div className="picker-container">
           <MonthFilter
             onStartChange={(date: any) => {
               rangeChange(dateChange(date), true);
@@ -430,6 +442,7 @@ const ConditionsMap = (props: any) => {
               rangeChange(dateChange(date), false);
             }}
           />
+          <p className="labelling"> Start Date → End Date</p>
         </div>
       </div>
       <div style={{ height: '100%' }}>

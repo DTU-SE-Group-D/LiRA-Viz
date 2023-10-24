@@ -9,7 +9,7 @@ interface Props {
 }
 
 /**
- * Selector is the component to show a dropdown menu for conditions.
+ * Selector is the component to show a dropdown menu for condition severity.
  */
 const Selector: React.FC<Props> = ({ options, onSelect }) => {
   return (
