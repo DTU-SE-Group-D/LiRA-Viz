@@ -33,7 +33,7 @@ const MapArea: React.FC<Props> = ({ triggerUpdate }) => {
       </div>
       <div
         className="imageGallery_container"
-        style={{ height: '14vh', overflow: 'hidden' }}
+        style={{ height: '95px', overflow: 'hidden' }}
       >
         <ImageGallery /> {/* Use the imageGallery component */}
       </div>
