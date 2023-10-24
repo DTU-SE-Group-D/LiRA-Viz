@@ -9,6 +9,18 @@ interface Props {
   onEndChange: (date: any) => void;
 }
 
+const CustomInput = ({
+  value,
+  onClick,
+}: {
+  value: string;
+  onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+}) => (
+  <button className="month-custom-input" onClick={onClick}>
+    {value}
+  </button>
+);
+
 /**
  * Component rendering Month Filter
  */
@@ -16,7 +28,6 @@ interface Props {
 const MonthFilter: React.FC<Props> = ({ onEndChange, onStartChange }) => {
   const [startDate, setStartDate] = useState(new Date('2022/06/08'));
   const [endDate, setEndDate] = useState(new Date());
-
   return (
     <>
       <div className="datepicker">
@@ -24,6 +35,7 @@ const MonthFilter: React.FC<Props> = ({ onEndChange, onStartChange }) => {
           selected={startDate}
           onSelect={(date: any) => setStartDate(date)}
           onChange={onStartChange}
+          customInput={React.createElement(CustomInput)}
           selectsStart
           startDate={startDate}
           endDate={endDate}
@@ -38,6 +50,7 @@ const MonthFilter: React.FC<Props> = ({ onEndChange, onStartChange }) => {
           selected={endDate}
           onSelect={(date: any) => setEndDate(date)}
           onChange={onEndChange}
+          customInput={React.createElement(CustomInput)}
           selectsEnd
           startDate={startDate}
           endDate={endDate}

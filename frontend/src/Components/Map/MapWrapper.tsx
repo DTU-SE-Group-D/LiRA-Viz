@@ -8,7 +8,6 @@ import {
 import '../../css/map.css';
 import { MAP_OPTIONS } from './constants';
 import React, { FC } from 'react';
-import Selector from './Inputs/Selector';
 
 /**
  *  properties
@@ -26,10 +25,6 @@ const MapWrapper: FC<IMapWrapper> = ({ children }) => {
 
   return (
     <>
-      <Selector
-        options={['All', 'Critical', 'High', 'Medium', 'Low']}
-        onSelect={(e) => console.log(e)}
-      />
       <MapContainer
         preferCanvas={true}
         center={center}
