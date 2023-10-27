@@ -1,31 +1,27 @@
-/* src/styles.css */
-
 /* Define styles for the top bar */
 .top-bar {
   background-color: #333; /* Example color for the top bar */
   height: 50px;
-  display: flex; /* Enable flex layout */
-  align-items: center; /* Vertically center content */
-  justify-content: flex-start; /* Align content to the left (40px margin) */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 /* Define styles for the middle area */
 .road-image,
 .map-area {
-  /* background-color: #eee; Example color for the middle area */
-  height: 100%; /* Occupying half of the page vertically */
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  overflow-x: hidden;
 }
 
-/* Define styles for the plot area */
 .plot-area {
-  background-color: #333; /* Grey with 50% opacity */
+  background-color: #333;
   height: 40vh;
 }
 
-/* To center the Return button vertically  */
 .btnLinkContainer {
   display: flex; /* Enable flex layout */
   align-items: center; /* Vertically center content */
@@ -162,11 +158,16 @@ input[type='checkbox'] {
 
 .imageGallery_container {
   background-color: #999;
-  height: 14vh;
   margin-top: auto;
   overflow: auto;
   white-space: nowrap;
   overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .image-gallery-container {
@@ -174,18 +175,38 @@ input[type='checkbox'] {
   flex-direction: column; /* Stack children vertically */
   justify-content: center; /* Center children vertically */
   position: relative;
+  scroll-behavior: smooth;
 }
 
 .image-gallery-page {
   display: flex;
+  transition: scroll 0.5s;
   overflow-x: auto; /* Enable horizontal scrolling */
   max-width: 100%; /* Set a maximum width */
+  white-space: nowrap;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  /* For Firefox */
+  -ms-overflow-style: none;
+  /* For Internet Explorer and Edge */
+  overflow-y: hidden; /*This gets rid of that annoying scroll rect on the right side of the gallery*/
+}
+
+.image-gallery-page::-webkit-scrollbar {
+  display: none;
+}
+
+.image-gallery-page.center-images .image-container {
+  justify-content: center;
+  display: flex;
+  width: 100%;
 }
 
 .image-container {
   display: flex;
   align-items: center;
   margin-left: 0.5vh;
+  transition: transform 0.3s ease-out;
 }
 
 .image-thumbnail {
@@ -194,8 +215,8 @@ input[type='checkbox'] {
   object-fit: cover; /* Preserve aspect ratio and cover the container */
   cursor: pointer;
   transition: transform 0.3s ease-in-out;
-  margin-right: 4px;
-  margin-top: 0.5vh;
+  margin-right: 2px;
+  margin-top: -11px;
   text-align: center;
 }
 
@@ -212,14 +233,68 @@ input[type='checkbox'] {
   align-items: center;
   justify-content: center;
   font-size: 13px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 1000;
+  top: 15px;
   /* color: #222; */
 }
 
 .left-arrow {
   left: 10px;
-  transform: rotate(180deg);
 }
 
 .right-arrow {
   right: 10px;
+}
+
+.image-gallery-container:hover .arrow-button {
+  opacity: 1;
+}
+
+.arrow-button:hover {
+  background-color: #f7f7f7; /* Slightly darker background on hover */
+}
+
+.image-gallery-page.center-images {
+  justify-content: center;
+}
+
+/* Css for click image pop-up */
+.image-click-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure the modal is displayed above other components */
+}
+.image-modal-content {
+  position: relative;
+  max-width: 60vw;
+  max-height: 50vw;
+  overflow: auto;
+  background-color: white;
+  z-index: 1100; /* Ensure content inside the modal is above the background */
+}
+.close-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+.image-modal-content img {
+  height: 60vw;
+  width: auto;
+}
+
+.close-icon {
+  color: #333;
+  stroke: #333;
+  stroke-width: 0.5;
 }
