@@ -19,8 +19,9 @@
 .nav-container {
   position: relative;
   width: 15%;
+  min-width: fit-content;
   height: 100%;
-  margin-top: 0.7%;
+  margin-top: 13px;
   margin-left: 0.4%;
   align-self: flex-start;
 }
@@ -28,17 +29,20 @@
 .picker-container {
   position: relative;
   width: 15%;
+  min-width: fit-content;
   height: 100%;
-  margin-top: 0.7%;
+  margin-top: 10px;
   align-self: flex-start;
 }
 
 .filter-container {
   position: relative;
-  width: 5%;
+  width: 6%;
+  min-width: fit-content;
   height: 100%;
-  margin-top: 1%;
+  margin-top: 13px;
   align-self: flex-start;
+  flex-basis: auto;
 }
 
 .nav-tab {

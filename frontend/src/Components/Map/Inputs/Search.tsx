@@ -5,7 +5,7 @@ import {
   GeoapifyContext,
 } from '@geoapify/react-geocoder-autocomplete';
 import '@geoapify/geocoder-autocomplete/styles/minimal.css';
-import '../../css/search.css';
+import '../../../css/search.css';
 
 interface Props {
   /**
