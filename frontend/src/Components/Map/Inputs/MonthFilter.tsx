@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
-import '../../css/month_filter.css';
+import '../../../css/month_filter.css';
 
 interface Props {
   /** function taking argument "date" for Start Date **/

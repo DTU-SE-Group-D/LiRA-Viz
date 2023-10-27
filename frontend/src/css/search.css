@@ -13,9 +13,9 @@
 
 .geoapify-autocomplete-items {
   position: absolute;
-  left: 20px; /* This need to be improve later to align with the left side of search input box*/
+  left: 0%; /* This need to be improve later to align with the left side of search input box*/
   top: calc(100% + 2px);
-  width: 280px;
+  width: 100%;
   background-color: #ddddddbd;
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 5px;
@@ -90,7 +90,7 @@
 
 .geoapify-close-button {
   position: absolute;
-  right: 8px;
+  right: 0%;
   width: 30px;
   top: 0px;
   height: 100%;

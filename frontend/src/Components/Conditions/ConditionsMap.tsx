@@ -4,8 +4,10 @@ import { GeoJSON } from 'react-leaflet';
 import { Layer, PathOptions } from 'leaflet';
 import { Feature, FeatureCollection } from 'geojson';
 
-import Search from '../Map/Search';
-import MonthFilter from '../Map/MonthFilter';
+import Search from '../Map/Inputs/Search';
+import MonthFilter from '../Map/Inputs/MonthFilter';
+// import MultiSelector from '../Map/Inputs/MultiSelector';
+
 import MapWrapper from '../Map/MapWrapper';
 import Selector from '../Map/Inputs/Selector';
 
