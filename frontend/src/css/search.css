@@ -15,7 +15,7 @@
   position: absolute;
   left: 0%; /* This need to be improve later to align with the left side of search input box*/
   top: calc(100% + 2px);
-  width: 100%;
+  width: 120%;
   background-color: #ddddddbd;
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 5px;
