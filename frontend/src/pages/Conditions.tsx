@@ -1,4 +1,5 @@
 import ConditionsMap from '../Components/Conditions/ConditionsMap';
+import InfoButton from '../Components/Conditions/InfoButton';
 
 const Conditions = () => {
   return (
@@ -6,6 +7,7 @@ const Conditions = () => {
       <ConditionsMap>
         {/* we could place some other stuff in the bottom, if need should be */}
       </ConditionsMap>
+      <InfoButton />
     </div>
   );
 };
