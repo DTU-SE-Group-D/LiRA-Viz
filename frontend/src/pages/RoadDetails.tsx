@@ -11,7 +11,6 @@ import { getConditionsWay } from '../queries/conditions';
 import '../css/split.css';
 
 const RoadDetails = () => {
-  const [showMapImageMode, setShowRoadImageMode] = useState(false);
   const [wayData, setWayData] =
     useState<ChartData<'scatter', number[], number>>();
   const [minAndMax, setMinAndMax] = useState<number[]>([1, 1, 0, 0]);
@@ -62,8 +61,8 @@ const RoadDetails = () => {
   }, []);
 
   return (
-    <div style={{ height: '100vh' }}>
-      <TopBar isToggleOn={setShowRoadImageMode} />
+    <div className="div-mapAndRoad-container">
+      <TopBar />
       <Split
         mode="vertical"
         className="split"
