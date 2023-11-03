@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useMapEvents } from 'react-leaflet';
 
-//zoom implementation on map events
+/**
+ * Zoom implementation on map events
+ */
 const useZoom = () => {
   const [zoom, setZoom] = useState<number>();
 

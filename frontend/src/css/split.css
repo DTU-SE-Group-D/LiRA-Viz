@@ -2,13 +2,10 @@
   height: calc(100vh - var(--navbar-height));
 }
 
-.gutter {
-  background-color: #eee;
-  background-repeat: no-repeat;
-  background-position: 50%;
+.w-split-vertical > .w-split-bar {
+  height: 10px;
 }
 
-.gutter.gutter-vertical {
-  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAFAQMAAABo7865AAAABlBMVEVHcEzMzMzyAv2sAAAAAXRSTlMAQObYZgAAABBJREFUeF5jOAMEEAIEEFwAn3kMwcB6I2AAAAAASUVORK5CYII=');
-  cursor: row-resize;
+.w-split-horizontal > .w-split-bar {
+  width: 10px;
 }

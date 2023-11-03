@@ -85,6 +85,7 @@
 
 .road-conditions-graph {
   position: relative;
+  height: 100%;
   left: 2vw;
   right: 2vw;
   width: 96vw;
@@ -113,24 +114,6 @@ input[type='checkbox'] {
   display: flex;
   align-items: center; /* Vertically center items */
   justify-content: space-between; /* Add space between items */
-}
-
-.toggle-container {
-  padding-right: 30px;
-  display: flex;
-  align-items: center; /* Vertically center items */
-  justify-content: space-between; /* Add space between items */
-}
-
-/* Style for the toggle button label */
-.toggle-label {
-  display: flex;
-  align-items: center; /* Vertically center items */
-}
-
-/* Style for the text on both sides of the switch */
-.toggle-text {
-  margin: 0 10px 0 10px; /* Adjust the spacing as needed */
 }
 
 /* Style for image Gallery */
