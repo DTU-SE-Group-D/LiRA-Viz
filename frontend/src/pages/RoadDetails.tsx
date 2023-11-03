@@ -4,7 +4,7 @@ import '../css/road_details.css'; // Import the CSS file
 import MapArea from '../Components/RoadDetails/MapArea';
 import RoadImage from '../Components/RoadDetails/RoadImage';
 import TopBar from '../Components/RoadDetails/TopBar';
-import Split from 'react-split';
+import Split from '@uiw/react-split';
 import ConditionsGraph from '../Components/RoadDetails/ConditionsGraph';
 import { ChartData } from 'chart.js';
 import { getConditionsWay } from '../queries/conditions';
@@ -62,26 +62,29 @@ const RoadDetails = () => {
   }, []);
 
   return (
-    <div>
+    <div style={{ height: '100vh' }}>
       <TopBar isToggleOn={setShowRoadImageMode} />
       <Split
+        mode="vertical"
         className="split"
-        direction="vertical"
-        sizes={[45, 55]}
-        minSize={0}
-        snapOffset={50}
         onDragEnd={() => {
           setTriggerUpdate((prev) => prev + 1);
         }}
       >
-        <div>
-          {showMapImageMode ? (
-            <RoadImage />
-          ) : (
+        <div style={{ height: '40%' }}>
+          <Split
+            mode="horizontal"
+            onDragEnd={() => {
+              setTriggerUpdate((prev) => prev + 1);
+            }}
+          >
             <MapArea triggerUpdate={triggerUpdate} />
-          )}
+            <RoadImage />
+          </Split>
         </div>
-        <ConditionsGraph data={wayData} minAndMax={minAndMax} />
+        <div style={{ height: '60%' }}>
+          <ConditionsGraph data={wayData} minAndMax={minAndMax} />
+        </div>
       </Split>
     </div>
   );

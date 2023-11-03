@@ -85,6 +85,7 @@
 
 .road-conditions-graph {
   position: relative;
+  height: 100%;
   left: 2vw;
   right: 2vw;
   width: 96vw;
