@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { InjectConnection, Knex } from 'nestjs-knex';
 import { Condition } from 'src/models';
-import { Conditions, Conditions2 } from '../tables';
+import { Conditions, CoverageValues } from '../tables';
 import knexPostgis = require('knex-postgis');
 
 @Injectable()
@@ -47,7 +47,7 @@ export class RCService {
 
     let res;
     try {
-      let query = Conditions2(db)
+      let query = CoverageValues(db)
         .select(
           'coverage_values.id',
           'type',

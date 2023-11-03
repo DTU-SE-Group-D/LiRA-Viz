@@ -1,38 +1,12 @@
 import { Knex } from 'knex';
-
 import { Geometry } from 'geojson';
+import { ImageType, MeasurementType } from './models';
 
-interface IWay {
-  id: string;
-  geom: any;
-  ref: string;
-  official_ref: string;
-}
+//
+// ====================================== Tables of LiRAMap (LiraVis) database ======================================
+//
 
-// @deprecated
-export const Way = (k: Knex) => k.from<IWay>('way');
-
-interface RoadCondition {
-  pk: any;
-  way_id: string;
-  way_dist: number;
-  value: number;
-  computed_at: Date;
-  type: string;
-}
-
-export const RoadConditions = (k: Knex) =>
-  k.from<RoadCondition>('road_conditions');
-
-interface ZoomCondition extends RoadCondition {
-  zoom: number;
-}
-
-export const ZoomConditions = (k: Knex) =>
-  k.from<ZoomCondition>('zoom_conditions');
-
-// ekki@dtu.dk: This is for PostGIS in the LiRAMap (LiraVis) database
-export interface Condition_Coverage {
+export interface IConditionCoverage {
   id: string;
   fk_way_id: string;
   type: string;
@@ -42,10 +16,10 @@ export interface Condition_Coverage {
 }
 
 export const Conditions = (k: Knex) =>
-  k.from<Condition_Coverage>('condition_coverages as cond1');
+  k.from<IConditionCoverage>('condition_coverages as cond1');
 
-export const Conditions2 = (k: Knex) =>
-  k.from<Condition_Coverage>('coverage_values');
+export const CoverageValues = (k: Knex) =>
+  k.from<IConditionCoverage>('coverage_values');
 
 interface IWays {
   OSM_Id: number[];
@@ -56,3 +30,56 @@ interface IWays {
 }
 
 export const Ways = (k: Knex) => k.from<IWays>('ways');
+
+//
+// ====================================== Tables of GroupD database ======================================
+//
+
+export interface IImage {
+  id?: number;
+  fk_survey_id: number;
+  distance_survey: number;
+  image_path: string;
+  type: ImageType;
+  fk_way_id: number;
+  distance_way: number;
+  timestamp: Date;
+}
+
+export const Image = (k: Knex) => k.from<IImage>('image');
+
+export interface IMeasurement {
+  id?: number;
+  fk_survey_id: number;
+  distance_survey: number;
+  type_index: MeasurementType;
+  value: number;
+  fk_way_id: number;
+  distance_way: number;
+  timestamp: Date;
+}
+
+export const Measurement = (k: Knex) => k.from<IImage>('measurement');
+
+export interface ISurvey {
+  id?: number;
+  section_geom: Geometry;
+  timestamp: Date;
+  /** The Dynatest id of the survey or null */
+  survey_id: number;
+}
+
+export const Survey = (k: Knex) => k.from<IImage>('survey');
+
+export interface IWay {
+  id?: number;
+  way_name: string;
+  osm_id: string; // This is because bigint is not supported by knex
+  node_start: string; // See https://stackoverflow.com/questions/39168501/pg-promise-returns-integers-as-strings/39176670#39176670
+  node_end: string; // Same here
+  length: number;
+  section_geom: Geometry;
+  isoneway: boolean;
+}
+
+export const Way = (k: Knex) => k.from<IWay>('way');
