@@ -69,6 +69,10 @@ const images: Image[] = [
   },
 ];
 
+/**
+ * React functional component for the Image Gallery.
+ * Image gallery is for show the real road image, and user can scroll to check
+ */
 const ImageGallery: React.FC = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const galleryRef = useRef<HTMLDivElement>(null);

@@ -1,19 +1,59 @@
 import React from 'react';
 
 interface ImageClickProps {
+  /** The URL of the image to display in the zoomed view. */
   imageUrl: string;
+  /** A callback function to close the zoomed view. */
   onClose: () => void;
+  /** A callback function for navigating to the previous or next image. */
   onNavigate: (direction: number) => void;
+  /** The index of the currently displayed image. */
   currentImageIndex: number;
+  /** The total number of images in the gallery. */
   totalImages: number;
 }
 
-const ImageZoom: React.FC<ImageClickProps> = ({ imageUrl, onClose }) => {
+/**
+ * ImageZoom make images clickable and open a popup to see image closer
+ */
+// ...
+const ImageZoom: React.FC<ImageClickProps> = ({
+  imageUrl,
+  onClose,
+  onNavigate,
+  currentImageIndex,
+  totalImages,
+}) => {
+  // Check if the left/right navigation arrow should be disabled
+  const isLeftDisabled = currentImageIndex === 0;
+  const isRightDisabled = currentImageIndex === totalImages - 1;
+
+  const handleClickOutside = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="image-click-modal">
+    <div className="image-click-modal" onClick={handleClickOutside}>
       <div className="image-modal-content">
-        <img src={imageUrl} alt="Zoomed Image" />
+        <button
+          className={`nav-button left ${isLeftDisabled ? 'disabled' : ''}`}
+          onClick={() => onNavigate(-1)}
+          disabled={isLeftDisabled}
+        >
+          &lt; {/* Left arrow symbol */}
+        </button>
+        <img src={imageUrl} draggable="false" alt="Zoomed Image" />
+        <button
+          className={`nav-button right ${isRightDisabled ? 'disabled' : ''}`}
+          onClick={() => onNavigate(1)}
+          disabled={isRightDisabled}
+        >
+          &gt; {/* Right arrow symbol */}
+        </button>
         <span className="close-icon" onClick={onClose}>
+          {/* Close button code */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"
@@ -30,5 +70,6 @@ const ImageZoom: React.FC<ImageClickProps> = ({ imageUrl, onClose }) => {
     </div>
   );
 };
+// ...
 
 export default ImageZoom;

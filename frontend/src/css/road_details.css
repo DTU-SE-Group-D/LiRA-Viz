@@ -289,3 +289,43 @@ input[type='checkbox'] {
   stroke: #333;
   stroke-width: 0.5;
 }
+
+/* Imgae Zoom arrows style */
+.nav-button {
+  background: none;
+  border: none;
+  font-size: 12px;
+  cursor: pointer;
+  color: #333; /* Color for the arrows */
+  border: none;
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.nav-button.left {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+}
+
+.nav-button.right {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+}
+
+.nav-button:hover {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.nav-button:active {
+  background-color: rgba(255, 255, 255, 1);
+}
+
+.nav-button.disabled {
+  display: none;
+}
