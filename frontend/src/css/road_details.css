@@ -283,8 +283,8 @@ input[type='checkbox'] {
 }
 .image-modal-content {
   position: relative;
-  max-width: 60vw;
   max-height: 50vw;
+  max-width: auto;
   overflow: auto;
   background-color: white;
   z-index: 1100; /* Ensure content inside the modal is above the background */
@@ -297,7 +297,7 @@ input[type='checkbox'] {
 }
 
 .image-modal-content img {
-  height: 60vw;
+  height: 50vw;
   width: auto;
 }
 
@@ -318,7 +318,7 @@ input[type='checkbox'] {
   height: 30px;
   width: 30px;
   border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.5);
 }
 
 .nav-button.left {

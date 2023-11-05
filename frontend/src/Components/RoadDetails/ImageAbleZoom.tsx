@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface ImageClickProps {
+interface ImageZoom {
   /** The URL of the image to display in the zoomed view. */
   imageUrl: string;
   /** A callback function to close the zoomed view. */
@@ -17,7 +17,7 @@ interface ImageClickProps {
  * ImageZoom make images clickable and open a popup to see image closer
  */
 // ...
-const ImageZoom: React.FC<ImageClickProps> = ({
+const ImageZoom: React.FC<ImageZoom> = ({
   imageUrl,
   onClose,
   onNavigate,
