@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import ImageClick from './ImageClick';
 
 interface Image {
   id: number;
@@ -73,14 +72,8 @@ const ImageGallery: React.FC = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const galleryRef = useRef<HTMLDivElement>(null);
 
-  // Add feature for the pop-up of clicking and checking images
-  const [isImageClickOpen, setIsImageClickOpen] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  // Function to open the pop-up
-  const openImageInPopup = (imageId: number) => {
-    setCurrentImageIndex(imageId - 1); // Adjust for 0-based index
-    setIsImageClickOpen(true);
+  const openImageInNewTab = (imageUrl: string) => {
+    window.open(imageUrl, '_blank');
   };
 
   const handleScroll = (scrollOffset: number) => {
@@ -129,7 +122,7 @@ const ImageGallery: React.FC = () => {
               className="image-thumbnail"
               src={image.url}
               alt="Gallery Thumbnail"
-              onClick={() => openImageInPopup(image.id)}
+              onClick={() => openImageInNewTab(image.url)}
             />
           </div>
         ))}
@@ -137,24 +130,6 @@ const ImageGallery: React.FC = () => {
       <button className="arrow-button right-arrow" onClick={scrollRight}>
         &gt;
       </button>
-      {isImageClickOpen && (
-        <ImageClick
-          imageUrl={images[currentImageIndex].url}
-          onClose={() => setIsImageClickOpen(false)}
-          onNavigate={(direction) => {
-            // Handle navigation here if needed
-            if (direction === -1) {
-              // Navigate to the previous image
-              setCurrentImageIndex((prevIndex) => prevIndex - 1);
-            } else if (direction === 1) {
-              // Navigate to the next image
-              setCurrentImageIndex((prevIndex) => prevIndex + 1);
-            }
-          }}
-          currentImageIndex={currentImageIndex}
-          totalImages={images.length}
-        />
-      )}
     </div>
   );
 };
