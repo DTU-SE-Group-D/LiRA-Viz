@@ -15,6 +15,8 @@ interface CustomInputProps {
  *
  * A class component is used to remove the following warning:
  * Function components cannot be given refs. Attempts to access this ref will fail.
+ *
+ * @author Hansen
  */
 class CustomInput extends React.Component<CustomInputProps> {
   constructor(props: CustomInputProps) {
@@ -38,6 +40,8 @@ interface MonthFilterProps {
 
 /**
  * Component rendering Month Filter
+ *
+ * @author Hansen
  */
 const MonthFilter: React.FC<MonthFilterProps> = ({
   onEndChange,

@@ -13,6 +13,7 @@ import {
   KPI,
   Mu,
   YearMonth,
+  MultiMode,
 } from '../../models/conditions';
 import { getAllConditions } from '../../queries/conditions';
 
@@ -102,8 +103,8 @@ const getConditionColor = (properties: GeoJSON.GeoJsonProperties): string => {
 interface ConditionsMapProps {
   /** The children of the component **/
   children: React.ReactNode;
-  /** The mode of the conditions to show **/
-  mode: string;
+  /** The mode of the conditions to show (allows for multimodes)**/
+  multiMode: MultiMode;
   /** The range of date to use to filter the conditions **/
   rangeSelected: DateRange;
 }
@@ -113,7 +114,7 @@ interface ConditionsMapProps {
  */
 const ConditionsMap: FC<ConditionsMapProps> = ({
   children,
-  mode,
+  multiMode,
   rangeSelected,
 }) => {
   const geoJsonRef = useRef<any>();
@@ -166,13 +167,14 @@ const ConditionsMap: FC<ConditionsMapProps> = ({
       geoJsonRef.current.addData(data);
     };
 
-    // filter the data
+    // Filters the data
+    // multiMode functionality added by @author Hansen
     const featureCollection: FeatureCollection = {
       type: 'FeatureCollection',
       features: dataAll.features.filter(
         (f) =>
           f.properties !== null &&
-          (mode === 'ALL' || f.properties.type === mode) &&
+          (multiMode.ALL! || multiMode.mode!.includes(f.properties.type)) &&
           (f.properties.valid_yearmonth === undefined ||
             ((rangeSelected.start === undefined ||
               lessOrEqualThan(
@@ -187,7 +189,7 @@ const ConditionsMap: FC<ConditionsMapProps> = ({
       ),
     };
     setConditions(featureCollection);
-  }, [dataAll, mode, rangeAll, rangeSelected]);
+  }, [dataAll, multiMode, rangeAll, rangeSelected]);
 
   return (
     <MapWrapper>
@@ -214,7 +216,7 @@ const ConditionsMap: FC<ConditionsMapProps> = ({
               feature.properties.type !== undefined
             ) {
               // When in mode 'ALL' show dashline using a color for each type
-              if (mode === 'ALL') {
+              if (multiMode!.mode!.includes(feature.properties.type)) {
                 mapStyle.color = getTypeColor(feature.properties.type);
                 mapStyle.opacity = 0.5;
                 switch (feature.properties.type) {
@@ -235,8 +237,9 @@ const ConditionsMap: FC<ConditionsMapProps> = ({
                     mapStyle.dashArray = '22 22';
                 }
               } else if (feature.properties.value !== undefined) {
-                // otherwise use a specific color gradient for each type
                 mapStyle.color = getConditionColor(feature.properties);
+              } else if (multiMode!.count === 0) {
+                mapStyle.color = getTypeColor('default'); // @author Hansen
               }
             }
 
