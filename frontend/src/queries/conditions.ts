@@ -1,5 +1,9 @@
 import { MapBounds } from '../models/map';
-import { ConditionKPIDI, WaysConditions } from '../models/path';
+import {
+  ConditionKPIDI,
+  SurveyConditions,
+  WaysConditions,
+} from '../models/path';
 import { asyncPost, get, post } from './fetch';
 import { FeatureCollection } from 'geojson';
 
@@ -16,6 +20,13 @@ export const getConditionsWay = (
   setConditions: (data: ConditionKPIDI[]) => void,
 ) => {
   post('/conditions/way', { dbId }, setConditions);
+};
+
+export const getConditionsSurvey = (
+  surveyId: string,
+  setConditions: (data: SurveyConditions[]) => void,
+) => {
+  post('/conditions/surveys', { surveyId }, setConditions);
 };
 
 export const getBoundedWaysConditions = async (

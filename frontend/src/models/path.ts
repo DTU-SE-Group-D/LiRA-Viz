@@ -71,6 +71,12 @@ export interface ConditionKPIDI {
   way_dist: number;
 }
 
+export interface SurveyConditions {
+  type: string;
+  value: number;
+  distance_survey: number;
+}
+
 export type WayId = string;
 
 export interface WaysConditions {

@@ -59,17 +59,17 @@ export interface IMeasurement {
   timestamp: Date;
 }
 
-export const Measurement = (k: Knex) => k.from<IImage>('measurement');
+export const Measurement = (k: Knex) => k.from<IMeasurement>('measurement');
 
 export interface ISurvey {
   id?: number;
   section_geom: Geometry;
   timestamp: Date;
-  /** The Dynatest id of the survey or null */
+  /** The Dynatest id of the surveys or null */
   survey_id: number;
 }
 
-export const Survey = (k: Knex) => k.from<IImage>('survey');
+export const Survey = (k: Knex) => k.from<ISurvey>('surveys');
 
 export interface IWay {
   id?: number;
