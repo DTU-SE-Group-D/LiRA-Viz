@@ -5,6 +5,7 @@ import {
   ZoomControl,
 } from 'react-leaflet';
 
+import InfoButton from '../Conditions/InfoButton';
 import '../../css/map.css';
 import { MAP_OPTIONS } from './constants';
 import React, { FC } from 'react';
@@ -52,6 +53,7 @@ const MapWrapper: FC<IMapWrapper> = ({ children }) => {
           maxWidth={scaleWidth}
         />
         {children}
+        <InfoButton />
       </MapContainer>
     </>
   );

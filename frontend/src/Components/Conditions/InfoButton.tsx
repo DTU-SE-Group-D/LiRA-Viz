@@ -1,21 +1,15 @@
 import React, { useState } from 'react';
 import '../../css/InfoButton.css';
 
+/**
+ * A small button showing information and instructions to use the webapp.
+ */
+
 const InfoButton: React.FC = () => {
   const [showInfo, setShowInfo] = useState(false);
 
   const handleInfoToggle = () => {
     setShowInfo(!showInfo);
-  };
-
-  const scrollToBottom = () => {
-    const infoBoxElement = document.querySelector('.info-box');
-    if (infoBoxElement) {
-      infoBoxElement.scrollTo({
-        top: infoBoxElement.scrollHeight,
-        behavior: 'smooth',
-      });
-    }
   };
 
   return (
@@ -24,7 +18,7 @@ const InfoButton: React.FC = () => {
         !
       </div>
       <div className={`info-box ${showInfo ? 'visible' : ''}`}>
-        <h2>Color Code Explanation:</h2>
+        <h3>Color Code Explanation:</h3>
         <p>
           <span className="color-code green"></span>Green: Good condition
         </p>
@@ -34,29 +28,9 @@ const InfoButton: React.FC = () => {
         <p>
           <span className="color-code red"></span>Red: Critical condition
         </p>
-        <h2>User Help:</h2>
+        <h3>User Help:</h3>
         <p>Click on a route to get detailed information.</p>
-        <h2>Interactive Map:</h2>
-        <ul>
-          <li>Zoom in/out for detailed views.</li>
-          <li>Pan to navigate.</li>
-          <li>Click data points to access the Inspect page.</li>
-        </ul>
-        <h2>Top Bar Features:</h2>
-        <h4>Left:</h4>
-        <ul>
-          <li>Road search box: Find roads by name.</li>
-          <li>Date filter: Narrow down data by specific dates.</li>
-        </ul>
-        <h4>Center:</h4>
-        <ul>
-          <li>Condition indicator selector (KPI, DI, IRI, Mu, E_norm).</li>
-        </ul>
-        <h4>Right:</h4>
-        <ul>
-          <li>Button for uploading new road data.</li>
-        </ul>
-        <h3>Inspection Status:</h3>
+        <h3>Go to the Inspect Page:</h3>
         <ul>
           <li>Info appears upon selecting a road or survey from the list.</li>
           <li>Highlighted path on the map.</li>
@@ -67,15 +41,8 @@ const InfoButton: React.FC = () => {
         </ul>
         <h3>Miscellaneous Features:</h3>
         <ul>
-          <li>Hamburger button: Access survey list, sorted by recency.</li>
-          <li>
-            Info button (bottom-right): Get color code explanations, user help,
-            and more.
-          </li>
+          <li>Hamburger button: Access survey list.</li>
         </ul>
-        <div className="scroll-btn down" onClick={scrollToBottom}>
-          ⬇️
-        </div>
       </div>
     </>
   );
