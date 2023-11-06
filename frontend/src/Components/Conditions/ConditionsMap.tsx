@@ -12,8 +12,8 @@ import {
   IRInew,
   KPI,
   Mu,
-  YearMonth,
   MultiMode,
+  YearMonth,
 } from '../../models/conditions';
 import { getAllConditions } from '../../queries/conditions';
 
@@ -56,6 +56,8 @@ const getTypeColor = (type: string): string => {
  * @param y otherwise the color is yellow if value <= y
  * @param o otherwise the color is orange if value <= o. Otherwise, the color is red
  * @returns {string} the color
+ *
+ * @author Kerbourc'h
  */
 const getColorForValue = (
   value: number,
@@ -75,6 +77,13 @@ const getColorForValue = (
     : '#FF0000';
 };
 
+/**
+ * The gradient color for each indicator
+ *
+ * @param properties the type and value of the GeoJSON being drawn
+ *
+ * @author Kerbourc'h
+ */
 const getConditionColor = (properties: GeoJSON.GeoJsonProperties): string => {
   if (properties !== null) {
     const type = properties.type;
@@ -111,6 +120,8 @@ interface ConditionsMapProps {
 
 /**
  * Component rendering the map with the conditions
+ *
+ * @author Hansen, Kerbourc'h
  */
 const ConditionsMap: FC<ConditionsMapProps> = ({
   children,

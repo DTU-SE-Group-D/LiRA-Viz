@@ -1,5 +1,5 @@
 import { IRoad } from '../../models/path';
-import { LatLng, LatLngLiteral } from 'leaflet';
+import L, { LatLng, LatLngLiteral } from 'leaflet';
 import { Polyline } from 'react-leaflet';
 import React, { ReactElement, useEffect } from 'react';
 
@@ -12,6 +12,8 @@ interface Props {
 
 /**
  * A components that renders a road on the map
+ *
+ * @author Kerbourc'h
  */
 const Road: React.FC<Props> = ({ road, onClick }) => {
   const [lines, setLines] = React.useState<ReactElement[]>([]);
@@ -47,11 +49,12 @@ const Road: React.FC<Props> = ({ road, onClick }) => {
         pathOptions={{ weight: 5, opacity: opacity }}
         positions={data}
         eventHandlers={{
-          click: ({ latlng }) => {
-            if (onClick) onClick(latlng);
+          click: (e) => {
+            L.DomEvent.stopPropagation(e); // used to prevent the map to detect the click
+            if (onClick) onClick(e.latlng);
           },
           mouseover: () => {
-            setOpacity(0.8);
+            setOpacity(0.9);
           },
           mouseout: () => {
             setOpacity(0.2);

@@ -11,6 +11,8 @@ interface Props {
 
 /**
  * This component is used to force an update of the map. It is used in conjunction with the useMap hook.
+ *
+ * @author Kerbourc'h
  */
 const ForceMapUpdate: React.FC<Props> = ({ triggerUpdate, position }) => {
   const map = useMap();
@@ -19,6 +21,7 @@ const ForceMapUpdate: React.FC<Props> = ({ triggerUpdate, position }) => {
     map.invalidateSize();
   }, [triggerUpdate]);
 
+  // TODO: not working when moving too little
   useEffect(() => {
     if (position) {
       map.flyTo(position);
