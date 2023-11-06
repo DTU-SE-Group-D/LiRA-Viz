@@ -9,22 +9,29 @@ import ForceMapUpdate from '../Components/Map/ForceMapUpdate';
 import Roads from '../Components/Map/Roads';
 import {
   ConditionTypeOptions,
-  SeverityOptions,
   DateRange,
-  YearMonth,
-  MultiMode,
   DefaultMode,
+  MultiMode,
+  SeverityOptions,
+  YearMonth,
 } from '../models/conditions';
 import MonthFilter from '../Components/Map/Inputs/MonthFilter';
 import MultiSelector from '../Components/Map/Inputs/MultiSelector';
 import '../css/navbar.css';
+import DetectMapClick from '../Components/Map/DetectMapClick';
+import { Link } from 'react-router-dom';
 
 /**
  * Component rendering the main page
+ *
+ * @author Hansen, Kerbourc'h
  */
 const Main: FC = () => {
   // The roads loaded from the database
   const [roads, setRoads] = useState<IRoad[]>();
+  // Select road index
+  const [selectedRoadIdx, setSelectedRoadIdx] = useState<number>(-1);
+
   // The position to move too (used by the Search component)
   const [moveToPosition, setMoveToPosition] = useState<LatLng>();
   // The indicator(s) to display on the map
@@ -43,7 +50,7 @@ const Main: FC = () => {
   function dateChange(date: any) {
     const YearMonth: YearMonth = {
       year: date.getFullYear(),
-      month: date.getMonth() + 1,
+      month: date.getMonth() + 1, // january = 0
     };
 
     return YearMonth;
@@ -84,7 +91,7 @@ const Main: FC = () => {
 
   const multiModeSet = useCallback((value: string[]) => {
     const outputMode: MultiMode = {
-      count: value.length + 0,
+      count: value.length,
       mode: value
         .map((e: any) => e.label)
         .toString()
@@ -108,7 +115,20 @@ const Main: FC = () => {
         <div className="nav-container">
           <Search
             onPlaceSelect={(value: any) => {
-              console.log(value);
+              const osm_id = value?.properties?.datasource?.raw?.osm_id;
+              if (osm_id && roads) {
+                console.debug(osm_id, roads.length);
+                for (let idx = 0; idx < roads.length; idx++) {
+                  if (
+                    Object.keys(roads[idx].geometries).includes(String(osm_id))
+                  ) {
+                    console.debug('Found road', idx);
+                    setSelectedRoadIdx(idx);
+                    break;
+                  }
+                }
+              }
+
               const coordinates = value?.geometry?.coordinates;
               if (coordinates) {
                 const position = {
@@ -147,9 +167,35 @@ const Main: FC = () => {
           />
           <p className="labelling"> Start Date → End Date</p>
         </div>
+        <div className="inspect-button-div">
+          <Link
+            to="/inspect/survey/65d62536-d3af-4184-9c6b-6fedd97de15c"
+            hidden={selectedRoadIdx === -1}
+            className="inspect-button"
+          >
+            Inspect
+          </Link>
+        </div>
       </div>
       <ConditionsMap multiMode={multiMode!} rangeSelected={rangeSelected}>
-        <Roads roads={roads} />
+        <Roads
+          roads={roads}
+          selectedRoadIdx={selectedRoadIdx}
+          onSelectedRoad={(index, _road, position) => {
+            // If no road is selected, select the road
+            if (selectedRoadIdx === -1) {
+              setSelectedRoadIdx(index);
+            }
+            setMoveToPosition(position);
+          }}
+        />
+        <DetectMapClick
+          onClick={() => {
+            if (selectedRoadIdx !== -1) {
+              setSelectedRoadIdx(-1);
+            }
+          }}
+        />
         <ForceMapUpdate position={moveToPosition} />
       </ConditionsMap>
     </div>

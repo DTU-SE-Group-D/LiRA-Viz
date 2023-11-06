@@ -2,38 +2,47 @@ import React from 'react';
 import { IRoad } from '../../models/path';
 import Road from './Road';
 import { LatLng } from '../../models/models';
-import { useNavigate } from 'react-router-dom';
 
 interface Props {
   /** The roads */
   roads?: IRoad[];
+  /** The selected road index */
+  selectedRoadIdx?: number;
   /** The event handlers, when a road is selected */
-  onSelectedRoad?: (road: IRoad, position: LatLng) => void;
+  onSelectedRoad?: (index: number, road: IRoad, position: LatLng) => void;
 }
 
 /**
  * A components that renders the roads on the map
+ *
+ * @author Kerbourc'h
  */
-const Roads: React.FC<Props> = ({ roads, onSelectedRoad }) => {
-  const navigate = useNavigate();
-
+const Roads: React.FC<Props> = ({ roads, selectedRoadIdx, onSelectedRoad }) => {
   return (
     <>
-      {roads?.map((road) => (
+      {selectedRoadIdx === undefined || selectedRoadIdx === -1 || !roads ? (
+        roads?.map((road, index) => (
+          <Road
+            key={road.way_name}
+            road={road}
+            onClick={(position) => {
+              if (onSelectedRoad) {
+                onSelectedRoad(index, road, position);
+              }
+            }}
+          />
+        ))
+      ) : (
         <Road
-          key={road.way_name}
-          road={road}
+          key={roads[selectedRoadIdx].way_name}
+          road={roads[selectedRoadIdx]}
           onClick={(position) => {
-            console.log(road, position);
-            // TODO: remove when possible to select a road
-            navigate('/inspect');
-
             if (onSelectedRoad) {
-              onSelectedRoad(road, position);
+              onSelectedRoad(selectedRoadIdx, roads[selectedRoadIdx], position);
             }
           }}
         />
-      ))}
+      )}
     </>
   );
 };

@@ -20,29 +20,19 @@
   position: relative;
   width: 15%;
   min-width: fit-content;
-  height: 100%;
-  margin-top: 13px;
-  margin-left: 0.4%;
-  align-self: flex-start;
 }
 
 .picker-container {
   position: relative;
   width: 15%;
   min-width: fit-content;
-  height: 100%;
-  margin-top: 10px;
-  align-self: flex-start;
+  height: 38px;
 }
 
 .filter-container {
   position: relative;
   width: 6%;
   min-width: fit-content;
-  height: 100%;
-  margin-top: 13px;
-  align-self: flex-start;
-  flex-basis: auto;
 }
 
 .nav-tab {
@@ -64,11 +54,20 @@
   white-space: nowrap;
 }
 
-.nav-tab:hover {
-  color: var(--highlight-text);
+.inspect-button-div {
+  position: relative;
+  width: 6%;
+  min-width: fit-content;
+  margin-left: auto;
+  margin-right: 20px;
 }
 
-.nav-tab.active {
-  color: var(--highlight-text);
-  background: var(--highlight-background);
+.inspect-button {
+  font-size: inherit; /* Inherit font size */
+  color: inherit; /* Inherit text color */
+  cursor: pointer; /* Add a pointer cursor on hover */
+  text-decoration: none; /* Remove underlines on hover */
+  background: #7f6fe9;
+  border-radius: 2px;
+  padding: 7px 20px 7px 20px;
 }
