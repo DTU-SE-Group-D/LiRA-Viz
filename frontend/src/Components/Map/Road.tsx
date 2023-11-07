@@ -22,30 +22,11 @@ const Road: React.FC<Props> = ({ road, onClick }) => {
   useEffect(() => {
     if (road === undefined) return;
     const lines: ReactElement[] = [];
-    const data: LatLngLiteral[][] = [];
-
-    let idx = 0;
-    // For each segment of the road create a array of the GPS points and a Polyline to show
-    road.way_ids.forEach((way_ids: string[]) => {
-      data[idx] = [];
-      way_ids.forEach((way_id, way_idx) => {
-        if (way_idx === 0) {
-          // add all the points for the first
-          data[idx].push(...road.geometries[way_id]);
-        } else if (way_idx === way_ids.length - 1) {
-          // add all the points except the first for the last ways
-          data[idx].push(...road.geometries[way_id].slice(1));
-        } else {
-          // add all the points except the first and last point for the middle ways
-          data[idx].push(...road.geometries[way_id].slice(1, -1));
-        }
-      });
-      idx++;
-    });
+    const data: LatLngLiteral[][] = Object.values(road.geometries);
 
     lines.push(
       <Polyline
-        key={road.way_ids.join('-')} // use by React JS to identify the element
+        key={road.branches.join('-')} // use by React JS to identify the element
         pathOptions={{ weight: 5, opacity: opacity }}
         positions={data}
         eventHandlers={{

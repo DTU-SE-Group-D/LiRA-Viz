@@ -5,9 +5,14 @@ import { RoadService } from './road.service';
 export class RoadController {
   constructor(private readonly service: RoadService) {}
 
+  /**
+   * Get all the roads in the database.
+   *
+   * @author Kerbourc'h
+   */
   @Get('')
-  getRoads() {
-    return this.service.getSurveysPath();
+  async getRoads() {
+    return await this.service.getRoads();
   }
 
   /**
@@ -15,6 +20,7 @@ export class RoadController {
    * **It might get removed in the future.**
    *
    * @param id the OSM id of a way in the road
+   * @author Kerbourc'h
    */
   @Get('getorcreateway/:id')
   async insertRoad(@Param('id') id: string) {

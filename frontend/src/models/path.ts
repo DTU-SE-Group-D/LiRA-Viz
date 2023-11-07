@@ -89,7 +89,7 @@ export interface IRoad {
   //            /---<---\
   // -----------         -----------
   //            \--->---/
-  way_ids: WayId[][];
+  branches: WayId[][];
   // the geometry of each way
   geometries: Record<WayId, LatLng[]>;
 }
