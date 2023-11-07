@@ -2,12 +2,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 
-interface TopBarProps {
-  /**
-   * The toggle button value
-   */
-}
-
 const return_btn = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -27,7 +21,7 @@ const return_btn = (
 /**
  * The Topbar with return and toggle button inside
  */
-const TopBar: React.FC<TopBarProps> = () => {
+const TopBar: React.FC = () => {
   const navigate = useNavigate(); // Get the navigate function
 
   const handleReturn = () => {
