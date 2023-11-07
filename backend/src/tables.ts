@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { Geometry } from 'geojson';
+import { Geometry, LineString } from 'geojson';
 import { ImageType, MeasurementType } from './models';
 
 //
@@ -71,15 +71,15 @@ export interface ISurvey {
 
 export const Survey = (k: Knex) => k.from<ISurvey>('survey');
 
-export interface IWay {
+export interface IWay<T = LineString> {
   id?: number;
   way_name: string;
   osm_id: string; // This is because bigint is not supported by knex
   node_start: string; // See https://stackoverflow.com/questions/39168501/pg-promise-returns-integers-as-strings/39176670#39176670
   node_end: string; // Same here
   length: number;
-  section_geom: Geometry;
+  section_geom: T; // T should either be LineString or LatLng[]
   isoneway: boolean;
 }
 
-export const Way = (k: Knex) => k.from<IWay>('way');
+export const Way = (k: Knex) => k.from<IWay<LineString>>('way');

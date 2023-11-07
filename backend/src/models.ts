@@ -35,7 +35,7 @@ export interface SurveyConditions {
 /**
  * The OSM id of a way.
  */
-export type WayId = string;
+export type OSMWayId = string;
 
 /**
  * The description of a road
@@ -51,8 +51,8 @@ export type WayId = string;
  */
 export interface Road {
   way_name: string;
-  way_ids: WayId[][];
-  geometries: Record<WayId, LatLng[]>;
+  branches: OSMWayId[][];
+  geometries: Record<OSMWayId, LatLng[]>;
 }
 
 /**
