@@ -1,3 +1,6 @@
+/**
+ * @author this is from the template of NestJS
+ */
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 
