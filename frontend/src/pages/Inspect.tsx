@@ -6,11 +6,10 @@ import RoadImage from '../Components/RoadDetails/RoadImage';
 import TopBar from '../Components/RoadDetails/TopBar';
 import Split from '@uiw/react-split';
 import ConditionsGraph from '../Components/RoadDetails/ConditionsGraph';
-import {
-  getConditionsSurvey,
-} from '../queries/conditions';
+import { getConditionsSurvey } from '../queries/conditions';
 import '../css/split.css';
 import { ConditionsGraphData, conditionTypes } from '../models/conditions';
+import { useParams } from 'react-router-dom';
 
 /**
  * Inspect Page showing the map, road images and the chart graph with multiple Split components to resize them
@@ -26,23 +25,21 @@ const Inspect: FC = () => {
 
   const [mapAreaSize, setMapAreaSize] = useState(35);
   const [roadImageSize, setRoadImageSize] = useState(65);
+  const { id, type } = useParams();
 
   useEffect(() => {
-    getConditionsSurvey(
-      '65d62536-d3af-4184-9c6b-6fedd97de15c',
-      (surveyData) => {
-        console.log('surveyData: ');
-        console.log(surveyData);
+    console.log(id);
+    if (id && type === 'surveys') {
+      getConditionsSurvey(id, (surveyData) => {
+        const conditionsGraphAllDataSets: ConditionsGraphData[] = [];
 
-        let conditionsGraphAllDataSets: ConditionsGraphData[] = [];
-
-        for (let indicator of conditionTypes) {
+        for (const indicator of conditionTypes) {
           const rowOfData = surveyData.filter(
             (item) => item.type === indicator,
           );
           //check if rowOfData is empty
           if (rowOfData.length === 0) continue;
-          let conditionsGraphSingleDataSet: ConditionsGraphData = {
+          const conditionsGraphSingleDataSet: ConditionsGraphData = {
             type: indicator,
             dataValues: rowOfData.map((item) => ({
               x: item.distance_survey,
@@ -57,13 +54,11 @@ const Inspect: FC = () => {
           };
           conditionsGraphAllDataSets.push(conditionsGraphSingleDataSet);
         }
-        //TODO remember to delete this
-        console.log(conditionsGraphAllDataSets);
 
         setChartData(conditionsGraphAllDataSets);
-      },
-    );
-  }, []);
+      });
+    }
+  }, [id, type]);
 
   const handleTopPanelSizeChange = (size: number) => {
     if (size <= 10) {
@@ -119,7 +114,7 @@ const Inspect: FC = () => {
           </Split>
         </div>
         <div style={{ height: `${conditionsGraphSize}%` }}>
-            <ConditionsGraph data={chartData} />
+          <ConditionsGraph data={chartData} />
         </div>
       </Split>
     </div>

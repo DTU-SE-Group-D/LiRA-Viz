@@ -21,7 +21,9 @@ const App: FC = () => {
         <Routes>
           <Route index element={<Navigate to="/map" replace />} />
           <Route path="/map" element={<Main />} />
-          <Route path="/road-details" element={<Inspect />} />
+          <Route path="/inspect" element={<Inspect />} />
+          <Route path="/inspect/:type" element={<Inspect />} />
+          <Route path="/inspect/:type/:id" element={<Inspect />} />
         </Routes>
       </Router>
     </div>

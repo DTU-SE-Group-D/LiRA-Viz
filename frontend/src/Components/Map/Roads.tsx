@@ -26,7 +26,7 @@ const Roads: React.FC<Props> = ({ roads, onSelectedRoad }) => {
           onClick={(position) => {
             console.log(road, position);
             // TODO: remove when possible to select a road
-            navigate('/road-details');
+            navigate('/inspect');
 
             if (onSelectedRoad) {
               onSelectedRoad(road, position);

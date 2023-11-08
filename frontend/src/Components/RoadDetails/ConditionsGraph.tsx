@@ -82,6 +82,7 @@ const options = (
 interface Props {
   data?: ConditionsGraphData[];
 }
+
 /**
  * The Graph displaying the road parameter data in the Inspect Page
  * @author Muro, Kerbourc'h
@@ -120,7 +121,7 @@ const ConditionsGraph: FC<Props> = ({ data }) => {
 
   // attach events to the graph options
   const graphOptions: ChartOptions<'scatter'> = useMemo(() => {
-    let scales: DeepPartial<ScaleChartOptions<'scatter'>> = {
+    const scales: DeepPartial<ScaleChartOptions<'scatter'>> = {
       scales: {
         x: {
           title: {
