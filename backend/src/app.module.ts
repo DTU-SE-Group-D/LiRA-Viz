@@ -18,6 +18,11 @@ import { ImageController } from './images/image.controller';
 import { ImageService } from './images/image.service';
 import { SurveyService } from './surveys/survey.service';
 import { SurveyController } from './surveys/survey.controller';
+import { UploadController } from './upload/upload.controller';
+
+import { BullModule } from '@nestjs/bull';
+import { FileProcessor } from './upload/file.processor';
+import * as process from 'process';
 
 const database = (config: any, name: string) => {
   return KnexModule.forRootAsync(
@@ -36,6 +41,15 @@ const database = (config: any, name: string) => {
       rootPath: process.env.IMAGE_STORE_PATH,
       serveRoot: '/cdn/',
     }),
+    BullModule.forRoot({
+      redis: {
+        host: process.env.REDIS_HOST,
+        port: Number(process.env.REDIS_PORT),
+      },
+    }),
+    BullModule.registerQueue({
+      name: 'file-processing',
+    }),
   ],
   controllers: [
     AppController,
@@ -43,6 +57,7 @@ const database = (config: any, name: string) => {
     RoadController,
     SurveyController,
     ImageController,
+    UploadController,
   ],
   providers: [
     AppService,
@@ -51,6 +66,7 @@ const database = (config: any, name: string) => {
     RoadService,
     SurveyService,
     ImageService,
+    FileProcessor,
   ],
 })
 export class AppModule {}
