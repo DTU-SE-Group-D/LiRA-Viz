@@ -6,7 +6,6 @@ interface TopBarProps {
   /**
    * The toggle button value
    */
-  isToggleOn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const return_btn = (
@@ -28,7 +27,7 @@ const return_btn = (
 /**
  * The Topbar with return and toggle button inside
  */
-const TopBar: React.FC<TopBarProps> = ({ isToggleOn }) => {
+const TopBar: React.FC<TopBarProps> = () => {
   const navigate = useNavigate(); // Get the navigate function
 
   const handleReturn = () => {
@@ -36,26 +35,11 @@ const TopBar: React.FC<TopBarProps> = ({ isToggleOn }) => {
     navigate('/');
   };
 
-  const handleToggleMiddleArea = () => {
-    // Toggle the state to show/hide MiddleArea2
-    isToggleOn((prevState) => !prevState);
-  };
-
   return (
     <div className="top-bar topBar-container ">
       <Link to="/" onClick={handleReturn} className="btnLinkContainer">
         {return_btn}
       </Link>
-      <div className="toggle-container">
-        <div className="toggle-label">
-          <span className="toggle-text">Map mode</span>
-          <label className="toggle-switch">
-            <input type="checkbox" onChange={handleToggleMiddleArea} />
-            <span className="slider"></span>
-          </label>
-          <span className="toggle-text">Road mode</span>
-        </div>
-      </div>
     </div>
   );
 };

@@ -4,21 +4,29 @@ import '../css/road_details.css'; // Import the CSS file
 import MapArea from '../Components/RoadDetails/MapArea';
 import RoadImage from '../Components/RoadDetails/RoadImage';
 import TopBar from '../Components/RoadDetails/TopBar';
-import Split from 'react-split';
+import Split from '@uiw/react-split';
 import ConditionsGraph from '../Components/RoadDetails/ConditionsGraph';
 import { ChartData } from 'chart.js';
 import { getConditionsWay } from '../queries/conditions';
 import '../css/split.css';
 
 /**
- * Component rendering the inspect page
+ * Inspect Page showing the map, road images and the chart graph with multiple Split components to resize them
+ * @author Muro, Chen
  */
 const Inspect: FC = () => {
-  const [showMapImageMode, setShowRoadImageMode] = useState(false);
   const [wayData, setWayData] =
     useState<ChartData<'scatter', number[], number>>();
   const [minAndMax, setMinAndMax] = useState<number[]>([1, 1, 0, 0]);
   const [triggerUpdate, setTriggerUpdate] = useState<number>(0);
+
+  const [topPanelSize, setTopPanelSize] = useState(35);
+  const [conditionsGraphSize, setConditionsGraphSize] = useState(
+    65 - (10 / window.innerWidth) * 100,
+  );
+
+  const [mapAreaSize, setMapAreaSize] = useState(35);
+  const [roadImageSize, setRoadImageSize] = useState(65);
 
   useEffect(() => {
     getConditionsWay('0cba0666-d75e-45bd-9da6-62ef0fe9544c', (wc) => {
@@ -64,27 +72,63 @@ const Inspect: FC = () => {
     });
   }, []);
 
+  const handleTopPanelSizeChange = (size: number) => {
+    if (size <= 10) {
+      setTopPanelSize(0);
+      setConditionsGraphSize(100 - (10 / window.innerHeight) * 100);
+    } else if (size >= 90) {
+      setConditionsGraphSize(0);
+      setTopPanelSize(100 - (10 / window.innerHeight) * 100);
+    } else {
+      setTopPanelSize(size);
+      setConditionsGraphSize(100 - size - (10 / window.innerHeight) * 100);
+    }
+  };
+
+  const handleMapAreaSizeChange = (size: number) => {
+    if (size <= 7) {
+      setMapAreaSize(0);
+      setRoadImageSize(100 - (10 / window.innerWidth) * 100);
+    } else if (size >= 93) {
+      setRoadImageSize(0);
+      setMapAreaSize(100 - (10 / window.innerWidth) * 100);
+    } else {
+      setMapAreaSize(size);
+      setRoadImageSize(100 - size - (10 / window.innerWidth) * 100);
+    }
+  };
+
   return (
     <div>
-      <TopBar isToggleOn={setShowRoadImageMode} />
+      <TopBar />
       <Split
+        mode="vertical"
         className="split"
-        direction="vertical"
-        sizes={[45, 55]}
-        minSize={0}
-        snapOffset={50}
-        onDragEnd={() => {
+        onDragEnd={(sizeTop) => {
+          handleTopPanelSizeChange(sizeTop);
           setTriggerUpdate((prev) => prev + 1);
         }}
       >
-        <div>
-          {showMapImageMode ? (
-            <RoadImage />
-          ) : (
-            <MapArea triggerUpdate={triggerUpdate} />
-          )}
+        <div style={{ height: `${topPanelSize}%` }}>
+          <Split
+            mode="horizontal"
+            onDragEnd={(sizeLeft) => {
+              handleMapAreaSizeChange(sizeLeft);
+              // handleMapAreaSizeChange(sizeTopLeft);
+              setTriggerUpdate((prev) => prev + 1);
+            }}
+          >
+            <div style={{ width: `${mapAreaSize}%` }}>
+              <MapArea triggerUpdate={triggerUpdate} />
+            </div>
+            <div style={{ width: `${roadImageSize}%` }}>
+              <RoadImage />
+            </div>
+          </Split>
         </div>
-        <ConditionsGraph data={wayData} minAndMax={minAndMax} />
+        <div style={{ height: `${conditionsGraphSize}%` }}>
+          <ConditionsGraph data={wayData} minAndMax={minAndMax} />
+        </div>
       </Split>
     </div>
   );

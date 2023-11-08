@@ -107,6 +107,10 @@ interface Props {
   minAndMax: number[];
 }
 
+/**
+ * The Graph displaying the road parameter data in the Inspect Page
+ * @author Muro
+ */
 const ConditionsGraph: FC<Props> = ({ data, minAndMax }) => {
   const ref = useRef<Chart<'scatter', number[], number>>(null);
 
