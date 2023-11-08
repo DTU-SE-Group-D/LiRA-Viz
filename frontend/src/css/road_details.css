@@ -162,7 +162,7 @@ input[type='checkbox'] {
 }
 
 .image-gallery-container {
-  display: flex; /* Add display: flex */
+  display: flex;
   flex-direction: column; /* Stack children vertically */
   justify-content: center; /* Center children vertically */
   position: relative;
@@ -201,8 +201,8 @@ input[type='checkbox'] {
 }
 
 .image-thumbnail {
-  width: 120px; /* Set the fixed width */
-  height: 105px; /* Set a fixed height to maintain aspect ratio */
+  width: 120px;
+  height: 105px;
   object-fit: cover; /* Preserve aspect ratio and cover the container */
   cursor: pointer;
   transition: transform 0.3s ease-in-out;
@@ -260,6 +260,7 @@ input[type='checkbox'] {
   height: 100%;
   background: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
   display: flex;
+
   justify-content: center;
   align-items: center;
   z-index: 1000; /* Ensure the modal is displayed above other components */
@@ -267,8 +268,8 @@ input[type='checkbox'] {
 .image-modal-content {
   position: relative;
   max-height: 50vw;
-  max-width: auto;
   overflow: auto;
+  margin: 0 auto;
   background-color: white;
   z-index: 1100; /* Ensure content inside the modal is above the background */
 }
@@ -282,6 +283,7 @@ input[type='checkbox'] {
 .image-modal-content img {
   height: 50vw;
   width: auto;
+  display: block;
 }
 
 .close-icon {
