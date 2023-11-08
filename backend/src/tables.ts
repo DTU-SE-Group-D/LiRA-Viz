@@ -4,24 +4,24 @@ import { ImageType, MeasurementType } from './models';
 
 export interface IImage {
   id?: number;
-  fk_survey_id: number;
+  fk_survey_id: string;
   distance_survey: number;
   image_path: string;
   type: ImageType;
-  fk_way_id: number;
+  fk_way_id: string;
   distance_way: number;
-  timestamp: Date;
+  timestamp: number;
 }
 
 export const Image = (k: Knex) => k.from<IImage>('image');
 
 export interface IMeasurement {
   id?: number;
-  fk_survey_id: number;
+  fk_survey_id: string;
   distance_survey: number;
   type_index: MeasurementType;
   value: number;
-  fk_way_id: number;
+  fk_way_id: string;
   distance_way: number;
   latitude: number;
   longitude: number;

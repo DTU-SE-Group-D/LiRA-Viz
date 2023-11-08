@@ -39,3 +39,7 @@ lerna-debug.log*
 
 # Documentation
 documentation/
+
+uploads/**/*
+package.json
+package-lock.json
