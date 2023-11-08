@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { IRoad } from '../models/path';
 import { getRoads } from '../queries/road';
 import { LatLng } from '../models/models';
@@ -7,9 +7,16 @@ import ConditionsMap from '../Components/Conditions/ConditionsMap';
 import Search from '../Components/Map/Inputs/Search';
 import ForceMapUpdate from '../Components/Map/ForceMapUpdate';
 import Roads from '../Components/Map/Roads';
-import { conditionTypes, DateRange, YearMonth } from '../models/conditions';
+import {
+  ConditionTypeOptions,
+  SeverityOptions,
+  DateRange,
+  YearMonth,
+  MultiMode,
+  DefaultMode,
+} from '../models/conditions';
 import MonthFilter from '../Components/Map/Inputs/MonthFilter';
-import Selector from '../Components/Map/Inputs/Selector';
+import MultiSelector from '../Components/Map/Inputs/MultiSelector';
 import '../css/navbar.css';
 
 /**
@@ -20,19 +27,35 @@ const Main: FC = () => {
   const [roads, setRoads] = useState<IRoad[]>();
   // The position to move too (used by the Search component)
   const [moveToPosition, setMoveToPosition] = useState<LatLng>();
-  // The indicator to display on the map
-  const [mode, setMode] = useState<string>('ALL');
+  // The indicator(s) to display on the map
+  const [multiMode, setMultiMode] = useState<MultiMode>(DefaultMode);
   // The selected range of date (used to filter the data to show)
   const [rangeSelected, setRangeSelected] = useState<DateRange>({});
+
+  /**
+   *
+   * @param date , returned from MonthFilter
+   * @returns date in YearMonth format
+   *
+   * @author Hansen
+   */
 
   function dateChange(date: any) {
     const YearMonth: YearMonth = {
       year: date.getFullYear(),
-      month: date.getMonth() + 1, // +1 why
+      month: date.getMonth() + 1,
     };
 
     return YearMonth;
   }
+
+  /**
+   *
+   * @param d , the date in YearMonth format
+   * @param start , boolean specifying if the start point (true) or end point (false) of the range should be set.
+   *
+   * @author Hansen
+   */
 
   const rangeChange = (d: YearMonth, start: boolean) => {
     setRangeSelected((old) => {
@@ -48,6 +71,35 @@ const Main: FC = () => {
   // get the actual roads
   useEffect(() => {
     getRoads(setRoads);
+  }, []);
+
+  /**
+   * Function multiModeSet for setting the mode
+   * to filter data on the map.
+   *
+   * @param selected, the object returned from the MultiSelector
+   *
+   * @author Hansen
+   */
+
+  const multiModeSet = useCallback((value: string[]) => {
+    const outputMode: MultiMode = {
+      count: value.length + 0,
+      mode: value
+        .map((e: any) => e.label)
+        .toString()
+        .split(','),
+      ALL: value.some((e: any) => e.value === 'ALL'),
+    };
+
+    if (outputMode.count === 0) {
+      outputMode.mode = [' '];
+      outputMode.ALL = false;
+    } else if (outputMode.ALL) {
+      outputMode.mode = ['KPI', 'DI', 'IRI', 'Mu', 'E_norm'];
+      outputMode.count = outputMode.mode.length;
+    }
+    setMultiMode(outputMode);
   }, []);
 
   return (
@@ -69,21 +121,20 @@ const Main: FC = () => {
           />
         </div>
         <div className="filter-container">
-          <Selector
-            options={conditionTypes}
-            onSelect={(_, name) => {
-              setMode(name);
-            }}
-            defaultValue={'ALL'}
-            label={'Condition Type'}
-          />
+          <MultiSelector
+            options={ConditionTypeOptions}
+            placeholder="Condition Types"
+            handleSelectionChange={multiModeSet}
+            defaultValue={ConditionTypeOptions[0]}
+          ></MultiSelector>
         </div>
         <div className="filter-container">
-          <Selector
-            options={['ALL', 'Critical', 'High', 'Medium', 'Low']}
-            onSelect={(e) => console.log(e)}
-            label={' Severity '}
-          />
+          <MultiSelector
+            placeholder="Severity"
+            handleSelectionChange={(value) => console.log(value)}
+            defaultValue={null}
+            options={SeverityOptions}
+          ></MultiSelector>
         </div>
         <div className="picker-container">
           <MonthFilter
@@ -97,7 +148,7 @@ const Main: FC = () => {
           <p className="labelling"> Start Date → End Date</p>
         </div>
       </div>
-      <ConditionsMap mode={mode} rangeSelected={rangeSelected}>
+      <ConditionsMap multiMode={multiMode!} rangeSelected={rangeSelected}>
         <Roads roads={roads} />
         <ForceMapUpdate position={moveToPosition} />
       </ConditionsMap>

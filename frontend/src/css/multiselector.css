@@ -1,0 +1,31 @@
+.select__menu {
+  background-color: #dddddd9b !important;
+}
+
+.react-select-container {
+  background-color: transparent;
+}
+
+.react-select__control {
+  font-size: small;
+}
+
+.select__placeholder {
+  font-size: 14px;
+}
+
+.react-select__indicators {
+  color: black;
+  font-size: 12px;
+}
+
+.select__menu-list {
+  background-color: #dddddd9b;
+  color: var(--background);
+  font-size: 12px;
+}
+.select__option {
+  background-color: black;
+  color: black;
+  font-size: 12px;
+}
