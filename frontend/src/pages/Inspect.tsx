@@ -6,20 +6,18 @@ import RoadImage from '../Components/RoadDetails/RoadImage';
 import TopBar from '../Components/RoadDetails/TopBar';
 import Split from '@uiw/react-split';
 import ConditionsGraph from '../Components/RoadDetails/ConditionsGraph';
-import { ChartData } from 'chart.js';
-import { getConditionsWay } from '../queries/conditions';
+import { getConditionsSurvey } from '../queries/conditions';
 import '../css/split.css';
+import { ConditionsGraphData, conditionTypes } from '../models/conditions';
+import { useParams } from 'react-router-dom';
 
 /**
  * Inspect Page showing the map, road images and the chart graph with multiple Split components to resize them
  * @author Muro, Chen
  */
 const Inspect: FC = () => {
-  const [wayData, setWayData] =
-    useState<ChartData<'scatter', number[], number>>();
-  const [minAndMax, setMinAndMax] = useState<number[]>([1, 1, 0, 0]);
+  const [chartData, setChartData] = useState<ConditionsGraphData[]>();
   const [triggerUpdate, setTriggerUpdate] = useState<number>(0);
-
   const [topPanelSize, setTopPanelSize] = useState(35);
   const [conditionsGraphSize, setConditionsGraphSize] = useState(
     65 - (10 / window.innerWidth) * 100,
@@ -27,50 +25,40 @@ const Inspect: FC = () => {
 
   const [mapAreaSize, setMapAreaSize] = useState(35);
   const [roadImageSize, setRoadImageSize] = useState(65);
+  const { id, type } = useParams();
 
   useEffect(() => {
-    getConditionsWay('0cba0666-d75e-45bd-9da6-62ef0fe9544c', (wc) => {
-      console.log(wc);
+    console.log(id);
+    if (id && type === 'surveys') {
+      getConditionsSurvey(id, (surveyData) => {
+        const conditionsGraphAllDataSets: ConditionsGraphData[] = [];
 
-      // Extract 'KPI' and 'DI' data arrays
-      const KPIData = wc.map((p) => p.KPI);
-      const DIData = wc.map((p) => p.DI);
+        for (const indicator of conditionTypes) {
+          const rowOfData = surveyData.filter(
+            (item) => item.type === indicator,
+          );
+          //check if rowOfData is empty
+          if (rowOfData.length === 0) continue;
+          const conditionsGraphSingleDataSet: ConditionsGraphData = {
+            type: indicator,
+            dataValues: rowOfData.map((item) => ({
+              x: item.distance_survey,
+              y: item.value,
+            })),
+            minY: Math.min(...rowOfData.map((item) => item.value)),
+            maxY: Math.max(...rowOfData.map((item) => item.value)),
+            minX:
+              Math.min(...rowOfData.map((item) => item.distance_survey)) - 1,
+            maxX:
+              Math.max(...rowOfData.map((item) => item.distance_survey)) + 1,
+          };
+          conditionsGraphAllDataSets.push(conditionsGraphSingleDataSet);
+        }
 
-      // Find max and min values for 'KPI' and 'DI'
-      const minKPI = Math.min(...KPIData);
-      const maxKPI = Math.max(...KPIData);
-      const maxDI = Math.max(...DIData);
-      const minDI = Math.min(...DIData);
-
-      setMinAndMax([minKPI, maxKPI, minDI, maxDI]);
-
-      setWayData({
-        labels: wc.map((p) => p.way_dist * 100),
-        datasets: [
-          {
-            type: 'scatter' as const,
-            showLine: true,
-            label: 'KPI',
-            borderColor: 'rgb(255, 99, 132)',
-            borderWidth: 2,
-            fill: false,
-            data: wc.map((p) => p.KPI),
-            yAxisID: 'KPI',
-          },
-          {
-            type: 'scatter' as const,
-            showLine: true,
-            label: 'DI',
-            borderColor: 'rgb(120, 245, 23)',
-            borderWidth: 2,
-            fill: false,
-            data: wc.map((p) => p.DI),
-            yAxisID: 'DI',
-          },
-        ],
+        setChartData(conditionsGraphAllDataSets);
       });
-    });
-  }, []);
+    }
+  }, [id, type]);
 
   const handleTopPanelSizeChange = (size: number) => {
     if (size <= 10) {
@@ -104,7 +92,7 @@ const Inspect: FC = () => {
       <Split
         mode="vertical"
         className="split"
-        onDragEnd={(sizeTop) => {
+        onDragEnd={(sizeTop: number) => {
           handleTopPanelSizeChange(sizeTop);
           setTriggerUpdate((prev) => prev + 1);
         }}
@@ -112,9 +100,8 @@ const Inspect: FC = () => {
         <div style={{ height: `${topPanelSize}%` }}>
           <Split
             mode="horizontal"
-            onDragEnd={(sizeLeft) => {
+            onDragEnd={(sizeLeft: number) => {
               handleMapAreaSizeChange(sizeLeft);
-              // handleMapAreaSizeChange(sizeTopLeft);
               setTriggerUpdate((prev) => prev + 1);
             }}
           >
@@ -127,7 +114,7 @@ const Inspect: FC = () => {
           </Split>
         </div>
         <div style={{ height: `${conditionsGraphSize}%` }}>
-          <ConditionsGraph data={wayData} minAndMax={minAndMax} />
+          <ConditionsGraph data={chartData} />
         </div>
       </Split>
     </div>

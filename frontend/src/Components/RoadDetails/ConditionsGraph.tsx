@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useRef } from 'react';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActiveElement,
   CategoryScale,
@@ -11,12 +11,15 @@ import {
   LinearScale,
   LineElement,
   PointElement,
+  ScaleChartOptions,
   Title,
   Tooltip,
 } from 'chart.js';
 import 'chart.js/auto';
 import { Scatter } from 'react-chartjs-2';
 import zoomPlugin from 'chartjs-plugin-zoom';
+import { ConditionsGraphData } from '../../models/conditions';
+import { DeepPartial } from 'chart.js/dist/types/utils';
 
 Chart.register(
   CategoryScale,
@@ -29,7 +32,13 @@ Chart.register(
   zoomPlugin,
 );
 
-const options = (minAndMax: number[]): ChartOptions<'scatter'> => ({
+/**
+ * this function sets the viewing option for the chart graph
+ **/
+const options = (
+  data?: ConditionsGraphData[],
+  scales?: DeepPartial<ScaleChartOptions<'scatter'>>,
+): ChartOptions<'scatter'> => ({
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
@@ -45,8 +54,11 @@ const options = (minAndMax: number[]): ChartOptions<'scatter'> => ({
         // modifierKey: 'ctrl',
       },
       limits: {
-        x: { min: 0, max: 100, minRange: 20 },
-        y: { min: 0, max: 10 },
+        x: {
+          min: data ? Math.min(...data.map((item) => item.minX)) : 0,
+          max: data ? Math.max(...data.map((item) => item.maxX)) : 100,
+          minRange: 20,
+        },
       },
       zoom: {
         // vv drag to zoom option could be a solution vv
@@ -64,55 +76,21 @@ const options = (minAndMax: number[]): ChartOptions<'scatter'> => ({
       },
     },
   },
-  scales: {
-    x: {
-      title: {
-        display: true,
-        text: 'distance (m)',
-      },
-      ticks: {
-        stepSize: 10,
-        callback: (tick: string | number) =>
-          Math.round(parseFloat(tick.toString())),
-      },
-    },
-    //TODO will be a variable passed from parent
-    KPI: {
-      type: 'linear',
-      position: 'left',
-      display: 'auto',
-      min: Math.floor(minAndMax[0]),
-      max: Math.ceil(minAndMax[1]),
-      title: {
-        display: true,
-        text: 'KPI',
-      },
-    },
-    DI: {
-      type: 'linear',
-      position: 'right',
-      display: 'auto',
-      min: Math.floor(minAndMax[2]),
-      max: Math.ceil(minAndMax[3]),
-      title: {
-        display: true,
-        text: 'DI',
-      },
-    },
-  },
+  scales: scales,
 });
 
 interface Props {
-  data: ChartData<'scatter', number[], number> | undefined;
-  minAndMax: number[];
+  data?: ConditionsGraphData[];
 }
 
 /**
  * The Graph displaying the road parameter data in the Inspect Page
- * @author Muro
+ * @author Muro, Kerbourc'h
  */
-const ConditionsGraph: FC<Props> = ({ data, minAndMax }) => {
-  const ref = useRef<Chart<'scatter', number[], number>>(null);
+const ConditionsGraph: FC<Props> = ({ data }) => {
+  const ref = useRef<Chart<'scatter', { x: number; y: number }[]>>(null);
+  const [graphLines, setGraphLines] =
+    useState<ChartData<'scatter', { x: number; y: number }[]>>();
 
   useEffect(() => {
     if (ref.current === null) return;
@@ -120,10 +98,62 @@ const ConditionsGraph: FC<Props> = ({ data, minAndMax }) => {
     chart.update();
   }, [ref, data]);
 
+  useEffect(() => {
+    if (data === undefined) {
+      setGraphLines(undefined);
+      return;
+    }
+    setGraphLines({
+      //type: 'scatter',
+      datasets: data.map((item) => {
+        return {
+          showLine: true,
+          label: item.type,
+          borderColor: 'rgb(255, 99, 132)',
+          borderWidth: 2,
+          fill: false,
+          data: item.dataValues,
+          yAxisID: item.type,
+        };
+      }),
+    });
+  }, [data]);
+
   // attach events to the graph options
-  const graphOptions: ChartOptions<'scatter'> = useMemo(
-    () => ({
-      ...options(minAndMax),
+  const graphOptions: ChartOptions<'scatter'> = useMemo(() => {
+    const scales: DeepPartial<ScaleChartOptions<'scatter'>> = {
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'distance (m)',
+          },
+          ticks: {
+            stepSize: 10,
+            callback: (tick: string | number) =>
+              Math.round(parseFloat(tick.toString())),
+          },
+        },
+      },
+    };
+
+    data?.forEach((item) => {
+      if (scales.scales === undefined) return;
+      scales.scales[item.type] = {
+        type: 'linear',
+        position: 'left',
+        display: 'auto',
+        min: item.minY - 1,
+        max: item.maxY + 1,
+        title: {
+          display: true,
+          text: item.type,
+        },
+      };
+    });
+
+    return {
+      ...options(data, scales.scales),
       onClick: (
         event: ChartEvent,
         elts: ActiveElement[],
@@ -134,13 +164,14 @@ const ConditionsGraph: FC<Props> = ({ data, minAndMax }) => {
         const pointIndex = elt.index;
         console.log(pointIndex, event, elts);
       },
-    }),
-    [minAndMax],
-  );
+    };
+  }, [data]);
 
   return (
     <div className="road-conditions-graph">
-      {data && <Scatter ref={ref} data={data} options={graphOptions} />}
+      {data && graphLines && (
+        <Scatter ref={ref} data={graphLines} options={graphOptions} />
+      )}
     </div>
   );
 };

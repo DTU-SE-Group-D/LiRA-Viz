@@ -12,6 +12,8 @@ import { RCService } from './conditions/rc.service';
 import { DB_GROUPD_CONFIG, DB_LIRAMAP_CONFIG } from './database';
 import { RoadController } from './roads/road.controller';
 import { RoadService } from './roads/road.service';
+import { SurveyService } from './surveys/survey.service';
+import { SurveyController } from './surveys/survey.controller';
 
 const database = (config: any, name: string) => {
   return KnexModule.forRootAsync(
@@ -35,7 +37,7 @@ const database = (config: any, name: string) => {
       serveRoot: '/images/',
     }),
   ],
-  controllers: [AppController, RCController, RoadController],
-  providers: [AppService, ConfigService, RCService, RoadService],
+  controllers: [AppController, RCController, RoadController, SurveyController],
+  providers: [AppService, ConfigService, RCService, RoadService, SurveyService],
 })
 export class AppModule {}

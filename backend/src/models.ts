@@ -17,6 +17,15 @@ export interface Condition {
 }
 
 /**
+ * Type of answer from backend for the conditions of a survey.
+ */
+export interface SurveyConditions {
+  type: number;
+  value: number;
+  distance_survey: number;
+}
+
+/**
  * The OSM id of a way.
  */
 export type WayId = string;
@@ -55,6 +64,7 @@ export enum ImageType {
  * The measurement types.
  */
 export enum MeasurementType {
+  Crack = 0,
   Rutting = 1,
   MacroTexture = 2,
   LaneMarking = 3,

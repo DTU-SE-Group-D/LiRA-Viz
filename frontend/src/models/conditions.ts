@@ -5,6 +5,25 @@ export const IRI = 'IRI';
 export const IRInew = 'IRI_new';
 export const Mu = 'Mu';
 export const Enrg = 'E_norm';
+export const Crack = 'Crack';
+export const Rutting = 'Rutting';
+export const MacroTexture = 'MacroTexture';
+export const LaneMarking = 'LaneMarking';
+export const RumbleStrip = 'RumbleStrip';
+export const Potholes = 'Potholes';
+export const DropOffCurb = 'DropOffCurb';
+export const Joint = 'Joint';
+export const Raveling = 'Raveling';
+export const Roughness = 'Roughness';
+export const RoadGeometry = 'RoadGeometry';
+export const WaterEntrapment = 'WaterEntrapment';
+export const Shoving = 'Shoving';
+export const PickOut = 'PickOut';
+export const Bleeding = 'Bleeding';
+export const SealedCrack = 'SealedCrack';
+export const Manholes = 'Manholes';
+export const Patch = 'Patch';
+export const Pumping = 'Pumping';
 
 export const conditionTypes = [
   ALL,
@@ -13,6 +32,25 @@ export const conditionTypes = [
   IRI, // IRInew,
   Mu,
   Enrg,
+  Crack,
+  Rutting,
+  MacroTexture,
+  LaneMarking,
+  RumbleStrip,
+  Potholes,
+  DropOffCurb,
+  Joint,
+  Raveling,
+  Roughness,
+  RoadGeometry,
+  WaterEntrapment,
+  Shoving,
+  PickOut,
+  Bleeding,
+  SealedCrack,
+  Manholes,
+  Patch,
+  Pumping,
 ];
 
 // Options for condition indicator multiselect
@@ -57,4 +95,16 @@ export interface YearMonth {
 export interface DateRange {
   start?: YearMonth;
   end?: YearMonth;
+}
+
+export interface ConditionsGraphData {
+  type: string;
+  dataValues: {
+    x: number;
+    y: number;
+  }[];
+  minY: number;
+  maxY: number;
+  minX: number;
+  maxX: number;
 }
