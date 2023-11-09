@@ -74,7 +74,7 @@
   display: inline-block;
   width: 12px;
   height: 12px;
-  margin-right: 8px;
+  margin-right: 10px;
   border-radius: 50%;
   vertical-align: middle;
 }
@@ -107,4 +107,24 @@
 
 .scroll-btn.down {
   bottom: 400px;
+}
+
+.color-explanation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.color-detail {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  justify-content: center;
+}
+
+.info-box h3,
+.info-box p,
+.info-box ul,
+.info-box li {
+  font-size: 0.9em;
 }

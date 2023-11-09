@@ -15,19 +15,24 @@ const InfoButton: React.FC = () => {
   return (
     <>
       <div className="info-button" onClick={handleInfoToggle}>
-        !
+        i
       </div>
       <div className={`info-box ${showInfo ? 'visible' : ''}`}>
         <h3>Color Code Explanation:</h3>
-        <p>
-          <span className="color-code green"></span>Green: Good condition
-        </p>
-        <p>
-          <span className="color-code yellow"></span>Yellow: Medium condition
-        </p>
-        <p>
-          <span className="color-code red"></span>Red: Critical condition
-        </p>
+        <div className="color-explanation">
+          <div className="color-detail">
+            <span className="color-code green"></span>
+            <p>Green: Good condition</p>
+          </div>
+          <div className="color-detail">
+            <span className="color-code yellow"></span>
+            <p>Yellow: Medium condition</p>
+          </div>
+          <div className="color-detail">
+            <span className="color-code red"></span>
+            <p>Red: Critical condition</p>
+          </div>
+        </div>
         <h3>User Help:</h3>
         <p>Click on a route to get detailed information.</p>
         <h3>Go to the Inspect Page:</h3>
