@@ -64,13 +64,6 @@ export interface Condition {
   value: number;
 }
 
-export interface ConditionKPIDI {
-  fk_way_id: string;
-  KPI: number;
-  DI: number;
-  way_dist: number;
-}
-
 export interface SurveyConditions {
   type: string;
   value: number;

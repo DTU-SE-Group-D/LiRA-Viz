@@ -108,15 +108,3 @@ export interface ConditionsGraphData {
   minX: number;
   maxX: number;
 }
-
-export interface MinAndMaxSingleDataSetGraphValues {
-  type: string;
-  distanceMinAndMax: {
-    minX: number;
-    maxX: number;
-  };
-  dataMinAndMax: {
-    minY: number;
-    maxY: number;
-  };
-}
