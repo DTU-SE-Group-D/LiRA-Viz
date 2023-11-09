@@ -69,7 +69,7 @@ export interface ISurvey {
   survey_id: number;
 }
 
-export const Survey = (k: Knex) => k.from<ISurvey>('surveys');
+export const Survey = (k: Knex) => k.from<ISurvey>('survey');
 
 export interface IWay {
   id?: number;
