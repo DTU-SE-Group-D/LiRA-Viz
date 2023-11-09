@@ -10,6 +10,10 @@ import { getConditionsSurvey } from '../queries/conditions';
 import '../css/split.css';
 import { ConditionsGraphData, conditionTypes } from '../models/conditions';
 import { useParams } from 'react-router-dom';
+import { ImageType } from '../models/path';
+
+// See in ../css/split.css
+const halfSizeOfSplitBar = '5px';
 
 /**
  * Inspect Page showing the map, road images and the chart graph with multiple Split components to resize them
@@ -23,12 +27,13 @@ const Inspect: FC = () => {
     65 - (10 / window.innerWidth) * 100,
   );
 
+  const [selectedType, setSelectedType] = useState<string>(ImageType.ImageInt);
+
   const [mapAreaSize, setMapAreaSize] = useState(35);
   const [roadImageSize, setRoadImageSize] = useState(65);
   const { id, type } = useParams();
 
   useEffect(() => {
-    console.log(id);
     if (id && type === 'surveys') {
       getConditionsSurvey(id, (surveyData) => {
         const conditionsGraphAllDataSets: ConditionsGraphData[] = [];
@@ -88,32 +93,44 @@ const Inspect: FC = () => {
 
   return (
     <div>
-      <TopBar />
+      <TopBar setSelectedType={setSelectedType} />
       <Split
         mode="vertical"
         className="split"
-        onDragEnd={(sizeTop: number) => {
+        onDragEnd={(sizeTop) => {
           handleTopPanelSizeChange(sizeTop);
           setTriggerUpdate((prev) => prev + 1);
         }}
       >
-        <div style={{ height: `${topPanelSize}%` }}>
+        <div
+          style={{ height: `calc(${topPanelSize}% - ${halfSizeOfSplitBar})` }}
+        >
           <Split
             mode="horizontal"
-            onDragEnd={(sizeLeft: number) => {
+            onDragEnd={(sizeLeft) => {
               handleMapAreaSizeChange(sizeLeft);
               setTriggerUpdate((prev) => prev + 1);
             }}
           >
-            <div style={{ width: `${mapAreaSize}%` }}>
+            <div
+              style={{ width: `calc(${mapAreaSize}% - ${halfSizeOfSplitBar})` }}
+            >
               <MapArea triggerUpdate={triggerUpdate} />
             </div>
-            <div style={{ width: `${roadImageSize}%` }}>
-              <RoadImage />
+            <div
+              style={{
+                width: `calc(${roadImageSize}% - ${halfSizeOfSplitBar})`,
+              }}
+            >
+              <RoadImage id={id} type={type} selectedType={selectedType} />
             </div>
           </Split>
         </div>
-        <div style={{ height: `${conditionsGraphSize}%` }}>
+        <div
+          style={{
+            height: `calc(${conditionsGraphSize}% - ${halfSizeOfSplitBar})`,
+          }}
+        >
           <ConditionsGraph data={chartData} />
         </div>
       </Split>

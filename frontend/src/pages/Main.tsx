@@ -169,7 +169,7 @@ const Main: FC = () => {
         </div>
         <div className="inspect-button-div">
           <Link
-            to="/inspect/survey/65d62536-d3af-4184-9c6b-6fedd97de15c"
+            to="/inspect/surveys/65d62536-d3af-4184-9c6b-6fedd97de15c"
             hidden={selectedRoadIdx === -1}
             className="inspect-button"
           >

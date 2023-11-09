@@ -11,7 +11,6 @@
 }
 
 /* Define styles for the middle area */
-.road-image,
 .map-area {
   /* background-color: #eee; Example color for the middle area */
   height: 100%; /* Occupying half of the page vertically */
@@ -113,7 +112,8 @@ input[type='checkbox'] {
 .topBar-container {
   display: flex;
   align-items: center; /* Vertically center items */
-  justify-content: space-between; /* Add space between items */
+  justify-content: flex-start;
+  gap: 2%;
 }
 
 /* Style for image Gallery */

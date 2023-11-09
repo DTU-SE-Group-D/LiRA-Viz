@@ -9,20 +9,25 @@ interface Props {
   /** The default value of the dropdown menu */
   defaultValue?: string;
   /** The label of the dropdown menu */
-  label: string;
+  label?: string;
+  /** The class names of the dropdown menu */
+  className?: string;
 }
 
 /**
  * Selector is the component to show a dropdown menu for condition.
+ *
+ * @author Kerbourc'h
  */
 const Selector: React.FC<Props> = ({
   options,
   onSelect,
   defaultValue,
   label,
+  className,
 }) => {
   return (
-    <div className="input-selector-container">
+    <div className={'input-selector-container ' + className}>
       <select
         className="input"
         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -34,7 +39,7 @@ const Selector: React.FC<Props> = ({
           <option key={i}>{option}</option>
         ))}
       </select>
-      <p className="labelling">{label}</p>
+      {label && <p className="labelling">{label}</p>}
     </div>
   );
 };

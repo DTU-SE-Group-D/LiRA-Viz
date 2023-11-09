@@ -1,0 +1,48 @@
+.road-image,
+.road-image-surface-container {
+  height: 100%;
+}
+
+.road-image {
+  width: 100%;
+}
+/** Selector and information text **/
+
+/* for the selector of image type */
+.road-image-selector {
+  width: 9%;
+  height: 40px;
+  margin-left: 50px;
+}
+
+.road-image-header {
+  position: fixed;
+  width: 150px;
+  height: 70px;
+}
+
+.road-image-header-container {
+  display: flex;
+  justify-content: center;
+}
+
+.road-image-info {
+  font-size: 20px;
+  padding: 0;
+  margin: 5px 0 0;
+}
+
+/** Images formatting **/
+
+.road-image-surface-container {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+.road-image-surface-image canvas {
+  height: 100%;
+}
