@@ -14,6 +14,7 @@ import {
   Mu,
   YearMonth,
   MultiMode,
+  SeverityMode,
 } from '../../models/conditions';
 import { getAllConditions } from '../../queries/conditions';
 
@@ -63,19 +64,76 @@ const getColorForValue = (
   gy: number,
   y: number,
   o: number,
+  severity: string[],
 ): string => {
-  return value <= g
-    ? '#09BD09' // green
-    : value <= gy
-    ? '#02FC02' // greenyellow
-    : value <= y
-    ? '#FFFF00' // yellow
-    : value <= o
-    ? '#ff9900' // orange
-    : '#FF0000';
+  for (let i = 0; i < severity.length; i++) {
+    if (
+      severity[i].includes('Critical') &&
+      severity[i].includes('High') &&
+      severity[i].includes('Medium') &&
+      severity[i].includes('Low')
+    ) {
+      return value <= g
+        ? '#09BD09' // green
+        : value <= gy
+        ? '#02FC02' // greenyellow
+        : value <= y
+        ? '#FFFF00' // yellow
+        : value <= o
+        ? '#ff9900' // orange
+        : '#FF0000';
+    } else if (
+      severity[i].includes('Critical') &&
+      severity[i].includes('High') &&
+      severity[i].includes('Medium')
+    ) {
+      return value <= g
+        ? '#FFFFFF' // transparent
+        : value <= gy
+        ? '#02FC02' // greenyellow
+        : value <= y
+        ? '#FFFF00' // yellow
+        : value <= o
+        ? '#ff9900' // orange
+        : '#FF0000';
+    } else if (
+      severity[i].includes('Critical') &&
+      severity[i].includes('High')
+    ) {
+      return value <= g
+        ? '#FFFFFF' // transparent
+        : value <= gy
+        ? '#FFFFFF' // transparent
+        : value <= y
+        ? '#FFFF00' // yellow
+        : value <= o
+        ? '#ff9900' // orange
+        : '#FF0000';
+    } else if (severity[i].includes('Critical')) {
+      return value <= g
+        ? '#FFFFFF' // transparent
+        : value <= gy
+        ? '#FFFFFF' // transparent
+        : value <= y
+        ? '#FFFFFF' // yellow
+        : value <= o
+        ? '#ff9900' // orange
+        : '#FF0000';
+    }else{
+      return value <= g
+      ? '#FFFFFF' // transparent
+      : value <= gy
+      ? '#FFFFFF' // transparent
+      : value <= y
+      ? '#FFFFFF' // yellow
+      : value <= o
+      ? '#FFFFFF' // orange
+      : '#FF0000';;
+    }
+  }
 };
 
-const getConditionColor = (properties: GeoJSON.GeoJsonProperties): string => {
+const getConditionColor = severity: string[], (properties: GeoJSON.GeoJsonProperties): string => {
   if (properties !== null) {
     const type = properties.type;
     const value = properties.value;
@@ -83,7 +141,7 @@ const getConditionColor = (properties: GeoJSON.GeoJsonProperties): string => {
     if (type !== undefined && type !== 'ALL') {
       switch (type) {
         case KPI:
-          return getColorForValue(value, 4.0, 6.0, 7.0, 8.0);
+          return getColorForValue(value, 4.0, 6.0, 7.0, 8.0, severity);
         case DI:
           return getColorForValue(value, 1.2, 1.5, 2.0, 2.5);
         case IRI:
@@ -107,6 +165,8 @@ interface ConditionsMapProps {
   multiMode: MultiMode;
   /** The range of date to use to filter the conditions **/
   rangeSelected: DateRange;
+  /** The severity selected to use to filter the conditions **/
+  severitySelected: SeverityMode;
 }
 
 /**
@@ -116,6 +176,7 @@ const ConditionsMap: FC<ConditionsMapProps> = ({
   children,
   multiMode,
   rangeSelected,
+  severitySelected,
 }) => {
   const geoJsonRef = useRef<any>();
   // All the data, get from the backend
@@ -168,11 +229,12 @@ const ConditionsMap: FC<ConditionsMapProps> = ({
     };
 
     // Filters the data
-    // multiMode functionality added by @author Hansen
+    // Reformatted @author Hansen
+
     const featureCollection: FeatureCollection = {
       type: 'FeatureCollection',
-      features: dataAll.features.filter(
-        (f) =>
+      features: dataAll.features.filter((f) => {
+        if (
           f.properties !== null &&
           (multiMode.ALL! || multiMode.mode!.includes(f.properties.type)) &&
           (f.properties.valid_yearmonth === undefined ||
@@ -185,8 +247,13 @@ const ConditionsMap: FC<ConditionsMapProps> = ({
                 lessOrEqualThan(
                   f.properties.valid_yearmonth,
                   rangeSelected.end,
-                )))),
-      ),
+                ))))
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      }),
     };
     setConditions(featureCollection);
   }, [dataAll, multiMode, rangeAll, rangeSelected]);
@@ -215,8 +282,11 @@ const ConditionsMap: FC<ConditionsMapProps> = ({
               feature.properties !== null &&
               feature.properties.type !== undefined
             ) {
-              // When in mode 'ALL' show dashline using a color for each type
-              if (multiMode!.mode!.includes(feature.properties.type)) {
+              // Color depending on the "mode"
+              if (
+                multiMode!.mode!.includes(feature.properties.type) &&
+                !severitySelected.selected
+              ) {
                 mapStyle.color = getTypeColor(feature.properties.type);
                 mapStyle.opacity = 0.5;
                 switch (feature.properties.type) {
@@ -236,7 +306,11 @@ const ConditionsMap: FC<ConditionsMapProps> = ({
                   case Enrg:
                     mapStyle.dashArray = '22 22';
                 }
-              } else if (feature.properties.value !== undefined) {
+              } else if (
+                multiMode!.mode!.includes(feature.properties.type) &&
+                multiMode!.count === 1 &&
+                severitySelected.selected!
+              ) {
                 mapStyle.color = getConditionColor(feature.properties);
               } else if (multiMode!.count === 0) {
                 mapStyle.color = getTypeColor('default'); // @author Hansen

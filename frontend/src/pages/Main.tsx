@@ -14,6 +14,8 @@ import {
   YearMonth,
   MultiMode,
   DefaultMode,
+  SeverityMode,
+  DefaultSeverityMode,
 } from '../models/conditions';
 import MonthFilter from '../Components/Map/Inputs/MonthFilter';
 import MultiSelector from '../Components/Map/Inputs/MultiSelector';
@@ -31,6 +33,9 @@ const Main: FC = () => {
   const [multiMode, setMultiMode] = useState<MultiMode>(DefaultMode);
   // The selected range of date (used to filter the data to show)
   const [rangeSelected, setRangeSelected] = useState<DateRange>({});
+  // The selected severity of condition to display on the map
+  const [severitySelected, setSeveritySelected] =
+    useState<SeverityMode>(DefaultSeverityMode);
 
   /**
    *
@@ -102,6 +107,31 @@ const Main: FC = () => {
     setMultiMode(outputMode);
   }, []);
 
+  /**
+   * Function severitySet for setting the mode
+   * to filter data on the map.
+   *
+   * @param selected, the object returned from the MultiSelector
+   *
+   * @author Hansen
+   */
+
+  const severitySet = useCallback((value: string[]) => {
+    const outputMode: SeverityMode = {
+      mode: value
+        .map((e: any) => e.label)
+        .toString()
+        .split(','),
+    };
+    if (value.length > 0) {
+      outputMode.selected = true;
+    } else {
+      outputMode.selected = false;
+    }
+    console.log(outputMode);
+    setSeveritySelected(outputMode);
+  }, []);
+
   return (
     <div style={{ height: '100%' }}>
       <div className="nav-wrapper">
@@ -131,7 +161,7 @@ const Main: FC = () => {
         <div className="filter-container">
           <MultiSelector
             placeholder="Severity"
-            handleSelectionChange={(value) => console.log(value)}
+            handleSelectionChange={severitySet}
             defaultValue={null}
             options={SeverityOptions}
           ></MultiSelector>
@@ -148,7 +178,11 @@ const Main: FC = () => {
           <p className="labelling"> Start Date → End Date</p>
         </div>
       </div>
-      <ConditionsMap multiMode={multiMode!} rangeSelected={rangeSelected}>
+      <ConditionsMap
+        multiMode={multiMode!}
+        rangeSelected={rangeSelected}
+        severitySelected={severitySelected}
+      >
         <Roads roads={roads} />
         <ForceMapUpdate position={moveToPosition} />
       </ConditionsMap>

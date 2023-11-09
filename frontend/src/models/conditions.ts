@@ -26,6 +26,8 @@ export const ConditionTypeOptions = [
   { value: 'E_norm', label: 'E_norm' },
 ];
 
+// Options for condition severity multiselect
+
 export const SeverityOptions = [
   { value: 'Critical', label: 'Critical' },
   { value: 'High', label: 'High' },
@@ -47,6 +49,20 @@ export const DefaultMode: MultiMode = {
   count: 5,
   mode: ['KPI', 'DI', 'IRI', 'Mu', 'E_norm'],
   ALL: true,
+};
+
+// SeverityMode manager
+
+export interface SeverityMode {
+  mode?: string[];
+  selected?: boolean;
+}
+
+// SeverityMode manager default
+
+export const DefaultSeverityMode: SeverityMode = {
+  mode: [' '],
+  selected: false,
 };
 
 export interface YearMonth {
