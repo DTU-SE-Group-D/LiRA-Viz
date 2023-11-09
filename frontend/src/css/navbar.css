@@ -44,7 +44,7 @@
   border-radius: 15%;
 }
 
-.labelling {
+.picker-container .labelling {
   display: fixed;
   flex-direction: column;
   justify-content: center;

@@ -1,3 +1,7 @@
+/**
+ * @author This is from the original LiRAVis project
+ */
+
 import axios, { AxiosResponse } from 'axios';
 
 const development =
@@ -6,7 +10,7 @@ const development =
 const devURL = process.env.REACT_APP_BACKEND_URL_DEV;
 const prodURL = process.env.REACT_APP_BACKEND_URL_PROD;
 
-const getPath = (p: string) => (development ? devURL : prodURL) + p;
+export const getPath = (p: string) => (development ? devURL : prodURL) + p;
 
 export async function asyncPost<T>(
   path: string,

@@ -1,5 +1,7 @@
 .input-selector-container {
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .input-selector-container .input {
@@ -12,4 +14,10 @@
   border: none;
   border-radius: 5px;
   padding: 0 10px;
+}
+
+.input-selector-container .labelling {
+  padding: 0;
+  margin: 0;
+  font-size: 10px;
 }

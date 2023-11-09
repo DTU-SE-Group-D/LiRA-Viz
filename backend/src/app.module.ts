@@ -15,6 +15,8 @@ import { RCService } from './conditions/rc.service';
 import { DB_GROUPD_CONFIG, DB_LIRAMAP_CONFIG } from './database';
 import { RoadController } from './roads/road.controller';
 import { RoadService } from './roads/road.service';
+import { ImageController } from './images/image.controller';
+import { ImageService } from './images/image.service';
 import { SurveyService } from './surveys/survey.service';
 import { SurveyController } from './surveys/survey.controller';
 
@@ -37,10 +39,24 @@ const database = (config: any, name: string) => {
         process.env.IMAGE_PATH_FOR_DEV === 'true'
           ? join(__dirname, '..', '..', '..', 'images')
           : '/home/fish/images/',
-      serveRoot: '/images/',
+      serveRoot: '/cdn/',
     }),
   ],
-  controllers: [AppController, RCController, RoadController, SurveyController],
-  providers: [AppService, ConfigService, RCService, RoadService, SurveyService],
+
+  controllers: [
+    AppController,
+    RCController,
+    RoadController,
+    SurveyController,
+    ImageController,
+  ],
+  providers: [
+    AppService,
+    ConfigService,
+    RCService,
+    RoadService,
+    SurveyService,
+    ImageService,
+  ],
 })
 export class AppModule {}

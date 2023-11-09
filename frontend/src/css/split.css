@@ -2,10 +2,12 @@
   height: calc(100vh - var(--navbar-height));
 }
 
+/** Update halfSizeOfSplitBar in the Inspect.tsx if you change the height */
 .w-split-vertical > .w-split-bar {
   height: 10px;
 }
 
+/** Update halfSizeOfSplitBar in the Inspect.tsx if you change the width */
 .w-split-horizontal > .w-split-bar {
   width: 10px;
 }
