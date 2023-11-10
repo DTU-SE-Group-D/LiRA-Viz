@@ -66,74 +66,98 @@ const getColorForValue = (
   o: number,
   severity: string[],
 ): string => {
-  for (let i = 0; i < severity.length; i++) {
-    if (
-      severity[i].includes('Critical') &&
-      severity[i].includes('High') &&
-      severity[i].includes('Medium') &&
-      severity[i].includes('Low')
-    ) {
-      return value <= g
-        ? '#09BD09' // green
-        : value <= gy
-        ? '#02FC02' // greenyellow
-        : value <= y
-        ? '#FFFF00' // yellow
-        : value <= o
-        ? '#ff9900' // orange
-        : '#FF0000';
-    } else if (
-      severity[i].includes('Critical') &&
-      severity[i].includes('High') &&
-      severity[i].includes('Medium')
-    ) {
-      return value <= g
-        ? '#FFFFFF' // transparent
-        : value <= gy
-        ? '#02FC02' // greenyellow
-        : value <= y
-        ? '#FFFF00' // yellow
-        : value <= o
-        ? '#ff9900' // orange
-        : '#FF0000';
-    } else if (
-      severity[i].includes('Critical') &&
-      severity[i].includes('High')
-    ) {
-      return value <= g
-        ? '#FFFFFF' // transparent
-        : value <= gy
-        ? '#FFFFFF' // transparent
-        : value <= y
-        ? '#FFFF00' // yellow
-        : value <= o
-        ? '#ff9900' // orange
-        : '#FF0000';
-    } else if (severity[i].includes('Critical')) {
-      return value <= g
-        ? '#FFFFFF' // transparent
-        : value <= gy
-        ? '#FFFFFF' // transparent
-        : value <= y
-        ? '#FFFFFF' // yellow
-        : value <= o
-        ? '#ff9900' // orange
-        : '#FF0000';
-    }else{
-      return value <= g
-      ? '#FFFFFF' // transparent
-      : value <= gy
-      ? '#FFFFFF' // transparent
-      : value <= y
-      ? '#FFFFFF' // yellow
+  const isCritical = severity.includes('Critical');
+  const isHigh = severity.includes('High');
+  const isMedium = severity.includes('Medium');
+  const isLow = severity.includes('Low');
+
+  if (isCritical && isHigh && isMedium && isLow) {
+    return value > o
+      ? '#FF0000' // Red
       : value <= o
-      ? '#FFFFFF' // orange
-      : '#FF0000';;
-    }
+      ? '#FF4500' // Orange
+      : value <= y
+      ? '#FFD700' // Gold
+      : value <= gy
+      ? '#ADFF2F' // Green Yellow
+      : value <= g
+      ? '#32CD32' // LimeGreen
+      : '#808080'; // grey
+  } else if (isCritical && isHigh && isMedium) {
+    return value > o
+      ? '#FF0000' // Red
+      : value <= o
+      ? '#FF4500' // Orange
+      : value <= y
+      ? '#FFD700' // Gold
+      : value <= gy
+      ? '#ADFF2F' // Green Yellow
+      : '#808080'; // grey
+  } else if (isCritical && isHigh && isLow) {
+    return value > o
+      ? '#FF0000' // Red
+      : value <= o
+      ? '#FF4500' // Orange
+      : value <= y
+      ? '#00000000' //  Transparent
+      : value <= gy
+      ? '#00000000' // Transparent
+      : value <= g
+      ? '#32CD32' // LimeGreen
+      : '#808080'; // grey
+  } else if (isCritical && isMedium && isLow) {
+    return value > o
+      ? '#FF0000' // Red
+      : value <= o
+      ? '#00000000' // Transparent
+      : value <= y
+      ? '#FFD700' // Gold
+      : value <= gy
+      ? '#ADFF2F' // Green Yellow
+      : value <= g
+      ? '#32CD32' // LimeGreen
+      : '#808080'; // grey
+  } else if (isHigh && isMedium && isLow) {
+    return value > o
+      ? '#00000000' // Red Critical
+      : value <= o
+      ? '#FF4500' // Orange High
+      : value <= y
+      ? '#FFD700' // Gold  Medium
+      : value <= gy
+      ? '#ADFF2F' // Green Yellow Medium / Low
+      : value <= g
+      ? '#32CD32' // LimeGreen Low
+      : '#00000000'; // grey
+  } else if (isCritical && isHigh) {
+    return value > o ? '#FF0000' : value <= o ? '#FF4500' : '#00000000'; // Red, Orange, transparent
+  } else if (isCritical && isMedium) {
+    return value > o ? '#FF0000' : value <= o ? '#FF4500' : '#00000000'; // Red, Orange, transparent
+  } else if (isCritical && isLow) {
+    return value > o ? '#FF0000' : value <= g ? '#32CD32' : '#00000000'; // Red, Limegreen, transparent
+  } else if (isHigh && isMedium) {
+    return value <= o ? '#FF4500' : value <= y ? '#FFD700' : '#00000000'; // Orange, Gold
+  } else if (isHigh && isLow) {
+    return value <= o ? '#FF4500' : value <= g ? '#32CD32' : '#00000000'; // Orange, LimeGreen
+  } else if (isMedium && isLow) {
+    return value <= y ? '#FFD700' : value <= g ? '#32CD32' : '#00000000'; // Gold, Yellow
+  } else if (isCritical) {
+    return value >= o ? '#FF0000' : '#00000000'; // Red,
+  } else if (isHigh) {
+    return value > o ? '#00000000' : value >= y ? '#FF4500' : '#00000000'; // Orange,
+  } else if (isMedium) {
+    return value > gy ? '#ADFF2F' : value <= y ? '#FFD700' : '#00000000'; // Green Yellow,
+  } else if (isLow) {
+    return value <= g ? '#32CD32' : '#00000000'; // LimeGreen, GreenYellow
+  } else {
+    return '#808080'; // Default to grey if severity is not recognized
   }
 };
 
-const getConditionColor = severity: string[], (properties: GeoJSON.GeoJsonProperties): string => {
+const getConditionColor = (
+  severity: string[],
+  properties: GeoJSON.GeoJsonProperties,
+): string => {
   if (properties !== null) {
     const type = properties.type;
     const value = properties.value;
@@ -143,15 +167,15 @@ const getConditionColor = severity: string[], (properties: GeoJSON.GeoJsonProper
         case KPI:
           return getColorForValue(value, 4.0, 6.0, 7.0, 8.0, severity);
         case DI:
-          return getColorForValue(value, 1.2, 1.5, 2.0, 2.5);
+          return getColorForValue(value, 1.2, 1.5, 2.0, 2.5, severity);
         case IRI:
         case IRInew:
-          return getColorForValue(value, 1.5, 1.5, 2.5, 2.5);
+          return getColorForValue(value, 1.5, 1.5, 2.5, 2.5, severity);
         case Mu:
           // The minus are a small trick to be able to use the getColorForValue
-          return getColorForValue(-value, -0.8, -0.5, -0.3, -0.2);
+          return getColorForValue(-value, -0.8, -0.5, -0.3, -0.2, severity);
         case Enrg:
-          return getColorForValue(value, 0.05, 0.1, 0.15, 0.25);
+          return getColorForValue(value, 0.05, 0.1, 0.15, 0.25, severity);
       }
     }
   }
@@ -311,7 +335,10 @@ const ConditionsMap: FC<ConditionsMapProps> = ({
                 multiMode!.count === 1 &&
                 severitySelected.selected!
               ) {
-                mapStyle.color = getConditionColor(feature.properties);
+                mapStyle.color = getConditionColor(
+                  severitySelected.mode!,
+                  feature.properties,
+                );
               } else if (multiMode!.count === 0) {
                 mapStyle.color = getTypeColor('default'); // @author Hansen
               }
