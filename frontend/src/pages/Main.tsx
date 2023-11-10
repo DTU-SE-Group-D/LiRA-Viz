@@ -13,6 +13,8 @@ import {
   DefaultMode,
   MultiMode,
   SeverityOptions,
+  DefaultSeverityMode,
+  SeverityMode,
   YearMonth,
 } from '../models/conditions';
 import MonthFilter from '../Components/Map/Inputs/MonthFilter';
@@ -31,13 +33,15 @@ const Main: FC = () => {
   const [roads, setRoads] = useState<IRoad[]>();
   // Select road index
   const [selectedRoadIdx, setSelectedRoadIdx] = useState<number>(-1);
-
   // The position to move too (used by the Search component)
   const [moveToPosition, setMoveToPosition] = useState<LatLng>();
   // The indicator(s) to display on the map
   const [multiMode, setMultiMode] = useState<MultiMode>(DefaultMode);
   // The selected range of date (used to filter the data to show)
   const [rangeSelected, setRangeSelected] = useState<DateRange>({});
+  // The selected severity (used to filter the data to show)
+  const [severitySelected, setSeveritySelected] =
+    useState<SeverityMode>(DefaultSeverityMode);
 
   /**
    *
@@ -109,6 +113,31 @@ const Main: FC = () => {
     setMultiMode(outputMode);
   }, []);
 
+  /**
+   * Function severitySet for setting the severity
+   * to filter data on the map.
+   *
+   * @param value, the object returned from the Severity MultiSelector
+   *
+   * @author Hansen
+   */
+
+  const severitySet = useCallback((value: string[]) => {
+    const outputMode: SeverityMode = {
+      mode: value
+        .map((e: any) => e.label)
+        .toString()
+        .split(','),
+    };
+    if (value.length > 0) {
+      outputMode.selected = true;
+    } else {
+      outputMode.mode = undefined;
+      outputMode.selected = false;
+    }
+    setSeveritySelected(outputMode);
+  }, []);
+
   return (
     <div style={{ height: '100%' }}>
       <div className="nav-wrapper">
@@ -151,7 +180,7 @@ const Main: FC = () => {
         <div className="filter-container">
           <MultiSelector
             placeholder="Severity"
-            handleSelectionChange={(value) => console.log(value)}
+            handleSelectionChange={severitySet}
             defaultValue={null}
             options={SeverityOptions}
           ></MultiSelector>
@@ -177,7 +206,11 @@ const Main: FC = () => {
           </Link>
         </div>
       </div>
-      <ConditionsMap multiMode={multiMode!} rangeSelected={rangeSelected}>
+      <ConditionsMap
+        multiMode={multiMode}
+        rangeSelected={rangeSelected}
+        severitySelected={severitySelected}
+      >
         <Roads
           roads={roads}
           selectedRoadIdx={selectedRoadIdx}
