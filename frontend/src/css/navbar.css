@@ -1,19 +1,21 @@
 .nav-wrapper {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: flex-start;
   align-content: space-around;
   align-items: center;
   position: sticky;
-  gap: 2%;
+  padding-left: 70px;
+  gap: 1%;
   top: 0;
   left: 0;
-  width: 100%;
+  width: calc(100% - 70px);
   height: var(--navbar-height);
   background-color: var(--background);
   z-index: var(--navbar-z-index);
   font-family: 'Noto Sans JP', sans-serif;
+  overflow: hidden;
 }
 
 .nav-container {
