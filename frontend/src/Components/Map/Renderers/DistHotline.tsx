@@ -12,7 +12,6 @@ import {
   HotlineEventHandlers,
 } from 'react-leaflet-hotline/dist/types/types';
 import useZoom from '../Hooks/useZoom';
-import { useHoverContext } from '../../../context/GraphHoverContext';
 
 const getLat = (n: Node) => n.lat;
 const getLng = (n: Node) => n.lng;
@@ -65,7 +64,7 @@ const DistHotline: FC<IDistHotline> = ({
   options,
   eventHandlers,
 }) => {
-  const { dotHover } = useHoverContext();
+  const dotHover = undefined;
   const zoom = useZoom();
 
   const opts = useMemo(
