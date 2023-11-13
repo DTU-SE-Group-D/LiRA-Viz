@@ -2,7 +2,6 @@ import { FC, useMemo, useState } from 'react';
 
 import { HotlineOptions } from 'react-leaflet-hotline';
 import { HotlineEventHandlers } from 'react-leaflet-hotline/dist/types/types';
-import { useGraph } from '../../context/GraphContext';
 import { WaysConditions } from '../../models/path';
 import DistHotline from '../Map/Renderers/DistHotline';
 
@@ -14,16 +13,14 @@ interface IWays {
 const Ways: FC<IWays> = ({ type, onClick }) => {
   console.log(type);
 
-  const { minY, maxY } = useGraph();
-
   const [ways, _] = useState<WaysConditions>();
 
   const options = useMemo<HotlineOptions>(
     () => ({
-      min: minY,
-      max: maxY,
+      min: 0,
+      max: 1,
     }),
-    [minY, maxY],
+    [],
   );
 
   const handlers = useMemo<HotlineEventHandlers>(
