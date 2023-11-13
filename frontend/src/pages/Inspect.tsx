@@ -9,6 +9,7 @@ import ConditionsGraph from '../Components/RoadDetails/ConditionsGraph';
 import { getSurveyData } from '../queries/conditions';
 import '../css/split.css';
 import { ConditionsGraphData } from '../models/conditions';
+import '../css/inspect_page.css';
 import { useParams } from 'react-router-dom';
 import { ImageType, LatLng, SurveyConditions } from '../models/models';
 import { Palette } from 'react-leaflet-hotline';
@@ -37,6 +38,10 @@ const Inspect: FC = () => {
   const [conditionsGraphSize, setConditionsGraphSize] = useState(
     65 - (10 / window.innerWidth) * 100,
   );
+  const [roadDistanceLeftToRight, setRoadDistanceLeftToRight] = useState<
+    number[] | null
+  >([0, 0]);
+
   const [mapAreaSize, setMapAreaSize] = useState(35);
   const [roadImageSize, setRoadImageSize] = useState(65);
   /** The trigger and mapCenter to update and move the map */
@@ -140,6 +145,7 @@ const Inspect: FC = () => {
     });
   }, [s]);
 
+  //sets the collapse function for the split component
   const handleTopPanelSizeChange = useCallback((size: number) => {
     if (size <= 10) {
       setTopPanelSize(0);
@@ -153,6 +159,7 @@ const Inspect: FC = () => {
     }
   }, []);
 
+  //sets the collapse function for the split component
   const handleMapAreaSizeChange = useCallback((size: number) => {
     if (size <= 7) {
       setMapAreaSize(0);
@@ -167,7 +174,7 @@ const Inspect: FC = () => {
   }, []);
 
   return (
-    <div>
+    <div className="inspect-page">
       <TopBar setSelectedType={setSelectedType} indicatorSet={indicatorSet} />
       <Split
         mode="vertical"
@@ -209,7 +216,12 @@ const Inspect: FC = () => {
                 width: `calc(${roadImageSize}% - ${halfSizeOfSplitBar})`,
               }}
             >
-              <RoadImage id={id} type={type} selectedType={selectedType} />
+              <RoadImage
+                id={id}
+                type={type}
+                selectedType={selectedType}
+                onRoadDistanceChange={setRoadDistanceLeftToRight}
+              />
             </div>
           </Split>
         </div>
@@ -218,7 +230,10 @@ const Inspect: FC = () => {
             height: `calc(${conditionsGraphSize}% - ${halfSizeOfSplitBar})`,
           }}
         >
-          <ConditionsGraph data={chartData} />
+          <ConditionsGraph
+            data={chartData}
+            inspectedRoadDistanceArea={roadDistanceLeftToRight}
+          />
         </div>
       </Split>
     </div>
