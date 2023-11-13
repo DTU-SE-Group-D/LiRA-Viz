@@ -24,7 +24,16 @@ export interface Condition {
 }
 
 /**
- * Type of answer from backend for the conditions of a survey.
+ * Type of answer from backend for a survey.
+ */
+export interface Survey {
+  id: string;
+  geometry: number[][];
+  data: SurveyConditions[];
+}
+
+/**
+ * The data of a survey.
  */
 export interface SurveyConditions {
   type: number;

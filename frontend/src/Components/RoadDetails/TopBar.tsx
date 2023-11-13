@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Selector from '../Map/Inputs/Selector';
-import { ImageType } from '../../models/path'; // Import useNavigate
+import { ImageType } from '../../models/models'; // Import useNavigate
 
 interface TopBarProps {
   /** Callback to set the selected type */

@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 
 import '../css/road_details.css'; // Import the CSS file
 import MapArea from '../Components/RoadDetails/MapArea';
@@ -6,11 +6,11 @@ import RoadImage from '../Components/RoadDetails/RoadImage';
 import TopBar from '../Components/RoadDetails/TopBar';
 import Split from '@uiw/react-split';
 import ConditionsGraph from '../Components/RoadDetails/ConditionsGraph';
-import { getConditionsSurvey } from '../queries/conditions';
+import { getSurveyData } from '../queries/conditions';
 import '../css/split.css';
 import { ConditionsGraphData, conditionTypes } from '../models/conditions';
 import { useParams } from 'react-router-dom';
-import { ImageType } from '../models/path';
+import { ImageType } from '../models/models';
 
 // See in ../css/split.css
 const halfSizeOfSplitBar = '5px';
@@ -20,22 +20,26 @@ const halfSizeOfSplitBar = '5px';
  * @author Muro, Chen
  */
 const Inspect: FC = () => {
-  const [chartData, setChartData] = useState<ConditionsGraphData[]>();
-  const [triggerUpdate, setTriggerUpdate] = useState<number>(0);
+  /** The id and type of the object to display (in the url) */
+  const { id, type } = useParams();
+  /** The sizes for the split components */
   const [topPanelSize, setTopPanelSize] = useState(35);
   const [conditionsGraphSize, setConditionsGraphSize] = useState(
     65 - (10 / window.innerWidth) * 100,
   );
-
-  const [selectedType, setSelectedType] = useState<string>(ImageType.ImageInt);
-
   const [mapAreaSize, setMapAreaSize] = useState(35);
   const [roadImageSize, setRoadImageSize] = useState(65);
-  const { id, type } = useParams();
+  /** The trigger to update the map */
+  const [triggerUpdate, setTriggerUpdate] = useState<number>(0);
+  /** The type of the image to display */
+  const [selectedType, setSelectedType] = useState<string>(ImageType.ImageInt);
+  /** The data for the chart graph */
+  const [chartData, setChartData] = useState<ConditionsGraphData[]>();
 
   useEffect(() => {
     if (id && type === 'surveys') {
-      getConditionsSurvey(id, (surveyData) => {
+      getSurveyData(id, (survey) => {
+        const surveyData = survey.data;
         const conditionsGraphAllDataSets: ConditionsGraphData[] = [];
 
         for (const indicator of conditionTypes) {
@@ -65,7 +69,7 @@ const Inspect: FC = () => {
     }
   }, [id, type]);
 
-  const handleTopPanelSizeChange = (size: number) => {
+  const handleTopPanelSizeChange = useCallback((size: number) => {
     if (size <= 10) {
       setTopPanelSize(0);
       setConditionsGraphSize(100 - (10 / window.innerHeight) * 100);
@@ -76,9 +80,9 @@ const Inspect: FC = () => {
       setTopPanelSize(size);
       setConditionsGraphSize(100 - size - (10 / window.innerHeight) * 100);
     }
-  };
+  }, []);
 
-  const handleMapAreaSizeChange = (size: number) => {
+  const handleMapAreaSizeChange = useCallback((size: number) => {
     if (size <= 7) {
       setMapAreaSize(0);
       setRoadImageSize(100 - (10 / window.innerWidth) * 100);
@@ -89,7 +93,7 @@ const Inspect: FC = () => {
       setMapAreaSize(size);
       setRoadImageSize(100 - size - (10 / window.innerWidth) * 100);
     }
-  };
+  }, []);
 
   return (
     <div>

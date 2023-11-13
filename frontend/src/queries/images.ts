@@ -1,4 +1,4 @@
-import { IImage } from '../models/path';
+import { IImage } from '../models/models';
 import { get, getPath } from './fetch';
 
 /**
