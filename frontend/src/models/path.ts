@@ -23,20 +23,16 @@ export interface Node {
   way_dist: number;
 }
 
-export interface Condition {
-  type: string;
+/**
+ * he way_dist correspond to the distance from the beginning of this path.
+ * The value is the actual value of the condition.
+ */
+export interface DataPoint {
   way_dist: number;
   value: number;
 }
 
 export type WayId = string;
-
-export interface WaysConditions {
-  way_lengths: number[];
-  way_ids: WayId[];
-  geometry: Node[][];
-  conditions: Condition[][];
-}
 
 // A road is a collection of road segments (which are of collection ways that are connected to each other).
 export interface IRoad {

@@ -16,7 +16,7 @@
     "react-dom": "^18.2.0",
     "react-gradient-hook": "^1.5.3",
     "react-leaflet": "^4.2.1",
-    "react-leaflet-hotline": "^1.4.12",
+    "react-leaflet-hotline": "git@github.com:peacefulotter/react-leaflet-hotline.git#1256e2cb743d02dcc07cc9796b8df6d29c9b60d1",
     "react-router-dom": "^6.16.0",
     "react-scripts": "^5.0.1",
     "react-select": "^5.7.7",
