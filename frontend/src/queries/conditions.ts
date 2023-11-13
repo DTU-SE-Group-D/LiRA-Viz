@@ -1,12 +1,12 @@
-import { SurveyConditions } from '../models/path';
 import { get, post } from './fetch';
 import { FeatureCollection } from 'geojson';
+import { Survey } from '../models/models';
 
-export const getConditionsSurvey = (
+export const getSurveyData = (
   surveyId: string,
-  setConditions: (data: SurveyConditions[]) => void,
+  setConditions: (data: Survey) => void,
 ) => {
-  post('/conditions/surveys', { surveyId }, setConditions);
+  post('/surveys', { surveyId }, setConditions);
 };
 
 export const getAllConditions = (

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IImage } from '../../models/path';
+import { IImage } from '../../models/models';
 import { getRoadSurfaceImages } from '../../queries/images';
 
 import '../../css/road_image.css';

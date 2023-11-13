@@ -29,12 +29,6 @@ export interface Condition {
   value: number;
 }
 
-export interface SurveyConditions {
-  type: string;
-  value: number;
-  distance_survey: number;
-}
-
 export type WayId = string;
 
 export interface WaysConditions {
@@ -57,33 +51,4 @@ export interface IRoad {
   branches: WayId[][];
   // the geometry of each way
   geometries: Record<WayId, LatLng[]>;
-}
-
-// A road segment is a collection of ways that are connected to each other.
-export interface IRoadSegment {
-  // ways that are connected to each other
-  way_ids: WayId[];
-  // the geometry of each way
-  geometries: Record<WayId, LatLng[]>;
-}
-
-export enum ImageType {
-  Image3D = 'Image3D',
-  ImageInt = 'ImageInt',
-  ImageRng = 'ImageRng',
-  Overlay3D = 'Overlay3D',
-  OverlayInt = 'OverlayInt',
-  OverlayRng = 'OverlayRng',
-}
-
-export interface IImage {
-  id?: number;
-  fk_survey_id: number;
-  distance_survey: number;
-  image_path: string;
-  type: ImageType;
-  fk_way_id: number;
-  distance_way: number;
-  timestamp: Date;
-  image?: HTMLImageElement;
 }

@@ -1,25 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import ImageGallery from './ImageGallery';
 import MapWrapper from '../Map/MapWrapper';
 import ForceMapUpdate from '../Map/ForceMapUpdate';
-import { IRoad } from '../../models/path';
-import { getRoads } from '../../queries/road';
-import Roads from '../Map/Roads';
 
 interface Props {
   triggerUpdate: number;
+  children?: React.ReactNode;
 }
 /**
  * The map area op the road details(road inspect) page
  */
-const MapArea: React.FC<Props> = ({ triggerUpdate }) => {
-  const [roads, setRoads] = useState<IRoad[]>();
-
-  // get the actual roads
-  useEffect(() => {
-    getRoads(setRoads);
-  }, []);
-
+const MapArea: React.FC<Props> = ({ triggerUpdate, children }) => {
   return (
     <div
       className="map-area"
@@ -27,7 +18,7 @@ const MapArea: React.FC<Props> = ({ triggerUpdate }) => {
     >
       <div className="map_area" style={{ flex: 1, overflow: 'hidden' }}>
         <MapWrapper>
-          <Roads roads={roads} />
+          {children}
           <ForceMapUpdate triggerUpdate={triggerUpdate} />
         </MapWrapper>
       </div>
