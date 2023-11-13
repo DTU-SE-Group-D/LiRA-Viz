@@ -1,12 +1,15 @@
-import { FC, useEffect, useMemo } from 'react';
+import { FC, useMemo } from 'react';
 import { LeafletEvent, Polyline } from 'leaflet';
-import { HotlineOptions, useCustomHotline } from 'react-leaflet-hotline';
+import {
+  HotlineOptions,
+  HotPolyline,
+  useCustomHotline,
+} from 'react-leaflet-hotline';
 
-import { Condition, Node, WayId } from '../../../models/path';
+import { DataPoint, Node } from '../../../models/path';
 
 import DistRenderer from '../../../assets/hotline/DistRenderer';
 import { DistData } from '../../../assets/hotline/hotline';
-import HoverHotPolyline from '../../../assets/hotline/HoverHotPolyline';
 import {
   HotlineEventFn,
   HotlineEventHandlers,
@@ -20,12 +23,10 @@ const getWeight = (z: number | undefined) =>
   z === undefined ? 0 : Math.max(z > 8 ? z - 6 : z - 5, 2);
 
 interface IDistHotline {
-  /** the way ids of the line to render */
-  way_ids: WayId[];
   /** the coordinates and the length of the line to render */
-  geometry: Node[][];
-  /** the conditions of the line to render */
-  conditions: Condition[][];
+  geometry: Node[];
+  /** The conditions of the line to render */
+  datas: DataPoint[];
   /** The option of the gradient line */
   options?: HotlineOptions;
   /** The event handlers of the gradient line */
@@ -52,25 +53,23 @@ const handler = (
 };
 
 /**
- * Draw a gradient line using the value of a specific road condition.
- * It uses the react-leaflet-hotline library. The dot hover can be
- * used to draw a circle at a certain point on the line (See the original
- * version of the project and ReactJS context mechanism).
+ * Draw a gradient line using the values in the data array. This allows to draw
+ * data in function of the distance of the beginning of a path.
+ *
+ * It uses the react-leaflet-hotline library.
  */
 const DistHotline: FC<IDistHotline> = ({
-  way_ids,
   geometry,
-  conditions,
+  datas,
   options,
   eventHandlers,
 }) => {
-  const dotHover = undefined;
   const zoom = useZoom();
 
   const opts = useMemo(
     () => ({
       ...options,
-      weight: getWeight(zoom),
+      weight: getWeight(zoom), // make size of line dependent on zoom level
     }),
     [options, zoom],
   );
@@ -86,13 +85,13 @@ const DistHotline: FC<IDistHotline> = ({
   );
 
   // create the custom gradient line
-  const { hotline } = useCustomHotline<Node, DistData>(
-    // the custom renderer to use. Instead of having the road condition values in the data,
-    // we have the road condition values in the conditions array and the distance
-    // of the condition are in the data array.
+  useCustomHotline<Node, DistData>(
+    // the custom renderer to use. The data contains the geometry and the distance
+    // to the beginning of the path and the datas contains the value and
+    // the distance from the beginning of the path.
     DistRenderer,
     // This is a custom polyline that can handle the hover event
-    HoverHotPolyline,
+    HotPolyline,
     {
       data: geometry,
       getLat,
@@ -101,16 +100,8 @@ const DistHotline: FC<IDistHotline> = ({
       options: opts,
       eventHandlers: handlers,
     },
-    way_ids,
-    conditions,
+    datas,
   );
-
-  // set the hover state of the polyline
-  useEffect(() => {
-    if (hotline === undefined) return;
-    (hotline as HoverHotPolyline<Node, DistData>).setHover(dotHover);
-  }, [dotHover]);
-
   return null;
 };
 

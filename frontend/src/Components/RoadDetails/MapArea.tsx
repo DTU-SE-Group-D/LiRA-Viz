@@ -2,15 +2,17 @@ import React from 'react';
 import ImageGallery from './ImageGallery';
 import MapWrapper from '../Map/MapWrapper';
 import ForceMapUpdate from '../Map/ForceMapUpdate';
+import { LatLng } from '../../models/models';
 
 interface Props {
   triggerUpdate: number;
   children?: React.ReactNode;
+  center?: LatLng;
 }
 /**
  * The map area op the road details(road inspect) page
  */
-const MapArea: React.FC<Props> = ({ triggerUpdate, children }) => {
+const MapArea: React.FC<Props> = ({ triggerUpdate, children, center }) => {
   return (
     <div
       className="map-area"
@@ -19,7 +21,7 @@ const MapArea: React.FC<Props> = ({ triggerUpdate, children }) => {
       <div className="map_area" style={{ flex: 1, overflow: 'hidden' }}>
         <MapWrapper>
           {children}
-          <ForceMapUpdate triggerUpdate={triggerUpdate} />
+          <ForceMapUpdate triggerUpdate={triggerUpdate} position={center} />
         </MapWrapper>
       </div>
       <div
