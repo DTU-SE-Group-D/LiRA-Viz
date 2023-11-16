@@ -15,8 +15,9 @@ interface ImageZoom {
 
 /**
  * ImageZoom make images clickable and open a popup to see image closer
+ * @author Chen
  */
-// ...
+
 const ImageZoom: React.FC<ImageZoom> = ({
   imageUrl,
   onClose,
@@ -70,6 +71,5 @@ const ImageZoom: React.FC<ImageZoom> = ({
     </div>
   );
 };
-// ...
 
 export default ImageZoom;

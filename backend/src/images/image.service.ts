@@ -49,4 +49,21 @@ export class ImageService {
       this.formatImagePath,
     );
   }
+
+  /**
+   * Return the information of dash carema images for a given survey
+   *
+   * @param surveyId the survey id
+   *
+   * @author Kerbourc'h, Chen
+   */
+  async getDashCameraImages(surveyId: string) {
+    return (
+      await Image(this.knex_groupd)
+        .select()
+        .where('fk_survey_id', surveyId)
+        .andWhere('type', 'DashCamera')
+        .orderBy('distance_survey')
+    ).map(this.formatImagePath);
+  }
 }
