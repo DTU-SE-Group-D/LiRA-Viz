@@ -22,3 +22,24 @@ export const getRoadSurfaceImages = (
     );
   });
 };
+
+/**
+
+ * @param surveyId the survey id used to filter the images
+ * @param callback the function called back when the request is responded
+ *
+ * @author Kerbourc'h, Chen
+ */
+export const GetDashCameraImage = (
+  surveyId: string,
+  callback: (images: IImage[]) => void,
+) => {
+  get('/images/dash-camera/survey/' + surveyId, (data: IImage[]) => {
+    callback(
+      data.map((cameraimage) => {
+        cameraimage.image_path = getPath(cameraimage.image_path);
+        return cameraimage;
+      }),
+    );
+  });
+};

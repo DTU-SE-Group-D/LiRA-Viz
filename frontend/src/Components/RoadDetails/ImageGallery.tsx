@@ -1,73 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ImageZoom from './ImageAbleZoom';
+import { IImage } from '../../models/path';
+import { GetDashCameraImage } from '../../queries/images';
 
 interface Image {
   id: number;
   url: string;
 }
 
-const images: Image[] = [
-  {
-    id: 1,
-    url: 'https://upload.wikimedia.org/wikipedia/commons/4/43/2015-04-02_18_21_50_View_north_along_U.S._Route_95_in_the_Forty_Mile_Desert_of_Churchill_County%2C_Nevada.JPG',
-  },
-  {
-    id: 2,
-    url: 'https://upload.wikimedia.org/wikipedia/commons/4/43/2015-04-02_18_21_50_View_north_along_U.S._Route_95_in_the_Forty_Mile_Desert_of_Churchill_County%2C_Nevada.JPG',
-  },
-  {
-    id: 3,
-    url: 'https://upload.wikimedia.org/wikipedia/commons/4/43/2015-04-02_18_21_50_View_north_along_U.S._Route_95_in_the_Forty_Mile_Desert_of_Churchill_County%2C_Nevada.JPG',
-  },
-  {
-    id: 4,
-    url: 'https://upload.wikimedia.org/wikipedia/commons/4/43/2015-04-02_18_21_50_View_north_along_U.S._Route_95_in_the_Forty_Mile_Desert_of_Churchill_County%2C_Nevada.JPG',
-  },
-  {
-    id: 5,
-    url: 'https://upload.wikimedia.org/wikipedia/commons/4/43/2015-04-02_18_21_50_View_north_along_U.S._Route_95_in_the_Forty_Mile_Desert_of_Churchill_County%2C_Nevada.JPG',
-  },
-  {
-    id: 6,
-    url: 'https://upload.wikimedia.org/wikipedia/commons/4/43/2015-04-02_18_21_50_View_north_along_U.S._Route_95_in_the_Forty_Mile_Desert_of_Churchill_County%2C_Nevada.JPG',
-  },
-  {
-    id: 7,
-    url: 'https://upload.wikimedia.org/wikipedia/commons/4/43/2015-04-02_18_21_50_View_north_along_U.S._Route_95_in_the_Forty_Mile_Desert_of_Churchill_County%2C_Nevada.JPG',
-  },
-  {
-    id: 8,
-    url: 'https://hips.hearstapps.com/hmg-prod/images/1/roadbootie-main-1520457496.jpg?crop=0.848xw:1xh;center,top&resize=1200:*',
-  },
-  {
-    id: 9,
-    url: 'https://hips.hearstapps.com/hmg-prod/images/1/roadbootie-main-1520457496.jpg?crop=0.848xw:1xh;center,top&resize=1200:*',
-  },
-  {
-    id: 10,
-    url: 'https://hips.hearstapps.com/hmg-prod/images/1/roadbootie-main-1520457496.jpg?crop=0.848xw:1xh;center,top&resize=1200:*',
-  },
-  {
-    id: 11,
-    url: 'https://hips.hearstapps.com/hmg-prod/images/1/roadbootie-main-1520457496.jpg?crop=0.848xw:1xh;center,top&resize=1200:*',
-  },
-  {
-    id: 12,
-    url: 'https://hips.hearstapps.com/hmg-prod/images/1/roadbootie-main-1520457496.jpg?crop=0.848xw:1xh;center,top&resize=1200:*',
-  },
-  {
-    id: 13,
-    url: 'https://hips.hearstapps.com/hmg-prod/images/1/roadbootie-main-1520457496.jpg?crop=0.848xw:1xh;center,top&resize=1200:*',
-  },
-  {
-    id: 14,
-    url: 'https://hips.hearstapps.com/hmg-prod/images/1/roadbootie-main-1520457496.jpg?crop=0.848xw:1xh;center,top&resize=1200:*',
-  },
-  {
-    id: 15,
-    url: 'https://hips.hearstapps.com/hmg-prod/images/1/roadbootie-main-1520457496.jpg?crop=0.848xw:1xh;center,top&resize=1200:*',
-  },
-];
+// The fake images that need to be remove later
+const images: Image[] = [];
 
 /**
  * React functional component for the Image Gallery.
@@ -117,6 +59,15 @@ const ImageGallery: React.FC = () => {
     }
   }, [scrollPosition]);
 
+  const [cameraImages, setCameraImages] = useState<IImage[]>([]);
+  const surveyid = 'c8435e32-0627-46b9-90f6-52fc21862df3';
+
+  useEffect(() => {
+    GetDashCameraImage(surveyid, (images) => {
+      setCameraImages(images);
+    });
+  }, []); // Empty dependency array to run only once on component mount
+
   return (
     <div className="image-gallery-container">
       <button className="arrow-button left-arrow" onClick={scrollLeft}>
@@ -159,6 +110,27 @@ const ImageGallery: React.FC = () => {
           totalImages={images.length}
         />
       )}
+
+      {/* Put the images here temporarily to check if they are visible */}
+      <div
+        style={{
+          textAlign: 'center',
+          marginTop: 0,
+          width: '100%',
+          position: 'absolute',
+          top: 0,
+        }}
+      >
+        {cameraImages.map((image, index) => (
+          <div key={index}>
+            <img
+              src={image.image_path}
+              alt={`Camera Image ${index}`}
+              style={{ width: '100%', height: 'auto' }} // Adjust the style as needed
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
