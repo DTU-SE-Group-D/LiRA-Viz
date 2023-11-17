@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import '../../../css/month_filter.css';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -36,6 +36,9 @@ interface MonthFilterProps {
   onStartChange: (date: any) => void;
   /** function taking argument "date" for End date **/
   onEndChange: (date: any) => void;
+  /** The minimum & maximum date possible **/
+  minDate: Date;
+  maxDate: Date;
 }
 
 /**
@@ -46,9 +49,17 @@ interface MonthFilterProps {
 const MonthFilter: React.FC<MonthFilterProps> = ({
   onEndChange,
   onStartChange,
+  minDate,
+  maxDate,
 }) => {
-  const [startDate, setStartDate] = useState(new Date('2022/06/08'));
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>();
+
+  useEffect(() => {
+    setStartDate(minDate);
+    setEndDate(maxDate);
+  }, [minDate, maxDate]);
+
   return (
     <>
       <div className="datepicker">
@@ -58,10 +69,9 @@ const MonthFilter: React.FC<MonthFilterProps> = ({
           onChange={onStartChange}
           customInput={React.createElement(CustomInput)}
           selectsStart
-          startDate={startDate}
-          endDate={endDate}
-          minDate={new Date('2022/06/08')}
-          maxDate={new Date()}
+          openToDate={minDate}
+          minDate={minDate}
+          maxDate={maxDate}
           dateFormat="MM/yyyy"
           showMonthYearPicker
         />
@@ -73,10 +83,9 @@ const MonthFilter: React.FC<MonthFilterProps> = ({
           onChange={onEndChange}
           customInput={React.createElement(CustomInput)}
           selectsEnd
-          startDate={startDate}
-          endDate={endDate}
-          minDate={new Date('2022/06/08')}
-          maxDate={new Date()}
+          openToDate={maxDate}
+          minDate={minDate}
+          maxDate={maxDate}
           dateFormat="MM/yyyy"
           showMonthYearPicker
         />
