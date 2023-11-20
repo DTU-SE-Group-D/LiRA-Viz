@@ -19,7 +19,7 @@ import MonthFilter from '../Components/Map/Inputs/MonthFilter';
 import MultiSelector from '../Components/Map/Inputs/MultiSelector';
 import '../css/navbar.css';
 import DetectMapClick from '../Components/Map/DetectMapClick';
-import { Link } from 'react-router-dom';
+import RoadInfoCard from '../Components/Map/InfoCard';
 
 /**
  * Component rendering the main page
@@ -167,15 +167,6 @@ const Main: FC = () => {
           />
           <p className="labelling"> Start Date → End Date</p>
         </div>
-        <div className="inspect-button-div">
-          <Link
-            to="/inspect/surveys/c8435e32-0627-46b9-90f6-52fc21862df3"
-            hidden={selectedRoadIdx === -1}
-            className="inspect-button"
-          >
-            Inspect
-          </Link>
-        </div>
       </div>
       <ConditionsMap multiMode={multiMode!} rangeSelected={rangeSelected}>
         <Roads
@@ -198,6 +189,12 @@ const Main: FC = () => {
         />
         <ForceMapUpdate position={moveToPosition} />
       </ConditionsMap>
+      <RoadInfoCard
+        hidden={selectedRoadIdx === -1}
+        roadData={
+          selectedRoadIdx !== -1 && roads ? roads[selectedRoadIdx] : undefined
+        }
+      />
     </div>
   );
 };
