@@ -62,6 +62,7 @@ export const ConditionTypeOptions = [
   { value: 'IRI', label: 'IRI' },
   { value: 'Mu', label: 'Mu' },
   { value: 'E_norm', label: 'E_norm' },
+  { value: 'Crack', label: 'Crack' },
 ];
 
 // Options for Severity

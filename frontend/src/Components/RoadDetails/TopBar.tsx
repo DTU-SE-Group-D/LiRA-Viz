@@ -2,19 +2,25 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Selector from '../Map/Inputs/Selector';
+
 import { ImageType } from '../../models/models'; // Import useNavigate
+import MultiSelector from '../Map/Inputs/MultiSelector';
+import { ConditionTypeOptions } from '../../models/conditions';
 
 interface TopBarProps {
-  /** Callback to set the selected type */
+  /** Callback to set the selected type for roadimages*/
   setSelectedType: (type: string) => void;
+  /** Callback to set the selected type for graph*/
+  indicatorSet: (type: string[]) => void;
 }
 
 /**
  * The Topbar with return and toggle button inside
+ * Along with MultiSelector
  *
- * @author Chen
+ * @author Chen, Hansen
  */
-const TopBar: React.FC<TopBarProps> = ({ setSelectedType }) => {
+const TopBar: React.FC<TopBarProps> = ({ setSelectedType, indicatorSet }) => {
   const navigate = useNavigate(); // Get the navigate function
 
   const handleReturn = () => {
@@ -55,6 +61,14 @@ const TopBar: React.FC<TopBarProps> = ({ setSelectedType }) => {
         }}
         label={'Road surface image type'}
       />
+      <MultiSelector
+        options={ConditionTypeOptions}
+        placeholder="Condition Types"
+        handleSelectionChange={(value: string[]) => {
+          indicatorSet(value);
+        }}
+        defaultValue={ConditionTypeOptions[1]}
+      ></MultiSelector>
     </div>
   );
 };

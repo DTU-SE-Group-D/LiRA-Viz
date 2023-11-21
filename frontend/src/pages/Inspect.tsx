@@ -8,9 +8,9 @@ import Split from '@uiw/react-split';
 import ConditionsGraph from '../Components/RoadDetails/ConditionsGraph';
 import { getSurveyData } from '../queries/conditions';
 import '../css/split.css';
-import { ConditionsGraphData, conditionTypes } from '../models/conditions';
+import { ConditionsGraphData } from '../models/conditions';
 import { useParams } from 'react-router-dom';
-import { ImageType, LatLng } from '../models/models';
+import { ImageType, LatLng, SurveyConditions } from '../models/models';
 import { Palette } from 'react-leaflet-hotline';
 import { LatLng as LatLngLeaflet } from 'leaflet';
 import GradientLine from '../Components/Map/GradientLine';
@@ -51,7 +51,21 @@ const Inspect: FC = () => {
     geometry: LatLngLeaflet[];
     data: DataPoint[];
   }>();
+  /** The data from Survey */
+  const [surveyData, setSurveyData] = useState<SurveyConditions[]>();
+  /** The indicator type to display data on graph*/
+  const [indicatorType, setIndicatorType] = useState<string[]>(['KPI']);
+
   const [s, setS] = useState<number>(0);
+
+  const indicatorSet = useCallback((value: string[]) => {
+    setIndicatorType(
+      value
+        .map((e: any) => e.value)
+        .toString()
+        .split(','),
+    );
+  }, []);
 
   useEffect(() => {
     if (id && type === 'surveys') {
@@ -75,34 +89,40 @@ const Inspect: FC = () => {
         });
         //===== Update the chart data
         const surveyData = survey.data;
-        const conditionsGraphAllDataSets: ConditionsGraphData[] = [];
-
-        for (const indicator of conditionTypes) {
-          const rowOfData = surveyData.filter(
-            (item) => item.type === indicator,
-          );
-          //check if rowOfData is empty
-          if (rowOfData.length === 0) continue;
-          const conditionsGraphSingleDataSet: ConditionsGraphData = {
-            type: indicator,
-            dataValues: rowOfData.map((item) => ({
-              x: item.distance_survey,
-              y: item.value,
-            })),
-            minY: Math.min(...rowOfData.map((item) => item.value)),
-            maxY: Math.max(...rowOfData.map((item) => item.value)),
-            minX:
-              Math.min(...rowOfData.map((item) => item.distance_survey)) - 1,
-            maxX:
-              Math.max(...rowOfData.map((item) => item.distance_survey)) + 1,
-          };
-          conditionsGraphAllDataSets.push(conditionsGraphSingleDataSet);
+        if (surveyData !== undefined) {
+          setSurveyData(surveyData);
         }
-
-        setChartData(conditionsGraphAllDataSets);
       });
     }
   }, [id, type]);
+
+  useEffect(() => {
+    const conditionsGraphAllDataSets: ConditionsGraphData[] = [];
+    const survey = surveyData;
+
+    if (survey !== undefined && conditionsGraphAllDataSets !== undefined) {
+      for (let i = 0; i < indicatorType.length; i++) {
+        const rowOfData = survey.filter(
+          (item) => item.type === indicatorType[i],
+        );
+        //check if rowOfData is empty
+        if (rowOfData.length === 0) continue;
+        const conditionsGraphSingleDataSet: ConditionsGraphData = {
+          type: indicatorType[i],
+          dataValues: rowOfData.map((item) => ({
+            x: item.distance_survey,
+            y: item.value,
+          })),
+          minY: Math.min(...rowOfData.map((item) => item.value)),
+          maxY: Math.max(...rowOfData.map((item) => item.value)),
+          minX: Math.min(...rowOfData.map((item) => item.distance_survey)) - 1,
+          maxX: Math.max(...rowOfData.map((item) => item.distance_survey)) + 1,
+        };
+        conditionsGraphAllDataSets.push(conditionsGraphSingleDataSet);
+      }
+      setChartData(conditionsGraphAllDataSets);
+    }
+  }, [indicatorType]);
 
   // TODO: update the gradient line data when the user moves the road surface images
   useEffect(() => {
@@ -148,7 +168,7 @@ const Inspect: FC = () => {
 
   return (
     <div>
-      <TopBar setSelectedType={setSelectedType} />
+      <TopBar setSelectedType={setSelectedType} indicatorSet={indicatorSet} />
       <Split
         mode="vertical"
         className="split"
