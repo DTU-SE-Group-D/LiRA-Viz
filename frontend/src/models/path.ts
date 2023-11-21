@@ -76,6 +76,9 @@ export enum ImageType {
   OverlayRng = 'OverlayRng',
 }
 
+/**
+ * Interface representing an image associated with a survey.
+ */
 export interface IImage {
   id?: number;
   fk_survey_id: number;
