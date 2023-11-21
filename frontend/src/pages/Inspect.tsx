@@ -62,6 +62,9 @@ const Inspect: FC = () => {
   const [graphIndicatorType, setGraphIndicatorType] = useState<string[]>([]);
 
   const [s, setS] = useState<number>(0);
+  const [availableImagesTypes, setAvailableImagesTypes] = useState<string[]>(
+    [],
+  );
 
   const indicatorSet = useCallback((value: string[]) => {
     setGraphIndicatorType(
@@ -174,9 +177,10 @@ const Inspect: FC = () => {
   }, []);
 
   return (
-    <div className="inspect-page">
+      <div className="inspect-page">
       <TopBar
         setSelectedType={setSelectedType}
+        availableRoadImagesTypes={availableImagesTypes}
         graphIndicatorSet={indicatorSet}
       />
       <Split
@@ -223,6 +227,7 @@ const Inspect: FC = () => {
                 id={id}
                 type={type}
                 selectedType={selectedType}
+                setImagesTypes={setAvailableImagesTypes}
                 onRoadDistanceChange={setRoadDistanceLeftToRight}
               />
             </div>

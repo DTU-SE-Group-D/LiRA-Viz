@@ -17,7 +17,7 @@ interface Props {
  */
 const Road: React.FC<Props> = ({ road, onClick }) => {
   const [lines, setLines] = React.useState<ReactElement[]>([]);
-  const [opacity, setOpacity] = React.useState<number>(0.2);
+  const [opacity, setOpacity] = React.useState<number>(0.4);
 
   useEffect(() => {
     if (road === undefined) return;
@@ -38,7 +38,7 @@ const Road: React.FC<Props> = ({ road, onClick }) => {
             setOpacity(0.9);
           },
           mouseout: () => {
-            setOpacity(0.2);
+            setOpacity(0.4);
           },
         }}
       />,

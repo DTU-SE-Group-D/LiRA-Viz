@@ -1,5 +1,6 @@
 import React from 'react';
 import '../../../css/selector.css';
+import { ImageType } from '../../../models/models';
 
 interface Props {
   /** The options to show in the dropdown menu */
@@ -35,9 +36,15 @@ const Selector: React.FC<Props> = ({
         }}
         defaultValue={defaultValue}
       >
-        {options.map((option, i) => (
-          <option key={i}>{option}</option>
-        ))}
+        {Object.values(ImageType).map((imageType, i) =>
+          options.includes(imageType.toString()) ? (
+            <option key={i}>{imageType.toString()}</option>
+          ) : (
+            <option key={i} disabled={true}>
+              {imageType.toString()}
+            </option>
+          ),
+        )}
       </select>
       {label && <p className="labelling">{label}</p>}
     </div>

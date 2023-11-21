@@ -128,6 +128,9 @@ interface Props {
 
 /**
  * The Graph displaying the road parameter data in the Inspect Page
+ *
+ * @param data The data to display and the constraints of the graph data
+ *
  * @author Muro, Kerbourc'h
  */
 const ConditionsGraph: FC<Props> = ({ data, inspectedRoadDistanceArea }) => {

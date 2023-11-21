@@ -12,16 +12,20 @@ interface TopBarProps {
   setSelectedType: (type: string) => void;
   /** Callback to set the selected type for graph*/
   graphIndicatorSet: (type: string[]) => void;
+  availableRoadImagesTypes: string[];
 }
 
 /**
- * The Topbar with return and toggle button inside
- * Along with MultiSelector
+ * The Topbar with return button and image type selector
+ *
+ * @param setSelectedType Callback to set the selected type
+ * @param availableRoadImagesTypes The available types for the road images
  *
  * @author Chen, Hansen
  */
 const TopBar: React.FC<TopBarProps> = ({
   setSelectedType,
+  availableRoadImagesTypes,
   graphIndicatorSet,
 }) => {
   const navigate = useNavigate(); // Get the navigate function
@@ -50,14 +54,7 @@ const TopBar: React.FC<TopBarProps> = ({
       </Link>
       <Selector
         className="road-image-selector"
-        options={[
-          ImageType.Image3D,
-          ImageType.ImageInt,
-          ImageType.ImageRng,
-          ImageType.OverlayRng,
-          ImageType.Overlay3D,
-          ImageType.OverlayInt,
-        ]}
+        options={availableRoadImagesTypes}
         defaultValue={ImageType.ImageInt}
         onSelect={(_idx: number, selected: string) => {
           setSelectedType(selected);

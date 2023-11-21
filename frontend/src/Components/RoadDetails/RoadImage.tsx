@@ -9,6 +9,7 @@ interface Props {
   type?: string;
   id?: string;
   selectedType: string;
+  setImagesTypes: (types: string[]) => void;
   onRoadDistanceChange: (distanceValues: number[] | null) => void; // Function to receive roadDistanceLeftToRight
 }
 
@@ -56,6 +57,11 @@ function getRoadDistances(
 /**
  * Fetch and display the road images
  *
+ * @param type
+ * @param id
+ * @param selectedType The type of image to display
+ * @param setImagesTypes Callback to set the available types
+ *
  * TODO: Find a way to load all the images
  *   - The importation could rotate the images (would reduce the load because of the rotation)
  *   - Display by batch of 25 images
@@ -66,6 +72,7 @@ const RoadImage: React.FC<Props> = ({
   type,
   id,
   selectedType,
+  setImagesTypes
   onRoadDistanceChange,
 }) => {
   /** If the backend responded the data */
@@ -102,6 +109,11 @@ const RoadImage: React.FC<Props> = ({
       allImages.filter((image: IImage) => image.type === selectedType),
     );
     setHasFiltered(true);
+    let availableTypes = allImages.map((image) => image.type.toString());
+    availableTypes = Array.from(new Set(availableTypes));
+
+    console.log('santi56', availableTypes);
+    setImagesTypes(availableTypes);
   }, [allImages, selectedType]);
 
   // Scroll event handler
