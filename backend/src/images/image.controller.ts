@@ -29,4 +29,16 @@ export class ImageController {
   async getImage(@Param() imageId: string): Promise<IImage[]> {
     return await this.service.getImage(imageId);
   }
+
+  /**
+   * Return the information of xf for a given survey
+   *
+   * @param surveyid the survey id
+   *
+   * @author Kerbourc'h, Chen
+   */
+  @Get('dash-camera/survey/:id')
+  async getDashCameraImages(@Param('id') surveyId: string): Promise<IImage[]> {
+    return await this.service.getDashCameraImages(surveyId);
+  }
 }

@@ -1,77 +1,26 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ImageZoom from './ImageAbleZoom';
+import { IImage } from '../../models/path';
+import { GetDashCameraImage } from '../../queries/images';
+import { useParams } from 'react-router-dom';
 
 interface Image {
   id: number;
   url: string;
 }
 
-const images: Image[] = [
-  {
-    id: 1,
-    url: 'https://upload.wikimedia.org/wikipedia/commons/4/43/2015-04-02_18_21_50_View_north_along_U.S._Route_95_in_the_Forty_Mile_Desert_of_Churchill_County%2C_Nevada.JPG',
-  },
-  {
-    id: 2,
-    url: 'https://upload.wikimedia.org/wikipedia/commons/4/43/2015-04-02_18_21_50_View_north_along_U.S._Route_95_in_the_Forty_Mile_Desert_of_Churchill_County%2C_Nevada.JPG',
-  },
-  {
-    id: 3,
-    url: 'https://upload.wikimedia.org/wikipedia/commons/4/43/2015-04-02_18_21_50_View_north_along_U.S._Route_95_in_the_Forty_Mile_Desert_of_Churchill_County%2C_Nevada.JPG',
-  },
-  {
-    id: 4,
-    url: 'https://upload.wikimedia.org/wikipedia/commons/4/43/2015-04-02_18_21_50_View_north_along_U.S._Route_95_in_the_Forty_Mile_Desert_of_Churchill_County%2C_Nevada.JPG',
-  },
-  {
-    id: 5,
-    url: 'https://upload.wikimedia.org/wikipedia/commons/4/43/2015-04-02_18_21_50_View_north_along_U.S._Route_95_in_the_Forty_Mile_Desert_of_Churchill_County%2C_Nevada.JPG',
-  },
-  {
-    id: 6,
-    url: 'https://upload.wikimedia.org/wikipedia/commons/4/43/2015-04-02_18_21_50_View_north_along_U.S._Route_95_in_the_Forty_Mile_Desert_of_Churchill_County%2C_Nevada.JPG',
-  },
-  {
-    id: 7,
-    url: 'https://upload.wikimedia.org/wikipedia/commons/4/43/2015-04-02_18_21_50_View_north_along_U.S._Route_95_in_the_Forty_Mile_Desert_of_Churchill_County%2C_Nevada.JPG',
-  },
-  {
-    id: 8,
-    url: 'https://hips.hearstapps.com/hmg-prod/images/1/roadbootie-main-1520457496.jpg?crop=0.848xw:1xh;center,top&resize=1200:*',
-  },
-  {
-    id: 9,
-    url: 'https://hips.hearstapps.com/hmg-prod/images/1/roadbootie-main-1520457496.jpg?crop=0.848xw:1xh;center,top&resize=1200:*',
-  },
-  {
-    id: 10,
-    url: 'https://hips.hearstapps.com/hmg-prod/images/1/roadbootie-main-1520457496.jpg?crop=0.848xw:1xh;center,top&resize=1200:*',
-  },
-  {
-    id: 11,
-    url: 'https://hips.hearstapps.com/hmg-prod/images/1/roadbootie-main-1520457496.jpg?crop=0.848xw:1xh;center,top&resize=1200:*',
-  },
-  {
-    id: 12,
-    url: 'https://hips.hearstapps.com/hmg-prod/images/1/roadbootie-main-1520457496.jpg?crop=0.848xw:1xh;center,top&resize=1200:*',
-  },
-  {
-    id: 13,
-    url: 'https://hips.hearstapps.com/hmg-prod/images/1/roadbootie-main-1520457496.jpg?crop=0.848xw:1xh;center,top&resize=1200:*',
-  },
-  {
-    id: 14,
-    url: 'https://hips.hearstapps.com/hmg-prod/images/1/roadbootie-main-1520457496.jpg?crop=0.848xw:1xh;center,top&resize=1200:*',
-  },
-  {
-    id: 15,
-    url: 'https://hips.hearstapps.com/hmg-prod/images/1/roadbootie-main-1520457496.jpg?crop=0.848xw:1xh;center,top&resize=1200:*',
-  },
-];
+export const images = (cameraImages: IImage[]): Image[] => {
+  return cameraImages.map((ima, index) => ({
+    id: index + 1,
+    url: ima.image_path,
+  }));
+};
 
 /**
- * React functional component for the Image Gallery.
+ * React functional component for the Image Gallery of Dash Camera image.
  * Image gallery is for show the real road image, and user can scroll to check
+ *
+ * @author: Chen, Lyons
  */
 const ImageGallery: React.FC = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -104,11 +53,11 @@ const ImageGallery: React.FC = () => {
   };
 
   const scrollLeft = () => {
-    handleScroll(-600);
+    handleScroll(-200);
   };
 
   const scrollRight = () => {
-    handleScroll(600);
+    handleScroll(200);
   };
 
   useEffect(() => {
@@ -116,6 +65,21 @@ const ImageGallery: React.FC = () => {
       galleryRef.current.scrollLeft = scrollPosition;
     }
   }, [scrollPosition]);
+
+  const [cameraImages, setCameraImages] = useState<IImage[]>([]);
+  // const surveyid = 'c8435e32-0627-46b9-90f6-52fc21862df3'; //Check the showing of image when surveyid fetch incorrectly
+  const { id } = useParams<{ id?: string }>();
+  // Fetch surveyid from path
+
+  useEffect(() => {
+    if (id) {
+      // Check if surveyid is defined
+      GetDashCameraImage(id, (images) => {
+        setCameraImages(images);
+      });
+    }
+  }, [id]);
+  // console.log(id); //Check if surveyid fetch correctly
 
   return (
     <div className="image-gallery-container">
@@ -125,15 +89,20 @@ const ImageGallery: React.FC = () => {
       <div
         className="image-gallery-page"
         ref={galleryRef}
-        style={{ justifyContent: images.length <= 9 ? 'center' : 'flex-start' }}
+        style={{
+          justifyContent: images.length <= 9 ? 'center' : 'flex-start',
+        }}
       >
-        {images.map((image) => (
-          <div className="image-container" key={image.id}>
+        {cameraImages.map((ima, index) => (
+          <div
+            className="image-container"
+            key={index}
+            onClick={() => openImageInPopup(index)}
+          >
             <img
               className="image-thumbnail"
-              src={image.url}
-              alt="Gallery Thumbnail"
-              onClick={() => openImageInPopup(image.id)}
+              src={ima.image_path}
+              alt={`Gallery image ${index + 1}`}
             />
           </div>
         ))}
@@ -143,20 +112,21 @@ const ImageGallery: React.FC = () => {
       </button>
       {isImageClickOpen && (
         <ImageZoom
-          imageUrl={images[currentImageIndex].url}
+          imageUrl={cameraImages[currentImageIndex]?.image_path}
           onClose={() => setIsImageClickOpen(false)}
           onNavigate={(direction) => {
-            // Handle navigation here if needed
-            if (direction === -1) {
-              // Navigate to the previous image
-              setCurrentImageIndex((prevIndex) => prevIndex - 1);
-            } else if (direction === 1) {
-              // Navigate to the next image
-              setCurrentImageIndex((prevIndex) => prevIndex + 1);
-            }
+            setCurrentImageIndex((prevIndex) => {
+              let newIndex = prevIndex + direction;
+              // Ensure the new index is within the bounds of the cameraImages array
+              newIndex = Math.max(
+                0,
+                Math.min(newIndex, cameraImages.length - 1),
+              );
+              return newIndex;
+            });
           }}
           currentImageIndex={currentImageIndex}
-          totalImages={images.length}
+          totalImages={cameraImages.length}
         />
       )}
     </div>
