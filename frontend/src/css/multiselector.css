@@ -1,5 +1,6 @@
 .select__menu {
   background-color: #dddddd9b !important;
+  z-index: 9999 !important;
 }
 
 .react-select-container {
