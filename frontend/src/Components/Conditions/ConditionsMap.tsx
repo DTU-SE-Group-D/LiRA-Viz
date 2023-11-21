@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef, useState, useCallback } from 'react';
+import React, { FC, useEffect, useRef, useCallback } from 'react';
 import { GeoJSON } from 'react-leaflet';
 import { PathOptions } from 'leaflet';
 import { FeatureCollection } from 'geojson';
@@ -13,24 +13,9 @@ import {
   KPI,
   Mu,
   MultiMode,
-  YearMonth,
   SeverityMode,
-  // DefaultSeverityMode,
+  lessOrEqualThan,
 } from '../../models/conditions';
-import { getAllConditions } from '../../queries/conditions';
-
-const lessOrEqualThan = (
-  yearMonth1: YearMonth,
-  yearMonth2: YearMonth,
-): boolean => {
-  if (yearMonth1.year < yearMonth2.year) {
-    return true;
-  } else if (yearMonth1.year > yearMonth2.year) {
-    return false;
-  } else {
-    return yearMonth1.month <= yearMonth2.month;
-  }
-};
 
 const getTypeColor = (type: string): string => {
   switch (type) {
@@ -92,15 +77,15 @@ const getColorForThreshold = (value: number, type: string): string => {
   const thresholds = getSeverityThresholds(type);
 
   if (value <= thresholds[0]) {
-    return '#10cc10'; // Green
+    return '#69B34C'; // Green
   } else if (value < thresholds[1]) {
-    return '#95bd08'; // Yellow-ish Green
+    return '#ACB334'; // Yellow-ish Green
   } else if (thresholds[1] <= value && value <= thresholds[2]) {
-    return '#FFFF00'; // Yellow
+    return '#FAB733'; // Yellow
   } else if (thresholds[2] < value && value <= thresholds[3]) {
-    return '#ff9900'; // Orange
+    return '#FF8E15'; // Orange
   } else if (thresholds[3] < value) {
-    return '#FF0000'; // Red
+    return '#FF0D0D'; // Red
   } else {
     return '#00000000'; // Transparent
   }
@@ -183,6 +168,10 @@ interface ConditionsMapProps {
   rangeSelected: DateRange;
   /** The mode of the conditions to show (allows for multimodes)**/
   severitySelected: SeverityMode;
+  /** The data from the backend**/
+  dataAll: FeatureCollection;
+  /** The date range of the data**/
+  rangeAll: DateRange;
 }
 
 /**
@@ -195,12 +184,11 @@ const ConditionsMap: FC<ConditionsMapProps> = ({
   multiMode,
   rangeSelected,
   severitySelected,
+  dataAll,
+  rangeAll,
 }) => {
   const geoJsonRef = useRef<any>();
-  // All the data, get from the backend
-  const [dataAll, setDataAll] = useState<FeatureCollection>();
-  // The date range across which the data is
-  const [rangeAll, setRangeAll] = useState<DateRange>({});
+
   // The default data to show in the GeoJSON component
 
   const defaultData: FeatureCollection = {
@@ -220,7 +208,6 @@ const ConditionsMap: FC<ConditionsMapProps> = ({
         opacity: 1,
         color: 'grey',
       };
-
       if (
         feature !== undefined &&
         feature.properties !== null &&
@@ -260,35 +247,6 @@ const ConditionsMap: FC<ConditionsMapProps> = ({
     },
     [multiMode, severitySelected],
   );
-
-  useEffect(() => {
-    // Load the conditions from the backend
-    getAllConditions((data) => {
-      const range: DateRange = {};
-      data.features.forEach((f) => {
-        if (f.properties !== null && f.properties.valid_time !== undefined) {
-          const date = new Date(f.properties.valid_time);
-          const yearMonth: YearMonth = {
-            year: date.getFullYear(),
-            month: date.getMonth() + 1,
-          };
-          f.properties.valid_yearmonth = yearMonth;
-          if (range.start === undefined) {
-            range.start = yearMonth;
-          } else if (!lessOrEqualThan(range.start, yearMonth)) {
-            range.start = yearMonth;
-          }
-          if (range.end === undefined) {
-            range.end = yearMonth;
-          } else if (!lessOrEqualThan(yearMonth, range.end)) {
-            range.end = yearMonth;
-          }
-        }
-      });
-      setDataAll(data);
-      setRangeAll(range);
-    });
-  }, []);
 
   // Update the data when parameters change
   useEffect(() => {

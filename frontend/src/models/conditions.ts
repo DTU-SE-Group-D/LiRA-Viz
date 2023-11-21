@@ -90,6 +90,7 @@ export const DefaultMode: MultiMode = {
 };
 
 // Severity manager
+
 export interface SeverityMode {
   mode?: string[];
   selected?: boolean;
@@ -111,6 +112,36 @@ export interface DateRange {
   start?: YearMonth;
   end?: YearMonth;
 }
+
+/**
+ *
+ * @param date , returned from MonthFilter
+ * @returns date in YearMonth format
+ *
+ * @author Hansen
+ */
+
+export const dateChange = (date: any): YearMonth => {
+  const YearMonth: YearMonth = {
+    year: date.getFullYear(),
+    month: date.getMonth() + 1, // january = 0
+  };
+
+  return YearMonth;
+};
+
+export const lessOrEqualThan = (
+  yearMonth1: YearMonth,
+  yearMonth2: YearMonth,
+): boolean => {
+  if (yearMonth1.year < yearMonth2.year) {
+    return true;
+  } else if (yearMonth1.year > yearMonth2.year) {
+    return false;
+  } else {
+    return yearMonth1.month <= yearMonth2.month;
+  }
+};
 
 export interface ConditionsGraphData {
   type: string;

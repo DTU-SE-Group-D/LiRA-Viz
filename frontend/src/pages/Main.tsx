@@ -2,6 +2,8 @@ import { FC, useCallback, useEffect, useState } from 'react';
 import { IRoad } from '../models/path';
 import { getRoads } from '../queries/road';
 import { LatLng } from '../models/models';
+import { FeatureCollection } from 'geojson';
+import { getAllConditions } from '../queries/conditions';
 
 import ConditionsMap from '../Components/Conditions/ConditionsMap';
 import Search from '../Components/Map/Inputs/Search';
@@ -16,6 +18,8 @@ import {
   DefaultSeverityMode,
   SeverityMode,
   YearMonth,
+  lessOrEqualThan,
+  dateChange,
 } from '../models/conditions';
 import MonthFilter from '../Components/Map/Inputs/MonthFilter';
 import MultiSelector from '../Components/Map/Inputs/MultiSelector';
@@ -42,27 +46,17 @@ const Main: FC = () => {
   // The selected severity (used to filter the data to show)
   const [severitySelected, setSeveritySelected] =
     useState<SeverityMode>(DefaultSeverityMode);
+  // All the data, get from the backend
+  const [dataAll, setDataAll] = useState<FeatureCollection>();
+  // The date range across which the data is
+  const [rangeAll, setRangeAll] = useState<DateRange>({});
+  // Stores the minimum and maximum of the date range
+  const [dateMin, setDateMin] = useState<Date>();
+  const [dateMax, setDateMax] = useState<Date>();
 
   /**
    *
-   * @param date , returned from MonthFilter
-   * @returns date in YearMonth format
-   *
-   * @author Hansen
-   */
-
-  function dateChange(date: any) {
-    const YearMonth: YearMonth = {
-      year: date.getFullYear(),
-      month: date.getMonth() + 1, // january = 0
-    };
-
-    return YearMonth;
-  }
-
-  /**
-   *
-   * @param d , the date in YearMonth format
+   * @param d , the date in YearMonth format from the MonthFilter selector
    * @param start , boolean specifying if the start point (true) or end point (false) of the range should be set.
    *
    * @author Hansen
@@ -71,18 +65,13 @@ const Main: FC = () => {
   const rangeChange = (d: YearMonth, start: boolean) => {
     setRangeSelected((old) => {
       if (start) {
-        old.start = d;
+        return { ...old, start: d };
       } else {
-        old.end = d;
+        return { ...old, end: d };
       }
-      return old;
     });
+    console.log(rangeSelected);
   };
-
-  // get the actual roads
-  useEffect(() => {
-    getRoads(setRoads);
-  }, []);
 
   /**
    * Function multiModeSet for setting the mode
@@ -138,6 +127,55 @@ const Main: FC = () => {
     setSeveritySelected(outputMode);
   }, []);
 
+  // get the actual roads
+  useEffect(() => {
+    getRoads(setRoads);
+  }, []);
+
+  useEffect(() => {
+    // Load the conditions from the backend
+    getAllConditions((data) => {
+      const range: DateRange = {};
+
+      let minDate: Date | undefined;
+      let maxDate: Date | undefined;
+
+      data.features.forEach((f) => {
+        if (f.properties !== null && f.properties.valid_time !== undefined) {
+          const date = new Date(f.properties.valid_time);
+          const yearMonth: YearMonth = {
+            year: date.getFullYear(),
+            month: date.getMonth() + 1,
+          };
+          f.properties.valid_yearmonth = yearMonth;
+          if (range.start === undefined) {
+            range.start = yearMonth;
+          } else if (!lessOrEqualThan(range.start, yearMonth)) {
+            range.start = yearMonth;
+          }
+          if (range.end === undefined) {
+            range.end = yearMonth;
+          } else if (!lessOrEqualThan(yearMonth, range.end)) {
+            range.end = yearMonth;
+          }
+
+          if (minDate === undefined || date < minDate) {
+            minDate = date;
+          }
+
+          if (maxDate === undefined || date > maxDate) {
+            maxDate = date;
+          }
+        }
+      });
+      setDataAll(data);
+      setRangeAll(range);
+
+      setDateMin(minDate);
+      setDateMax(maxDate);
+    });
+  }, []);
+
   return (
     <div style={{ height: '100%' }}>
       <div className="nav-wrapper">
@@ -187,6 +225,8 @@ const Main: FC = () => {
         </div>
         <div className="picker-container">
           <MonthFilter
+            minDate={dateMin!}
+            maxDate={dateMax!}
             onStartChange={(date: any) => {
               rangeChange(dateChange(date), true);
             }}
@@ -210,6 +250,8 @@ const Main: FC = () => {
         multiMode={multiMode}
         rangeSelected={rangeSelected}
         severitySelected={severitySelected}
+        dataAll={dataAll!}
+        rangeAll={rangeAll}
       >
         <Roads
           roads={roads}

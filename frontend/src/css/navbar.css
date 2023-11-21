@@ -49,7 +49,8 @@
   flex-direction: column;
   justify-content: center;
   margin-top: -3%;
-  font-size: 10px;
+  font-size: 13px;
+  font: Monaco;
   /* overflow: hidden; */
   white-space: nowrap;
 }
