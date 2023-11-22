@@ -82,6 +82,32 @@
   transition: 0.4s;
 }
 
+.border-road-image-surface-container {
+  margin: 0px;
+  padding: 0px;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+.border-road-image-surface-container:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%; /* Position the line in the middle */
+  border-left: 4px solid yellow; /* Define line properties */
+}
+
+.road-image-surface-container {
+  position: relative;
+  overflow-x: auto;
+}
+
 .road-conditions-graph {
   position: relative;
   height: 100%;

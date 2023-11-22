@@ -13,7 +13,7 @@ export enum ImageType {
 }
 
 export interface IImage {
-  id?: number;
+  id?: string;
   fk_survey_id: number;
   distance_survey: number;
   image_path: string;
@@ -22,6 +22,16 @@ export interface IImage {
   distance_way: number;
   timestamp: Date;
   image?: HTMLImageElement;
+}
+
+export interface IImageValuesForPixels {
+  id?: string;
+  distanceSurvey: number;
+  pixelLeft: number;
+  pixelRight: number;
+  pixelWidth: number;
+  firstVisiblePixelLeft: number;
+  lastVisiblePixelRight: number;
 }
 
 export interface SurveyConditions {
