@@ -59,12 +59,12 @@ const Inspect: FC = () => {
   /** The data from Survey */
   const [surveyData, setSurveyData] = useState<SurveyConditions[]>();
   /** The indicator type to display data on graph*/
-  const [indicatorType, setIndicatorType] = useState<string[]>(['KPI']);
+  const [graphIndicatorType, setGraphIndicatorType] = useState<string[]>([]);
 
   const [s, setS] = useState<number>(0);
 
   const indicatorSet = useCallback((value: string[]) => {
-    setIndicatorType(
+    setGraphIndicatorType(
       value
         .map((e: any) => e.value)
         .toString()
@@ -106,14 +106,14 @@ const Inspect: FC = () => {
     const survey = surveyData;
 
     if (survey !== undefined && conditionsGraphAllDataSets !== undefined) {
-      for (let i = 0; i < indicatorType.length; i++) {
+      for (let i = 0; i < graphIndicatorType.length; i++) {
         const rowOfData = survey.filter(
-          (item) => item.type === indicatorType[i],
+          (item) => item.type === graphIndicatorType[i],
         );
         //check if rowOfData is empty
         if (rowOfData.length === 0) continue;
         const conditionsGraphSingleDataSet: ConditionsGraphData = {
-          type: indicatorType[i],
+          type: graphIndicatorType[i],
           dataValues: rowOfData.map((item) => ({
             x: item.distance_survey,
             y: item.value,
@@ -127,7 +127,7 @@ const Inspect: FC = () => {
       }
       setChartData(conditionsGraphAllDataSets);
     }
-  }, [indicatorType]);
+  }, [graphIndicatorType]);
 
   // TODO: update the gradient line data when the user moves the road surface images
   useEffect(() => {
@@ -175,7 +175,10 @@ const Inspect: FC = () => {
 
   return (
     <div className="inspect-page">
-      <TopBar setSelectedType={setSelectedType} indicatorSet={indicatorSet} />
+      <TopBar
+        setSelectedType={setSelectedType}
+        graphIndicatorSet={indicatorSet}
+      />
       <Split
         mode="vertical"
         className="split"

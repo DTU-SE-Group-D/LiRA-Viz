@@ -52,6 +52,7 @@ const options = (
     legend: {
       position: 'top' as const,
       labels: { color: 'white' },
+      onClick() {},
     },
     zoom: {
       pan: {
@@ -199,8 +200,12 @@ const ConditionsGraph: FC<Props> = ({ data, inspectedRoadDistanceArea }) => {
         return {
           showLine: true,
           label: item.type,
+          backgroundColor: selectColor(index),
           borderColor: selectColor(index),
           borderWidth: 2,
+          pointStyle: 'circle',
+          pointRadius: 4,
+          pointHoverRadius: 8,
           fill: false,
           data: item.dataValues,
           yAxisID: item.type,

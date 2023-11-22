@@ -11,7 +11,7 @@ interface TopBarProps {
   /** Callback to set the selected type for roadimages*/
   setSelectedType: (type: string) => void;
   /** Callback to set the selected type for graph*/
-  indicatorSet: (type: string[]) => void;
+  graphIndicatorSet: (type: string[]) => void;
 }
 
 /**
@@ -20,7 +20,10 @@ interface TopBarProps {
  *
  * @author Chen, Hansen
  */
-const TopBar: React.FC<TopBarProps> = ({ setSelectedType, indicatorSet }) => {
+const TopBar: React.FC<TopBarProps> = ({
+  setSelectedType,
+  graphIndicatorSet,
+}) => {
   const navigate = useNavigate(); // Get the navigate function
 
   const handleReturn = () => {
@@ -65,9 +68,9 @@ const TopBar: React.FC<TopBarProps> = ({ setSelectedType, indicatorSet }) => {
         options={ConditionTypeOptions}
         placeholder="Condition Types"
         handleSelectionChange={(value: string[]) => {
-          indicatorSet(value);
+          graphIndicatorSet(value);
         }}
-        defaultValue={ConditionTypeOptions[1]}
+        defaultValue={ConditionTypeOptions[0]}
       ></MultiSelector>
     </div>
   );
