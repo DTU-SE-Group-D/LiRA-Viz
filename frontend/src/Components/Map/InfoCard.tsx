@@ -32,7 +32,7 @@ const InfoCard: React.FC<Props> = ({ hidden, roadData }) => {
           <span className="card-road-name">{roadData.way_name}</span>
         </div>
         <div className="roadinfo-card-text">
-          <span className="text-title"> Branch number: </span>
+          <span className="text-title"> Branch Number: </span>
           <span className="card-road-length"> {roadData.branches.length} </span>
         </div>
       </div>
