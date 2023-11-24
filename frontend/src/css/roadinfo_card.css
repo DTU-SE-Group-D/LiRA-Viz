@@ -1,0 +1,54 @@
+/* Css file for InfoCard.tsx */
+.roadinfo-card-content {
+  position: absolute;
+  top: 90px;
+  left: 40px;
+  background: white;
+  padding: 10px;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  z-index: 1100;
+  width: 300px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.roadinfo-card-text {
+  font-size: 14px;
+  color: black;
+  margin: 5px 10px;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.roadinfo-text-container {
+  margin-top: 10px;
+}
+
+.text-title {
+  color: grey;
+}
+
+.inspect-button {
+  width: 80px;
+  height: 27px;
+  background-color: #8b64f9;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  align-self: end; /* Algin the button at right side*/
+  margin-right: 5px;
+  display: flex; /* Center the text in the button*/
+  justify-content: center;
+  align-items: center;
+}
+
+.inspect-button:hover {
+  background-color: #7853de;
+}
+
+.inspect-button:active {
+  background-color: #7345f2;
+}
