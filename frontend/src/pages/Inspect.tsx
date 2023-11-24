@@ -177,7 +177,7 @@ const Inspect: FC = () => {
   }, []);
 
   return (
-      <div className="inspect-page">
+    <div className="inspect-page">
       <TopBar
         setSelectedType={setSelectedType}
         availableRoadImagesTypes={availableImagesTypes}

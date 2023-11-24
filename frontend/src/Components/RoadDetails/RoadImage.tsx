@@ -72,7 +72,7 @@ const RoadImage: React.FC<Props> = ({
   type,
   id,
   selectedType,
-  setImagesTypes
+  setImagesTypes,
   onRoadDistanceChange,
 }) => {
   /** If the backend responded the data */
