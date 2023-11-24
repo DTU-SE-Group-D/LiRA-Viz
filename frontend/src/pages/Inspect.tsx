@@ -60,8 +60,6 @@ const Inspect: FC = () => {
   const [surveyData, setSurveyData] = useState<SurveyConditions[]>();
   /** The indicator type to display data on graph*/
   const [graphIndicatorType, setGraphIndicatorType] = useState<string[]>([]);
-
-  const [s, setS] = useState<number>(0);
   const [availableImagesTypes, setAvailableImagesTypes] = useState<string[]>(
     [],
   );
@@ -85,10 +83,9 @@ const Inspect: FC = () => {
           ),
           data: [
             { value: 0, way_dist: 0 },
-            { value: 0.1, way_dist: 1 },
+            { value: 0, way_dist: 1 },
           ],
         });
-        setS((prev) => prev + 1);
         //===== Center the map
         const geo = survey.geometry;
         setMapCenter({
@@ -132,21 +129,28 @@ const Inspect: FC = () => {
     }
   }, [graphIndicatorType]);
 
-  // TODO: update the gradient line data when the user moves the road surface images
   useEffect(() => {
-    if (gradientLineData === undefined) return;
-
+    if (gradientLineData === undefined || roadDistanceLeftToRight === null)
+      return;
     setGradientLineData({
       geometry: gradientLineData.geometry,
-      data: [
-        { value: 0, way_dist: 0 },
-        { value: 0.9, way_dist: 499 },
-        { value: 1, way_dist: 500 },
-        { value: 1, way_dist: 525 },
-        { value: 0.9, way_dist: 526 },
-      ],
+
+      data: roadDistanceLeftToRight[0]
+        ? [
+            { value: 0, way_dist: roadDistanceLeftToRight[0] - 0.01 },
+            { value: 1, way_dist: roadDistanceLeftToRight[0] },
+            { value: 1, way_dist: roadDistanceLeftToRight[1] },
+            { value: 0, way_dist: roadDistanceLeftToRight[1] + 0.01 },
+          ]
+        : [
+            { value: 0, way_dist: 0 },
+            { value: 0, way_dist: roadDistanceLeftToRight[0] - 0.01 },
+            { value: 1, way_dist: roadDistanceLeftToRight[0] },
+            { value: 1, way_dist: roadDistanceLeftToRight[1] },
+            { value: 0, way_dist: roadDistanceLeftToRight[1] + 0.01 },
+          ],
     });
-  }, [s]);
+  }, [roadDistanceLeftToRight]);
 
   //sets the collapse function for the split component
   const handleTopPanelSizeChange = useCallback((size: number) => {
