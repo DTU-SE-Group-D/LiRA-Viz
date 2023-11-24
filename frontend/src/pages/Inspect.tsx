@@ -61,8 +61,8 @@ const Inspect: FC = () => {
   /** The indicator type to display data on graph*/
   const [graphIndicatorType, setGraphIndicatorType] = useState<string[]>([]);
   const [availableImagesTypes, setAvailableImagesTypes] = useState<string[]>(
-        [],
-    );
+    [],
+  );
 
   const indicatorSet = useCallback((value: string[]) => {
     setGraphIndicatorType(
