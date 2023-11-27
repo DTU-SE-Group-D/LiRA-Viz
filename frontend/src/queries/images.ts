@@ -3,7 +3,7 @@
  */
 
 import { IImage } from '../models/models';
-import { get, getPath } from './fetch';
+import { get, getPath, post } from './fetch';
 
 /**
  * @param surveyId the survey id used to filter the images
@@ -22,6 +22,25 @@ export const getImagesForASurvey = (
       (isDashCam ? 'dash-camera' : 'road-surface') +
       '/survey/' +
       surveyId,
+    (data: IImage[]) => {
+      callback(
+        data.map((image) => {
+          image.image_path = getPath(image.image_path);
+          return image;
+        }),
+      );
+    },
+  );
+};
+
+export const getImagesForWays = (
+  wayIds: string[],
+  isDashCam: boolean,
+  callback: (images: IImage[]) => void,
+) => {
+  post(
+    '/images/' + (isDashCam ? 'dash-camera' : 'road-surface') + '/path/',
+    wayIds,
     (data: IImage[]) => {
       callback(
         data.map((image) => {

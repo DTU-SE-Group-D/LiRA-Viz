@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 
 import { HotlineOptions, Palette } from 'react-leaflet-hotline';
 import { HotlineEventHandlers } from 'react-leaflet-hotline/dist/types/types';
@@ -39,7 +39,10 @@ const GradientLine: FC<Props> = ({
   palette,
   onClick,
 }) => {
-  const nodes = useMemo<Node[] | undefined>(() => {
+  const [nodes, setNodes] = useState<Node[] | undefined>();
+  const [totalDistance, setTotalDistance] = useState<number | undefined>();
+
+  useEffect(() => {
     if (geometry) {
       const n: Node[] = [];
       let distFromStart = 0;
@@ -54,23 +57,36 @@ const GradientLine: FC<Props> = ({
         });
         distFromStart += dist;
       }
-      return n;
+
+      setTotalDistance(distFromStart);
+      setNodes(
+        n.map((node) => ({
+          lat: node.lat,
+          lng: node.lng,
+          way_dist: node.way_dist / distFromStart,
+        })),
+      );
     }
-    return undefined;
   }, [geometry]);
 
   const dataWithZero = useMemo<DataPoint[] | undefined>(() => {
-    if (data && nodes) {
+    if (data && nodes && totalDistance) {
       if (addZeroDataPointAtTheEnd)
         return [
-          ...data,
-          { way_dist: nodes[nodes.length - 1].way_dist, value: 0 },
+          ...data.map((item) => ({
+            value: item.value,
+            way_dist: item.way_dist / totalDistance,
+          })),
+          { way_dist: 1, value: 0 },
         ];
-      return data;
+      return data.map((item) => ({
+        value: item.value,
+        way_dist: item.way_dist / totalDistance,
+      }));
     }
 
     return undefined;
-  }, [data, nodes, addZeroDataPointAtTheEnd]);
+  }, [data, nodes, totalDistance, addZeroDataPointAtTheEnd]);
 
   const options = useMemo<HotlineOptions>(
     () => ({

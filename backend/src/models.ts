@@ -99,6 +99,20 @@ export enum MeasurementType {
   Manholes = 16,
   Patch = 17,
   Pumping = 18,
+  E_norm = 19,
+  KPI = 20,
+  Mu = 21,
+  DI = 22,
+  E_whl = 23,
+  E_areo = 24,
+  E_whl_std = 25,
+  E_tire_std = 26,
+  E_tire = 27,
+  E_ineratia_slope = 28,
+  E_inertia_slope_std = 29,
+  E_areo_std = 30,
+  E_norm_std = 31,
+  mu_std = 32,
 }
 
 /** An array of surveys, identified by their id and timestamp. */

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectConnection, Knex } from 'nestjs-knex';
-import { IWay, Way } from '../tables';
-import { LatLng, OSMWayId, Road } from '../models';
+import { IWay, Measurement, Way } from '../tables';
+import { LatLng, MeasurementType, OSMWayId, Road } from '../models';
 import { getOSMWaysInARoad } from './osm';
 import { constructNavigationTable, findLongestBranch } from './roads';
 
@@ -259,5 +259,74 @@ export class RoadService {
         this.roadsForming(waysInRoad.way_ids, waysInRoad.way_name),
       ),
     );
+  }
+
+  /**
+   * Get the data of a way.
+   *
+   * @param wayId
+   * @returns type: the index of the type of the data,
+   *          value: the value of the data,
+   *          distance_way: the distance along the way,
+   *          geometry: the geometry of the way,
+   *          length: the length of the way
+   *
+   * @author Kerbourc'h
+   */
+  async getWayData(wayId: OSMWayId): Promise<{
+    data: {
+      type: string;
+      value: number;
+      distance_way: number;
+    }[];
+    geometry: number[][];
+    length: number;
+  }> {
+    const way = (
+      await Way(this.knex_groupd)
+        .select(
+          'id',
+          'length',
+          this.knex_groupd.raw(
+            'st_asgeojson(section_geom)::json as section_geom',
+          ),
+        )
+        .where('osm_id', Number(wayId))
+        .limit(1)
+    )[0];
+
+    if (way === undefined) return { data: [], geometry: [], length: 0 };
+
+    return Measurement(this.knex_groupd)
+      .select('type_index', 'value', 'distance_way')
+      .where('fk_way_id', way.id)
+      .orderBy('distance_way')
+      .where('type_index', '<', 33)
+      .then(
+        (
+          data: {
+            type_index: number;
+            value: number;
+            distance_way: number;
+            length: number;
+          }[],
+        ) => {
+          if (!data) return { data: [], geometry: [], length: way.length };
+
+          const length = way.length;
+
+          return {
+            data: data.map((d) => {
+              return {
+                type: MeasurementType[d.type_index],
+                value: d.value,
+                distance_way: d.distance_way,
+              };
+            }),
+            geometry: way.section_geom.coordinates,
+            length: length,
+          };
+        },
+      );
   }
 }
