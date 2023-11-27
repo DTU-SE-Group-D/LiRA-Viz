@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ImageZoom from './ImageAbleZoom';
 import { IImage } from '../../models/path';
-import { getImagesForASurvey } from '../../queries/images';
+import { getImagesForASurvey, getImagesForWays } from '../../queries/images';
 import { useParams } from 'react-router-dom';
 
 interface Image {
@@ -42,8 +42,14 @@ const ImageGallery: React.FC = () => {
   // Fetch survey id from path
   useEffect(() => {
     // Check if survey id is defined
-    if (id !== undefined && type === 'surveys') {
+    if (id === undefined) return;
+
+    if (type === 'surveys') {
       getImagesForASurvey(id, true, (images) => {
+        setCameraImages(images);
+      });
+    } else if (type === 'paths') {
+      getImagesForWays(id.split(','), true, (images) => {
         setCameraImages(images);
       });
     }

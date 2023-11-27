@@ -43,6 +43,14 @@ export function getWithQueryParameters<T>(
     });
 }
 
+export function post<T>(
+  path: string,
+  obj: object,
+  callback: (data: T) => void,
+): void {
+  axios.post(getPath(path), obj).then((res) => callback(res.data));
+}
+
 export const put = (path: string, obj: object): void => {
   axios.put(getPath(path), obj);
 };

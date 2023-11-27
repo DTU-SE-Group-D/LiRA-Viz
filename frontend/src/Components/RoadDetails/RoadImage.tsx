@@ -1,15 +1,18 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { IImage, IImageValuesForPixels } from '../../models/models';
-import { getImagesForASurvey } from '../../queries/images';
+import { getImagesForASurvey, getImagesForWays } from '../../queries/images';
 
 import '../../css/road_image.css';
 import RotatedImage from './RotatedImage';
 import { useParams } from 'react-router-dom';
 
 interface Props {
+  /** The type of image to display */
   selectedType: string;
+  /** Callback to set the available types */
   setImagesTypes: (types: string[]) => void;
-  onRoadDistanceChange: (distanceValues: number[] | null) => void; // Function to receive roadDistanceLeftToRight
+  /** Callback describing the chunk of road displayed changes (to receive roadDistanceLeftToRight) */
+  onRoadDistanceChange: (distanceValues: number[] | null) => void;
 }
 
 /**
@@ -87,17 +90,29 @@ const RoadImage: React.FC<Props> = ({
 
   // load all the images for a given survey in allImages
   useEffect(() => {
-    if (type !== 'surveys' || id === undefined) {
+    if (
+      type === undefined ||
+      !['surveys', 'paths'].includes(type) ||
+      id === undefined
+    ) {
       setHasLoaded(true);
       setHasFiltered(true);
       return;
     }
 
-    getImagesForASurvey(id, false, (images) => {
-      setAllImages(images);
-      setHasLoaded(true);
-      setHasFiltered(false);
-    });
+    if (type === 'surveys') {
+      getImagesForASurvey(id, false, (images) => {
+        setAllImages(images);
+        setHasLoaded(true);
+        setHasFiltered(false);
+      });
+    } else {
+      getImagesForWays(id.split(','), false, (images) => {
+        setAllImages(images);
+        setHasLoaded(true);
+        setHasFiltered(false);
+      });
+    }
   }, [id]);
 
   // filter the images using the selectedType and store it in displayedImages
@@ -143,7 +158,10 @@ const RoadImage: React.FC<Props> = ({
 
           currentlyVisibleImagesForPixels.push({
             id: correspondingImage.id,
-            distanceSurvey: correspondingImage.distance_survey,
+            distanceSurvey:
+              'paths' === type
+                ? correspondingImage.distance_way
+                : correspondingImage.distance_survey,
             pixelLeft: imageRect.left,
             pixelRight: imageRect.right,
             pixelWidth: imageRect.width,

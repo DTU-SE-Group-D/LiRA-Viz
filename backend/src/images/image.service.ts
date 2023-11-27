@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectConnection, Knex } from 'nestjs-knex';
-import { IImage, Image } from '../tables';
+import { IImage, Image, Way } from '../tables';
+import { OSMWayId } from '../models';
 
 @Injectable()
 export class ImageService {
@@ -53,5 +54,49 @@ export class ImageService {
         .andWhere('type', 'DashCamera')
         .orderBy('distance_survey')
     ).map(this.formatImagePath);
+  }
+
+  /**
+   * Get the images for a given way
+   *
+   * @param wayId the way id
+   * @param isDashCam boolean to indicate if the images are dash camera images or road surface images
+   */
+  async getWayImages(
+    wayId: OSMWayId,
+    isDashCam: boolean,
+  ): Promise<{
+    images: IImage[];
+    length: number;
+  }> {
+    const way = (
+      await Way(this.knex_groupd)
+        .select('id', 'length')
+        .where('osm_id', Number(wayId))
+        .limit(1)
+    )[0];
+
+    if (way === undefined) return { images: [], length: 0 };
+
+    const request = isDashCam
+      ? Image(this.knex_groupd)
+          .where('fk_way_id', way.id)
+          .where('type', 'DashCamera')
+          .orderBy('distance_way')
+      : Image(this.knex_groupd)
+          .where('fk_way_id', way.id)
+          .whereNot('type', 'DashCamera')
+          .orderBy('distance_way');
+
+    return await request.then((data: IImage[]) => {
+      if (!data) return { images: [], length: way.length };
+
+      const length = way.length;
+
+      return {
+        images: data.map(this.formatImagePath),
+        length: length,
+      };
+    });
   }
 }

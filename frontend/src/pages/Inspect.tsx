@@ -10,7 +10,12 @@ import '../css/split.css';
 import { ConditionsGraphData, conditionTypes } from '../models/conditions';
 import '../css/inspect_page.css';
 import { useParams } from 'react-router-dom';
-import { Conditions, ImageType, LatLng } from '../models/models';
+import {
+  Conditions,
+  ImageType,
+  LatLng,
+  PathWithConditions,
+} from '../models/models';
 import { Palette } from 'react-leaflet-hotline';
 import { LatLng as LatLngLeaflet } from 'leaflet';
 import GradientLine from '../Components/Map/GradientLine';
@@ -118,21 +123,32 @@ const Inspect: FC = () => {
   useEffect(() => {
     if (id === undefined || type === undefined) return;
 
-    if (type === 'surveys') {
-      getSurveyData(id, (survey) => {
-        //===== Update the gradient line data
-        setGradientLineData({
-          geometry: survey.geometry.map(
-            (item): LatLngLeaflet => new LatLngLeaflet(item[1], item[0]),
-          ),
-          data: [
-            { value: 0, way_dist: 0 },
-            { value: 0, way_dist: 1 },
-          ],
-        });
-        //===== Update the chart data
-        setData(survey.data);
+    // The function called back when the data is fetched
+    const dataCallback = (data: PathWithConditions) => {
+      console.debug('Data received', data);
+
+      //===== Update the gradient line data
+      setGradientLineData({
+        geometry: data.geometry.map(
+          (item): LatLngLeaflet => new LatLngLeaflet(item[1], item[0]),
+        ),
+        data: [
+          { value: 0, way_dist: 0 },
+          { value: 0, way_dist: 1 },
+        ],
       });
+      setMapCenter({
+        lat: data.geometry[Math.floor(data.geometry.length / 2)][1],
+        lng: data.geometry[Math.floor(data.geometry.length / 2)][0],
+      });
+      //===== Update the chart data
+      setData(data.data);
+    };
+
+    if (type === 'surveys') {
+      getSurveyData(id, dataCallback);
+    } else if (type === 'paths') {
+      getRoadsData(id.split(','), dataCallback);
     }
   }, [id, type]);
 
@@ -170,23 +186,23 @@ const Inspect: FC = () => {
   useEffect(() => {
     if (gradientLineData === undefined || roadDistanceLeftToRight === null)
       return;
+
     setGradientLineData({
       geometry: gradientLineData.geometry,
 
-      data: roadDistanceLeftToRight[0]
-        ? [
-            { value: 0, way_dist: roadDistanceLeftToRight[0] - 0.01 },
-            { value: 1, way_dist: roadDistanceLeftToRight[0] },
-            { value: 1, way_dist: roadDistanceLeftToRight[1] },
-            { value: 0, way_dist: roadDistanceLeftToRight[1] + 0.01 },
-          ]
-        : [
-            { value: 0, way_dist: 0 },
-            { value: 0, way_dist: roadDistanceLeftToRight[0] - 0.01 },
-            { value: 1, way_dist: roadDistanceLeftToRight[0] },
-            { value: 1, way_dist: roadDistanceLeftToRight[1] },
-            { value: 0, way_dist: roadDistanceLeftToRight[1] + 0.01 },
-          ],
+      data:
+        roadDistanceLeftToRight[0] === 0
+          ? [
+              { value: 1, way_dist: 0 },
+              { value: 1, way_dist: roadDistanceLeftToRight[1] },
+              { value: 0, way_dist: roadDistanceLeftToRight[1] + 0.01 },
+            ]
+          : [
+              { value: 0, way_dist: roadDistanceLeftToRight[0] - 0.01 },
+              { value: 1, way_dist: roadDistanceLeftToRight[0] },
+              { value: 1, way_dist: roadDistanceLeftToRight[1] },
+              { value: 0, way_dist: roadDistanceLeftToRight[1] + 0.01 },
+            ],
     });
   }, [roadDistanceLeftToRight]);
 
