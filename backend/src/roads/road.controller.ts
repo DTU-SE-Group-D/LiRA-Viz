@@ -1,7 +1,7 @@
 import { BadRequestException, Controller, Get, Param } from '@nestjs/common';
 import { RoadService } from './road.service';
 
-@Controller('road')
+@Controller('roads')
 export class RoadController {
   constructor(private readonly service: RoadService) {}
 
@@ -10,9 +10,9 @@ export class RoadController {
    *
    * @author Kerbourc'h
    */
-  @Get('')
-  async getRoads() {
-    return await this.service.getRoads();
+  @Get('paths')
+  async getRoadsPaths() {
+    return await this.service.getRoadsPaths();
   }
 
   /**

@@ -82,4 +82,4 @@ export interface IWay<T = LineString> {
   isoneway: boolean;
 }
 
-export const Way = (k: Knex) => k.from<IWay<LineString>>('way');
+export const Way = (k: Knex) => k.from<IWay>('way');

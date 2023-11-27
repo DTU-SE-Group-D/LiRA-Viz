@@ -157,10 +157,6 @@ export class RoadService {
   /**
    * Make an ordered lists of ways that represent a road.
    *
-   * TODO: create a function of the following and add unit tests with mock data:
-   *     //  - a road completely split into two branches
-   *     //  - a road splitting into two branches and then merging back
-   *
    * @author Kerbourc'h
    */
   async roadsForming(wayIds: OSMWayId[], wayName: string): Promise<Road> {
@@ -231,12 +227,11 @@ export class RoadService {
    * Return a dictionary of the roads. A road is defined by a name, a list of branch (each branch
    * is a list of way ids) and the geometry (a list of coordinates) of each way.
    *
-   * TODO: return branch corresponding to the direction of the road instead of chunk of road
    * TODO: add parameters to get the road of a specific area (then remove the limit in the query)
    *
    * @author Kerbourc'h
    */
-  async getRoads() {
+  async getRoadsPaths() {
     // Query the way ids of a road ordered by the number of ways in the road. Also remove the way_count column.
     const waysInRoads = (
       await Way(this.knex_groupd)

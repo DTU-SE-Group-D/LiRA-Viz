@@ -22,7 +22,7 @@ export class SurveyService {
             'ST_AsGeoJSON(section_geom)::json as section_geom',
           ),
           this.knex_group_d.raw(
-            "json_agg(json_build_object('type_index', type_index,'value', value, 'distance_survey', distance_survey)) as data",
+            "json_agg(json_build_object('type_index', type_index,'value', value, 'distance', distance_survey)) as data",
           ),
         )
         .join('survey', 'survey.id', 'measurement.fk_survey_id')
@@ -34,7 +34,7 @@ export class SurveyService {
         data: {
           type_index: number;
           value: number;
-          distance_survey: number;
+          distance: number;
         }[];
       }) => {
         return {
@@ -45,10 +45,10 @@ export class SurveyService {
               return {
                 type: MeasurementType[value.type_index],
                 value: value.value,
-                distance_survey: value.distance_survey,
+                distance: value.distance,
               };
             })
-            .sort((a, b) => a.distance_survey - b.distance_survey),
+            .sort((a, b) => a.distance - b.distance),
         };
       },
     );

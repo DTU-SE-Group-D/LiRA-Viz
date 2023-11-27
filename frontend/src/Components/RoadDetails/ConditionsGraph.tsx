@@ -122,14 +122,14 @@ const selectColor = (index: number) => {
 };
 
 interface Props {
+  /** The data to display and the constraints of the graph data */
   data?: ConditionsGraphData[];
+  /** The distance shown in the Road surface images component */
   inspectedRoadDistanceArea?: number[] | null;
 }
 
 /**
  * The Graph displaying the road parameter data in the Inspect Page
- *
- * @param data The data to display and the constraints of the graph data
  *
  * @author Muro, Kerbourc'h
  */
@@ -185,7 +185,7 @@ const ConditionsGraph: FC<Props> = ({ data, inspectedRoadDistanceArea }) => {
         : 0;
 
     chart.update();
-  }, [ref, data, inspectedRoadDistanceArea]);
+  }, [ref, inspectedRoadDistanceArea]);
 
   useEffect(() => {
     if (data === undefined) {
@@ -263,7 +263,7 @@ const ConditionsGraph: FC<Props> = ({ data, inspectedRoadDistanceArea }) => {
     if (ref.current === null) return;
     const chart = ref.current;
     chart.update();
-  }, [ref, data, graphOptions]);
+  }, [ref, graphLines, graphOptions]);
 
   return (
     <div className="road-conditions-graph">

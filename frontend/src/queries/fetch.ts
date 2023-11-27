@@ -12,7 +12,7 @@ const prodURL = process.env.REACT_APP_BACKEND_URL_PROD;
 
 export const getPath = (p: string) => (development ? devURL : prodURL) + p;
 
-export async function asyncPost<T>(
+export async function asyncGetWithQueryParameters<T>(
   path: string,
   obj: object,
 ): Promise<AxiosResponse<T, any>> {
@@ -31,12 +31,12 @@ export function get<T>(path: string, callback: (data: T) => void): void {
     .then((data) => callback(data));
 }
 
-export function post<T>(
+export function getWithQueryParameters<T>(
   path: string,
   obj: object,
   callback: (data: T) => void,
 ): void {
-  asyncPost<T>(path, obj)
+  asyncGetWithQueryParameters<T>(path, obj)
     .then((res) => callback(res.data))
     .catch((err) => {
       console.log(err);

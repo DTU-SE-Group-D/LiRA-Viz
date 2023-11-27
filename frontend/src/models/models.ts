@@ -34,14 +34,17 @@ export interface IImageValuesForPixels {
   lastVisiblePixelRight: number;
 }
 
-export interface SurveyConditions {
+export interface Conditions {
   type: string;
   value: number;
-  distance_survey: number;
+  distance: number;
 }
 
-export interface Survey {
-  id: string;
+export interface PathWithConditions {
   geometry: number[][];
-  data: SurveyConditions[];
+  data: Conditions[];
+}
+
+export interface Survey extends PathWithConditions {
+  id: string;
 }

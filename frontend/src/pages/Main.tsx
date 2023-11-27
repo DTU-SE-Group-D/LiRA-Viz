@@ -1,7 +1,7 @@
 import { FC, useCallback, useEffect, useState } from 'react';
 import Hamburger from '../Components/Map/Inputs/Hamburger';
 import { IRoad } from '../models/path';
-import { getRoads } from '../queries/road';
+import { getRoadsPaths } from '../queries/road';
 import { LatLng } from '../models/models';
 import { FeatureCollection } from 'geojson';
 import { getAllConditions } from '../queries/conditions';
@@ -12,15 +12,15 @@ import ForceMapUpdate from '../Components/Map/ForceMapUpdate';
 import Roads from '../Components/Map/Roads';
 import {
   ConditionTypeOptions,
+  dateChange,
   DateRange,
   DefaultMode,
-  MultiMode,
-  SeverityOptions,
   DefaultSeverityMode,
-  SeverityMode,
-  YearMonth,
   lessOrEqualThan,
-  dateChange,
+  MultiMode,
+  SeverityMode,
+  SeverityOptions,
+  YearMonth,
 } from '../models/conditions';
 import MonthFilter from '../Components/Map/Inputs/MonthFilter';
 import MultiSelector from '../Components/Map/Inputs/MultiSelector';
@@ -137,7 +137,7 @@ const Main: FC = () => {
 
   // get the actual roads
   useEffect(() => {
-    getRoads(setRoads);
+    getRoadsPaths(setRoads);
   }, []);
 
   useEffect(() => {

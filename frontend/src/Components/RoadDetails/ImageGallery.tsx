@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ImageZoom from './ImageAbleZoom';
 import { IImage } from '../../models/path';
-import { GetDashCameraImage } from '../../queries/images';
+import { getImagesForASurvey } from '../../queries/images';
 import { useParams } from 'react-router-dom';
 
 interface Image {
@@ -23,42 +23,59 @@ export const images = (cameraImages: IImage[]): Image[] => {
  * @author: Chen, Lyons
  */
 const ImageGallery: React.FC = () => {
-  const [scrollPosition, setScrollPosition] = useState(0);
+  /** The id and type of the object to display (in the url) */
+  const { id, type } = useParams();
+
+  /** The reference to the gallery */
   const galleryRef = useRef<HTMLDivElement>(null);
 
-  // Add feature for the pop-up of clicking and checking images
+  /** The current scroll position of the gallery */
+  const [scrollPosition, setScrollPosition] = useState(0);
+
+  /** Add feature for the pop-up of clicking and checking images */
   const [isImageClickOpen, setIsImageClickOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  /** The images to display */
+  const [cameraImages, setCameraImages] = useState<IImage[]>([]);
+
+  // Fetch survey id from path
+  useEffect(() => {
+    // Check if survey id is defined
+    if (id !== undefined && type === 'surveys') {
+      getImagesForASurvey(id, true, (images) => {
+        setCameraImages(images);
+      });
+    }
+  }, [id]);
+
   // Function to open the pop-up
-  const openImageInPopup = (imageId: number) => {
-    setCurrentImageIndex(imageId - 1); // Adjust for 0-based index
-    setIsImageClickOpen(true);
-  };
+  const openImageInPopup = useCallback(
+    (imageId: number) => {
+      setCurrentImageIndex(imageId - 1); // Adjust for 0-based index
+      setIsImageClickOpen(true);
+    },
+    [setCurrentImageIndex, setIsImageClickOpen],
+  );
 
-  const handleScroll = (scrollOffset: number) => {
-    if (!galleryRef.current) return;
+  const handleScroll = useCallback(
+    (scrollOffset: number) => {
+      if (!galleryRef.current) return;
 
-    const currentScroll = galleryRef.current.scrollLeft;
-    const maxScrollLimit =
-      galleryRef.current.scrollWidth - galleryRef.current.clientWidth;
+      const currentScroll = galleryRef.current.scrollLeft;
+      const maxScrollLimit =
+        galleryRef.current.scrollWidth - galleryRef.current.clientWidth;
 
-    const newScrollPosition = currentScroll + scrollOffset;
-    const boundedScrollPosition = Math.max(
-      0,
-      Math.min(newScrollPosition, maxScrollLimit),
-    );
+      const newScrollPosition = currentScroll + scrollOffset;
+      const boundedScrollPosition = Math.max(
+        0,
+        Math.min(newScrollPosition, maxScrollLimit),
+      );
 
-    setScrollPosition(boundedScrollPosition);
-  };
-
-  const scrollLeft = () => {
-    handleScroll(-200);
-  };
-
-  const scrollRight = () => {
-    handleScroll(200);
-  };
+      setScrollPosition(boundedScrollPosition);
+    },
+    [setScrollPosition],
+  );
 
   useEffect(() => {
     if (galleryRef.current) {
@@ -66,23 +83,12 @@ const ImageGallery: React.FC = () => {
     }
   }, [scrollPosition]);
 
-  const [cameraImages, setCameraImages] = useState<IImage[]>([]);
-  // const surveyid = 'c8435e32-0627-46b9-90f6-52fc21862df3'; //Check the showing of image when surveyid fetch incorrectly
-  const { id } = useParams<{ id?: string }>();
-  // Fetch surveyid from path
-
-  useEffect(() => {
-    if (id) {
-      // Check if surveyid is defined
-      GetDashCameraImage(id, (images) => {
-        setCameraImages(images);
-      });
-    }
-  }, [id]);
-
   return (
     <div className="image-gallery-container">
-      <button className="arrow-button left-arrow" onClick={scrollLeft}>
+      <button
+        className="arrow-button left-arrow"
+        onClick={() => handleScroll(-200)}
+      >
         &lt;
       </button>
       <div
@@ -106,7 +112,10 @@ const ImageGallery: React.FC = () => {
           </div>
         ))}
       </div>
-      <button className="arrow-button right-arrow" onClick={scrollRight}>
+      <button
+        className="arrow-button right-arrow"
+        onClick={() => handleScroll(200)}
+      >
         &gt;
       </button>
       {isImageClickOpen && (

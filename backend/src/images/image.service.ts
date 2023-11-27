@@ -33,21 +33,9 @@ export class ImageService {
       await Image(this.knex_groupd)
         .select()
         .where('fk_survey_id', surveyId)
+        .whereNot('type', 'DashCamera')
         .orderBy('distance_survey')
     ).map(this.formatImagePath);
-  }
-
-  /**
-   * Return the information of a given image
-   *
-   * @param imageId the image id
-   *
-   * @author Kerbourc'h
-   */
-  async getImage(imageId: string) {
-    return (await Image(this.knex_groupd).select().where('id', imageId)).map(
-      this.formatImagePath,
-    );
   }
 
   /**
