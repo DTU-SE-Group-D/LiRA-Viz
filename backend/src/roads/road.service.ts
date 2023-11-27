@@ -85,7 +85,7 @@ export class RoadService {
    *
    * @author Kerbourc'h
    */
-  async getOrCreateWay(OSMWayId: OSMWayId): Promise<IWay> {
+  async getOrCreateWay(OSMWayId: OSMWayId): Promise<IWay | null> {
     const way = await Way(this.knex_groupd)
       .select(
         'id',

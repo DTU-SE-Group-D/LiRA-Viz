@@ -10,6 +10,7 @@ import './App.css';
 import Inspect from './pages/Inspect';
 
 import Main from './pages/Main';
+import Test from './pages/Test';
 
 /**
  * Component rendering the whole application
@@ -22,6 +23,7 @@ const App: FC = () => {
           <Route index element={<Navigate to="/map" replace />} />
           <Route path="/map" element={<Main />} />
           <Route path="/inspect" element={<Inspect />} />
+          <Route path="/test" element={<Test />} />
           <Route path="/inspect/:type" element={<Inspect />} />
           <Route path="/inspect/:type/:id" element={<Inspect />} />
         </Routes>

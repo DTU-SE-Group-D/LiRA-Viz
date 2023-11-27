@@ -19,6 +19,8 @@ import { ImageController } from './images/image.controller';
 import { ImageService } from './images/image.service';
 import { SurveyService } from './surveys/survey.service';
 import { SurveyController } from './surveys/survey.controller';
+import { TestController } from './test/test.controller';
+import { TestService } from './test/test.service';
 
 const database = (config: any, name: string) => {
   return KnexModule.forRootAsync(
@@ -49,6 +51,7 @@ const database = (config: any, name: string) => {
     RoadController,
     SurveyController,
     ImageController,
+    TestController,
   ],
   providers: [
     AppService,
@@ -57,6 +60,7 @@ const database = (config: any, name: string) => {
     RoadService,
     SurveyService,
     ImageService,
+    TestService,
   ],
 })
 export class AppModule {}
