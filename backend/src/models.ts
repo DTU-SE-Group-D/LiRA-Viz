@@ -38,7 +38,7 @@ export interface ISurvey {
 export interface SurveyConditions {
   type: number;
   value: number;
-  distance_survey: number;
+  distance: number;
 }
 
 /**

@@ -1,4 +1,4 @@
-import { get, post } from './fetch';
+import { get, getWithQueryParameters } from './fetch';
 import { FeatureCollection } from 'geojson';
 import { Survey } from '../models/models';
 import { SurveyList } from '../../../backend/src/models';
@@ -7,7 +7,7 @@ export const getSurveyData = (
   surveyId: string,
   setConditions: (data: Survey) => void,
 ) => {
-  post('/surveys', { surveyId }, setConditions);
+  getWithQueryParameters('/surveys', { surveyId }, setConditions);
 };
 
 /**

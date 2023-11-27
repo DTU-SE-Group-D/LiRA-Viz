@@ -14,28 +14,18 @@ export class ImageController {
    * @author Kerbourc'h
    */
   @Get('road-surface/survey/:id')
-  async getImagesOfASurvey(@Param('id') surveyId: string): Promise<IImage[]> {
+  async getRoadImagesOfASurvey(
+    @Param('id') surveyId: string,
+  ): Promise<IImage[]> {
     return await this.service.getRoadSurfaceImages(surveyId);
-  }
-
-  /**
-   * Return the information of a given image
-   *
-   * @param imageId the image id
-   *
-   * @author Kerbourc'h
-   */
-  @Get(':id')
-  async getImage(@Param() imageId: string): Promise<IImage[]> {
-    return await this.service.getImage(imageId);
   }
 
   /**
    * Return the information of xf for a given survey
    *
-   * @param surveyid the survey id
+   * @param surveyId the survey id
    *
-   * @author Kerbourc'h, Chen
+   * @author Chen
    */
   @Get('dash-camera/survey/:id')
   async getDashCameraImages(@Param('id') surveyId: string): Promise<IImage[]> {

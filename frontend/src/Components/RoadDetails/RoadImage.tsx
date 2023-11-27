@@ -1,13 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { IImage, IImageValuesForPixels } from '../../models/models';
-import { getRoadSurfaceImages } from '../../queries/images';
+import { getImagesForASurvey } from '../../queries/images';
 
 import '../../css/road_image.css';
 import RotatedImage from './RotatedImage';
+import { useParams } from 'react-router-dom';
 
 interface Props {
-  type?: string;
-  id?: string;
   selectedType: string;
   setImagesTypes: (types: string[]) => void;
   onRoadDistanceChange: (distanceValues: number[] | null) => void; // Function to receive roadDistanceLeftToRight
@@ -57,10 +56,9 @@ function getRoadDistances(
 /**
  * Fetch and display the road images
  *
- * @param type
- * @param id
  * @param selectedType The type of image to display
  * @param setImagesTypes Callback to set the available types
+ * @param onRoadDistanceChange Callback from when the chunk of road displayed changes
  *
  * TODO: Find a way to load all the images
  *   - The importation could rotate the images (would reduce the load because of the rotation)
@@ -69,12 +67,13 @@ function getRoadDistances(
  * @author Kerbourc'h, Muro
  */
 const RoadImage: React.FC<Props> = ({
-  type,
-  id,
   selectedType,
   setImagesTypes,
   onRoadDistanceChange,
 }) => {
+  /** The id and type of the object to display (in the url) */
+  const { id, type } = useParams();
+
   /** If the backend responded the data */
   const [hasLoaded, setHasLoaded] = useState<boolean>(false);
   /** If the data has been filtered */
@@ -94,7 +93,7 @@ const RoadImage: React.FC<Props> = ({
       return;
     }
 
-    getRoadSurfaceImages(id, (images) => {
+    getImagesForASurvey(id, false, (images) => {
       setAllImages(images);
       setHasLoaded(true);
       setHasFiltered(false);
@@ -103,7 +102,10 @@ const RoadImage: React.FC<Props> = ({
 
   // filter the images using the selectedType and store it in displayedImages
   useEffect(() => {
-    if (allImages.length === 0) return;
+    if (allImages.length === 0) {
+      setHasFiltered(true);
+      return;
+    }
 
     setDisplayedImages(
       allImages.filter((image: IImage) => image.type === selectedType),

@@ -55,33 +55,10 @@ export const conditionTypes = [
 
 // Options for condition indicator multiselect
 
-export const ConditionTypeOptions = [
-  { value: 'ALL', label: 'ALL' },
-  { value: 'KPI', label: 'KPI' },
-  { value: 'DI', label: 'DI' },
-  { value: 'IRI', label: 'IRI' },
-  { value: 'Mu', label: 'Mu' },
-  { value: 'E_norm', label: 'E_norm' },
-  { value: 'Crack', label: 'Crack' },
-  { value: 'Rutting', label: 'Rutting' },
-  { value: 'MacroTexture', label: 'MacroTexture' },
-  { value: 'LaneMarking', label: 'LaneMarking' },
-  { value: 'RumbleStrip', label: 'RumbleStrip' },
-  { value: 'Potholes', label: 'Potholes' },
-  { value: 'DropOffCurb', label: 'DropOffCurb' },
-  { value: 'Joint', label: 'Joint' },
-  { value: 'Raveling', label: 'Raveling' },
-  { value: 'Roughness', label: 'Roughness' },
-  { value: 'RoadGeometry', label: 'RoadGeometry' },
-  { value: 'WaterEntrapment', label: 'WaterEntrapment' },
-  { value: 'Shoving', label: 'Shoving' },
-  { value: 'PickOut', label: 'PickOut' },
-  { value: 'Bleeding', label: 'Bleeding' },
-  { value: 'SealedCrack', label: 'SealedCrack' },
-  { value: 'Manholes', label: 'Manholes' },
-  { value: 'Patch', label: 'Patch' },
-  { value: 'Pumping', label: 'Pumping' },
-];
+export const ConditionTypeOptions = conditionTypes.map((type) => ({
+  value: type,
+  label: type,
+}));
 
 // Options for Severity
 
