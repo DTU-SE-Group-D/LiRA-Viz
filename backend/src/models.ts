@@ -26,7 +26,7 @@ export interface Condition {
 /**
  * Type of answer from backend for a survey.
  */
-export interface Survey {
+export interface ISurvey {
   id: string;
   geometry: number[][];
   data: SurveyConditions[];

@@ -6,8 +6,6 @@ import { LatLng } from '../models/models';
 import { FeatureCollection } from 'geojson';
 import { getAllConditions } from '../queries/conditions';
 
-import axios from 'axios';
-
 import ConditionsMap from '../Components/Conditions/ConditionsMap';
 import Search from '../Components/Map/Inputs/Search';
 import ForceMapUpdate from '../Components/Map/ForceMapUpdate';
@@ -29,11 +27,6 @@ import MultiSelector from '../Components/Map/Inputs/MultiSelector';
 import '../css/navbar.css';
 import DetectMapClick from '../Components/Map/DetectMapClick';
 import RoadInfoCard from '../Components/Map/InfoCard';
-
-type Survey = {
-  id: string;
-  survey_id: string;
-};
 
 /**
  * Component rendering the main page
@@ -68,22 +61,6 @@ const Main: FC = () => {
   // Stores the minimum and maximum of the date range
   const [dateMin, setDateMin] = useState<Date>();
   const [dateMax, setDateMax] = useState<Date>();
-
-  const [surveys, setSurveys] = useState<Survey[]>([]);
-
-  const fetchSurveys = async () => {
-    try {
-      // add API Endpoint
-      const response = await axios.get('/path/to/your/survey/api');
-      setSurveys(response.data); // Update the surveys state
-    } catch (error) {
-      console.error('Error fetching surveys:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchSurveys();
-  }, []);
 
   /**
    *
@@ -210,11 +187,7 @@ const Main: FC = () => {
   return (
     <div style={{ height: '100%' }}>
       <div className="nav-wrapper">
-        <Hamburger
-          isOpen={isSidebarOpen}
-          toggle={toggleSidebar}
-          surveys={surveys}
-        />
+        <Hamburger isOpen={isSidebarOpen} toggle={toggleSidebar} />
         <div className="nav-container">
           <Search
             onPlaceSelect={(value: any) => {
@@ -232,11 +205,7 @@ const Main: FC = () => {
                 }
               }
 
-              <Hamburger
-                isOpen={isSidebarOpen}
-                toggle={toggleSidebar}
-                surveys={surveys}
-              />;
+              <Hamburger isOpen={isSidebarOpen} toggle={toggleSidebar} />;
 
               const coordinates = value?.geometry?.coordinates;
               if (coordinates) {

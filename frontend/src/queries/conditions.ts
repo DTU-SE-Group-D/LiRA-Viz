@@ -9,6 +9,10 @@ export const getSurveyData = (
   post('/surveys', { surveyId }, setConditions);
 };
 
+export const getAllSurveyData = (callback: (surveys: Survey[]) => void) => {
+  get('/surveys/all', callback);
+};
+
 export const getAllConditions = (
   callback: (data: FeatureCollection) => void,
 ) => {
