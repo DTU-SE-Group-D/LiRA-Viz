@@ -183,7 +183,7 @@ const Main: FC = () => {
   }, []);
 
   return (
-    <div style={{ height: '100%' }}>
+    <div style={{ height: '95%' }}>
       <div className="nav-wrapper">
         <Hamburger
           isOpen={isSidebarOpen}
