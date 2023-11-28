@@ -1,6 +1,7 @@
 import { get, post } from './fetch';
 import { FeatureCollection } from 'geojson';
 import { Survey } from '../models/models';
+import { SurveyList } from '../../../backend/src/models';
 
 export const getSurveyData = (
   surveyId: string,
@@ -9,7 +10,12 @@ export const getSurveyData = (
   post('/surveys', { surveyId }, setConditions);
 };
 
-export const getAllSurveyData = (callback: (surveys: Survey[]) => void) => {
+/**
+ * Retrieves all survey data and passes it to the callback function.
+ *
+ * @author Lyons
+ */
+export const getAllSurveyData = (callback: (surveys: SurveyList) => void) => {
   get('/surveys/all', callback);
 };
 

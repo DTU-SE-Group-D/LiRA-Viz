@@ -100,3 +100,9 @@ export enum MeasurementType {
   Patch = 17,
   Pumping = 18,
 }
+
+/** An array of surveys, identified by their id and timestamp. */
+export type SurveyList = {
+  id: string;
+  timestamp: string;
+}[];

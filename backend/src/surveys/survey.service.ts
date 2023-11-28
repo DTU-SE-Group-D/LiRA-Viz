@@ -56,6 +56,11 @@ export class SurveyService {
     return s.length > 0 ? s[0] : null;
   }
 
+  /**
+   *Asynchronously retrieves all surveys from the database, including their IDs and timestamps.
+   *
+   * @author Lyons
+   */
   async getAllSurveys(): Promise<ISurvey[]> {
     return await Survey(this.knex_group_d).select('id', 'timestamp');
   }

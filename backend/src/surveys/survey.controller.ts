@@ -13,6 +13,12 @@ export class SurveyController {
     return this.service.getSurveyConditions(surveyId);
   }
 
+  /**
+   * Fetches an array of all survey objects from the database.
+   * Returns a Promise that resolves with the survey data.
+   *
+   * @author Lyons
+   */
   @Get('all')
   getAllSurveys(): Promise<ISurvey[]> {
     return this.service.getAllSurveys();
