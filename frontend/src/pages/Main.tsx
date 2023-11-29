@@ -9,7 +9,7 @@ import { getAllConditions } from '../queries/conditions';
 import ConditionsMap from '../Components/Conditions/ConditionsMap';
 import Search from '../Components/Map/Inputs/Search';
 import ForceMapUpdate from '../Components/Map/ForceMapUpdate';
-import Roads from '../Components/Map/Roads';
+import Paths from '../Components/Map/Paths';
 import {
   ConditionTypeOptions,
   dateChange,
@@ -39,11 +39,8 @@ const Main: FC = () => {
   // Select road index
   const [selectedRoadIdx, setSelectedRoadIdx] = useState<number>(-1);
 
+  // describe the current state of the sidebar
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
 
   // The position to move too (used by the Search component)
   const [moveToPosition, setMoveToPosition] = useState<LatLng>();
@@ -54,6 +51,7 @@ const Main: FC = () => {
   // The selected severity (used to filter the data to show)
   const [severitySelected, setSeveritySelected] =
     useState<SeverityMode>(DefaultSeverityMode);
+
   // All the data, get from the backend
   const [dataAll, setDataAll] = useState<FeatureCollection>();
   // The date range across which the data is
@@ -69,8 +67,7 @@ const Main: FC = () => {
    *
    * @author Hansen
    */
-
-  const rangeChange = (d: YearMonth, start: boolean) => {
+  const rangeChange = useCallback((d: YearMonth, start: boolean) => {
     setRangeSelected((old) => {
       if (start) {
         return { ...old, start: d };
@@ -78,8 +75,7 @@ const Main: FC = () => {
         return { ...old, end: d };
       }
     });
-    console.log(rangeSelected);
-  };
+  }, []);
 
   /**
    * Function multiModeSet for setting the mode
@@ -89,7 +85,6 @@ const Main: FC = () => {
    *
    * @author Hansen
    */
-
   const multiModeSet = useCallback((value: string[]) => {
     const outputMode: MultiMode = {
       count: value.length,
@@ -118,7 +113,6 @@ const Main: FC = () => {
    *
    * @author Hansen
    */
-
   const severitySet = useCallback((value: string[]) => {
     const outputMode: SeverityMode = {
       mode: value
@@ -187,7 +181,10 @@ const Main: FC = () => {
   return (
     <div style={{ height: '100%' }}>
       <div className="nav-wrapper">
-        <Hamburger isOpen={isSidebarOpen} toggle={toggleSidebar} />
+        <Hamburger
+          isOpen={isSidebarOpen}
+          toggle={() => setIsSidebarOpen(!isSidebarOpen)}
+        />
         <div className="nav-container">
           <Search
             onPlaceSelect={(value: any) => {
@@ -204,8 +201,6 @@ const Main: FC = () => {
                   }
                 }
               }
-
-              <Hamburger isOpen={isSidebarOpen} toggle={toggleSidebar} />;
 
               const coordinates = value?.geometry?.coordinates;
               if (coordinates) {
@@ -255,10 +250,24 @@ const Main: FC = () => {
         dataAll={dataAll!}
         rangeAll={rangeAll}
       >
-        <Roads
-          roads={roads}
-          selectedRoadIdx={selectedRoadIdx}
-          onSelectedRoad={(index, _road, position) => {
+        <Paths
+          paths={
+            selectedRoadIdx === -1 || roads === undefined
+              ? roads?.map((r) => Object.values(r.geometries))
+              : roads[selectedRoadIdx].branches.map((OSMIds) => {
+                  const path: LatLng[] = [];
+
+                  for (const OSMId of OSMIds) {
+                    path.push(
+                      ...Object.values(
+                        roads[selectedRoadIdx].geometries[OSMId],
+                      ),
+                    );
+                  }
+                  return path;
+                })
+          }
+          onSelectedPath={(index, _road, position) => {
             // If no road is selected, select the road
             if (selectedRoadIdx === -1) {
               setSelectedRoadIdx(index);
