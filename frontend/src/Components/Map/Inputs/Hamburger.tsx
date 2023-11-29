@@ -4,24 +4,19 @@ import '../../../css/Sidebar.css';
 import { getAllSurveyData } from '../../../queries/conditions';
 import { SurveyList } from '../../../../../backend/src/models';
 
-/**
- * Defines the properties for the Hamburger component, which include the state of the sidebar
- * and a function to toggle its visibility.
- *
- * @property {boolean} isOpen Indicates if the sidebar is currently open.
- * @property {Function} toggle A function to open or close the sidebar.
- *
- * @author Lyons
- */
 interface HamburgerProps {
-  isOpen: boolean; // Whether the sidebar is open or not
+  /** Indicates if the sidebar is currently open. */
+  isOpen: boolean;
+  /** A function to open or close the sidebar. */
   toggle: () => void;
-  //surveys: Survey[];
 }
 
 /**
  *A component representing a burger menu icon and sidebar. It handles the display
  * of a sidebar based on the 'isOpen' state, and toggles visibility with 'toggle'.
+ *
+ * @param {HamburgerProps} props - The properties passed to the hamburger component.
+ * @returns {JSX.Element} A React functional component rendering the sidebar and the hamburger menu icon.
  *
  * @author Lyons
  */
