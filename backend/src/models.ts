@@ -26,7 +26,7 @@ export interface Condition {
 /**
  * Type of answer from backend for a survey.
  */
-export interface Survey {
+export interface ISurvey {
   id: string;
   geometry: number[][];
   data: SurveyConditions[];
@@ -100,3 +100,9 @@ export enum MeasurementType {
   Patch = 17,
   Pumping = 18,
 }
+
+/** An array of surveys, identified by their id and timestamp. */
+export type SurveyList = {
+  id: string;
+  timestamp: string;
+}[];

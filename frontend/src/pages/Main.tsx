@@ -1,4 +1,5 @@
 import { FC, useCallback, useEffect, useState } from 'react';
+import Hamburger from '../Components/Map/Inputs/Hamburger';
 import { IRoad } from '../models/path';
 import { getRoads } from '../queries/road';
 import { LatLng } from '../models/models';
@@ -37,6 +38,13 @@ const Main: FC = () => {
   const [roads, setRoads] = useState<IRoad[]>();
   // Select road index
   const [selectedRoadIdx, setSelectedRoadIdx] = useState<number>(-1);
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   // The position to move too (used by the Search component)
   const [moveToPosition, setMoveToPosition] = useState<LatLng>();
   // The indicator(s) to display on the map
@@ -179,6 +187,7 @@ const Main: FC = () => {
   return (
     <div style={{ height: '100%' }}>
       <div className="nav-wrapper">
+        <Hamburger isOpen={isSidebarOpen} toggle={toggleSidebar} />
         <div className="nav-container">
           <Search
             onPlaceSelect={(value: any) => {
@@ -195,6 +204,8 @@ const Main: FC = () => {
                   }
                 }
               }
+
+              <Hamburger isOpen={isSidebarOpen} toggle={toggleSidebar} />;
 
               const coordinates = value?.geometry?.coordinates;
               if (coordinates) {

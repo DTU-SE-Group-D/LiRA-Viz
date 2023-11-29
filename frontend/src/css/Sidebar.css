@@ -1,0 +1,122 @@
+:root {
+  --navbar-z-index: 1000;
+}
+
+.hamburger {
+  position: fixed;
+  top: 50x;
+  left: 10px;
+  cursor: pointer;
+  z-index: 1001;
+  background-color: #2e2e2e;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+}
+
+.sidebar {
+  height: 100vh;
+  width: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #2e2e2e;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 40px;
+  z-index: 1100;
+}
+
+.sidebar.open {
+  width: 250px;
+}
+
+.closebtn {
+  position: absolute;
+  top: -5px;
+  right: 10px;
+  font-size: 36px;
+  cursor: pointer;
+  z-index: 1101;
+  padding: 5px;
+  color: #818181;
+  border-radius: 50%;
+}
+
+.sidebar-content::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb {
+  background-color: #b0b0b0;
+  border-radius: 10px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+.sidebar-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidebar a:hover {
+  color: #f1f1f1;
+}
+
+.sidebar-content {
+  max-height: calc(100vh - 60px);
+  overflow-y: auto;
+  padding: 10px 10px 0;
+  overflow-y: auto; /* In case of scrolling */
+}
+
+.survey-block {
+  background-color: white;
+  padding: 10px;
+  margin-bottom: 2px;
+  border-radius: 4px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  color: black;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  transition: background-color 0.3s;
+}
+
+.survey-block:hover {
+  background-color: #f0f0f0; /* added a light gray background on hover */
+  cursor: pointer;
+}
+
+.survey-block h4 {
+  margin: 0;
+  font-weight: bold;
+}
+
+.survey-block p {
+  margin: 4px 0; /* thia adds a small space top and bottom */
+  font-weight: normal;
+  font-size: 0.9em; /* Slightly smaller font */
+}
+
+.survey-id,
+.survey-date {
+  font-size: 0.8em; /* Even smaller font for ID and date */
+  font-weight: normal;
+}
