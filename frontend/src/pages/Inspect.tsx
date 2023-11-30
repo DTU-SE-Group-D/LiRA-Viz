@@ -8,7 +8,7 @@ import Split from '@uiw/react-split';
 import ConditionsGraph from '../Components/RoadDetails/ConditionsGraph';
 import { getSurveyData } from '../queries/conditions';
 import '../css/split.css';
-import { ConditionsGraphData } from '../models/conditions';
+import { ConditionsGraphData, conditionTypes } from '../models/conditions';
 import '../css/inspect_page.css';
 import { useParams } from 'react-router-dom';
 import { ImageType, LatLng, SurveyConditions } from '../models/models';
@@ -58,8 +58,10 @@ const Inspect: FC = () => {
   }>();
   /** The data from Survey */
   const [surveyData, setSurveyData] = useState<SurveyConditions[]>();
-  /** The indicator type to display data on graph*/
-  const [graphIndicatorType, setGraphIndicatorType] = useState<string[]>([]);
+  /** The selected indicator type to display data on graph*/
+  const [graphIndicatorType, setGraphIndicatorType] = useState<string[]>([
+    conditionTypes[0],
+  ]);
   const [availableImagesTypes, setAvailableImagesTypes] = useState<string[]>(
     [],
   );
@@ -109,15 +111,19 @@ const Inspect: FC = () => {
     const conditionsGraphAllDataSets: ConditionsGraphData[] = [];
     const survey = surveyData;
 
-    if (survey !== undefined && conditionsGraphAllDataSets !== undefined) {
-      for (let i = 0; i < graphIndicatorType.length; i++) {
+    if (survey !== undefined) {
+      const indicatorTypeToShow = graphIndicatorType.includes(conditionTypes[0])
+        ? availableGraphIndicatorType
+        : graphIndicatorType;
+
+      for (let i = 0; i < indicatorTypeToShow.length; i++) {
         const rowOfData = survey.filter(
-          (item) => item.type === graphIndicatorType[i],
+          (item) => item.type === indicatorTypeToShow[i],
         );
         //check if rowOfData is empty
         if (rowOfData.length === 0) continue;
         const conditionsGraphSingleDataSet: ConditionsGraphData = {
-          type: graphIndicatorType[i],
+          type: indicatorTypeToShow[i],
           dataValues: rowOfData.map((item) => ({
             x: item.distance_survey,
             y: item.value,
@@ -131,7 +137,7 @@ const Inspect: FC = () => {
       }
       setChartData(conditionsGraphAllDataSets);
     }
-  }, [graphIndicatorType]);
+  }, [graphIndicatorType, surveyData]);
 
   useEffect(() => {
     if (gradientLineData === undefined || roadDistanceLeftToRight === null)
@@ -221,9 +227,6 @@ const Inspect: FC = () => {
                   minValue={0}
                   maxValue={1}
                   addZeroDataPointAtTheEnd={true}
-                  onClick={(way_id) => {
-                    console.log('GradientLine clicked, ', way_id);
-                  }}
                 />
               </MapArea>
             </div>

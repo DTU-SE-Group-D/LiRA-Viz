@@ -10,12 +10,10 @@
   gap: 1%;
   top: 0;
   left: 0;
-  width: calc(100% - 70px);
   height: var(--navbar-height);
   background-color: var(--background);
   z-index: var(--navbar-z-index);
   font-family: 'Noto Sans JP', sans-serif;
-  /*overflow: hidden;*/
 }
 
 .nav-container {
@@ -33,8 +31,9 @@
 
 .filter-container {
   position: relative;
-  width: 6%;
-  min-width: fit-content;
+  width: 20%;
+  height: 38px;
+  max-height: 38px;
 }
 
 .nav-tab {

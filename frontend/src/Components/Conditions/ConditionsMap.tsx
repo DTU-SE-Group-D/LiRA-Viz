@@ -298,10 +298,14 @@ const ConditionsMap: FC<ConditionsMapProps> = ({
   }, [dataAll, multiMode, rangeAll, rangeSelected, severitySelected]);
 
   return (
-    <MapWrapper>
-      {children}
-      {dataAll !== undefined && <GeoJSON ref={geoJsonRef} data={defaultData} />}
-    </MapWrapper>
+    <div style={{ height: 'calc(100% - var(--navbar-height))' }}>
+      <MapWrapper>
+        {children}
+        {dataAll !== undefined && (
+          <GeoJSON ref={geoJsonRef} data={defaultData} />
+        )}
+      </MapWrapper>
+    </div>
   );
 };
 

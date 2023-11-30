@@ -26,6 +26,12 @@ const makeOnlyAvailableOptionsClickable = (
     isDisabled?: boolean;
   }[] = [];
 
+  //added ALL graph type
+  newOptions.push({
+    value: options[0].value,
+    label: options[0].label,
+  });
+
   availableOptions.forEach((availableOption: string) => {
     if (options.map((item) => item.value).includes(availableOption)) {
       newOptions.push({
@@ -76,26 +82,30 @@ const TopBar: React.FC<TopBarProps> = ({
           />
         </svg>
       </Link>
-      <Selector
-        className="road-image-selector"
-        options={availableRoadImagesTypes}
-        defaultValue={ImageType.ImageInt}
-        onSelect={(_idx: number, selected: string) => {
-          setSelectedType(selected);
-        }}
-        label={'Road Image Type'}
-      />
-      <MultiSelector
-        options={makeOnlyAvailableOptionsClickable(
-          ConditionTypeOptions,
-          availableGraphIndicatorType,
-        )}
-        placeholder="Condition Types"
-        handleSelectionChange={(value: string[]) => {
-          graphIndicatorSet(value);
-        }}
-        // defaultValue={availableGraphIndicatorType[0]}
-      ></MultiSelector>
+      <div className="graph-type-selector">
+        <MultiSelector
+          options={makeOnlyAvailableOptionsClickable(
+            ConditionTypeOptions,
+            availableGraphIndicatorType,
+          )}
+          placeholder="Condition Types"
+          handleSelectionChange={(value: string[]) => {
+            graphIndicatorSet(value);
+          }}
+          defaultValue={ConditionTypeOptions[0]}
+          allowFullClear={false}
+        ></MultiSelector>
+      </div>
+      <div className="road-image-selector">
+        <Selector
+          options={availableRoadImagesTypes}
+          defaultValue={ImageType.ImageInt}
+          onSelect={(_idx: number, selected: string) => {
+            setSelectedType(selected);
+          }}
+          label={'Road Image Type'}
+        />
+      </div>
     </div>
   );
 };

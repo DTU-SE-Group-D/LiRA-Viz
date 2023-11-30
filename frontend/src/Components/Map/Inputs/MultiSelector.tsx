@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Select from 'react-select';
 
 import '../../../css/multiselector.css';
@@ -14,6 +14,8 @@ interface MultiSelectProps {
   defaultValue?: any;
   /** The children for the MultiSelector */
   children?: React.ReactNode;
+  /** Allow NOT to display any type on the multi select filter */
+  allowFullClear?: boolean;
 }
 
 /**
@@ -29,7 +31,12 @@ const MultiSelector: React.FC<MultiSelectProps> = ({
   options,
   placeholder,
   defaultValue,
+  allowFullClear = true,
 }) => {
+  const [value, setValue] = useState<{ value: string; label: string }[]>([
+    defaultValue,
+  ]);
+
   return (
     <div className="input-selector-container">
       <>
@@ -37,11 +44,19 @@ const MultiSelector: React.FC<MultiSelectProps> = ({
           isMulti
           closeMenuOnSelect={false}
           options={options}
-          onChange={handleSelectionChange}
-          defaultValue={defaultValue}
+          onChange={(newValue) => {
+            if (newValue.length === 0 && !allowFullClear) {
+              setValue(value);
+            } else {
+              setValue(newValue.map((item) => item));
+              handleSelectionChange(newValue);
+            }
+          }}
+          value={value}
           placeholder={placeholder}
+          isClearable={allowFullClear}
           className="react-select-container"
-          classNamePrefix="select"
+          classNamePrefix="react-select"
         ></Select>
         {children}
       </>
