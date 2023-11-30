@@ -1,4 +1,4 @@
-.select__menu {
+.react-select__menu {
   background-color: #dddddd9b !important;
   z-index: 9999 !important;
 }
@@ -7,11 +7,16 @@
   background-color: transparent;
 }
 
+.react-select__value-container {
+  overflow-y: auto !important;
+  max-height: 38px;
+}
+
 .react-select__control {
   font-size: small;
 }
 
-.select__placeholder {
+.react-select__placeholder {
   font-size: 14px;
 }
 
@@ -20,12 +25,13 @@
   font-size: 12px;
 }
 
-.select__menu-list {
+.react-select__menu-list {
   background-color: #dddddd9b;
   color: var(--background);
   font-size: 12px;
 }
-.select__option {
+
+.react-select__option {
   background-color: black;
   color: black;
   font-size: 12px;

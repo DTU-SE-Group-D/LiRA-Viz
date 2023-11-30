@@ -6,12 +6,23 @@
 .road-image {
   width: 100%;
 }
+
 /** Selector and information text **/
+
+/* for the selector of graph type */
+.graph-type-selector {
+  position: relative;
+  width: 15%;
+  height: 38px;
+  margin-left: 20px;
+}
 
 /* for the selector of image type */
 .road-image-selector {
-  width: 9%;
-  height: 40px;
+  position: relative;
+  width: 15%;
+  height: 28px;
+  margin-bottom: 10px;
   margin-left: 50px;
 }
 

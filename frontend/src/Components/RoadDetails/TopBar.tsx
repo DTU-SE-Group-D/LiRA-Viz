@@ -13,20 +13,50 @@ interface TopBarProps {
   /** Callback to set the selected type for graph*/
   graphIndicatorSet: (type: string[]) => void;
   availableRoadImagesTypes: string[];
+  availableGraphIndicatorType: string[];
 }
+
+const makeOnlyAvailableOptionsClickable = (
+  options: { value: string; label: string }[],
+  availableOptions: string[],
+) => {
+  const newOptions: {
+    value: string;
+    label: string;
+    isDisabled?: boolean;
+  }[] = [];
+
+  //added ALL graph type
+  newOptions.push({
+    value: options[0].value,
+    label: options[0].label,
+  });
+
+  availableOptions.forEach((availableOption: string) => {
+    if (options.map((item) => item.value).includes(availableOption)) {
+      newOptions.push({
+        value: availableOption,
+        label: availableOption,
+      });
+    }
+  });
+  return newOptions;
+};
 
 /**
  * The Topbar with return button and image type selector
  *
  * @param setSelectedType Callback to set the selected type
  * @param availableRoadImagesTypes The available types for the road images
- *
- * @author Chen, Hansen
+ * @param graphIndicatorSet Callback to set the selected type for graph
+ * @param availableGraphIndicatorType The available types for the graph
+ * @author Chen, Hansen, Muro
  */
 const TopBar: React.FC<TopBarProps> = ({
   setSelectedType,
   availableRoadImagesTypes,
   graphIndicatorSet,
+  availableGraphIndicatorType,
 }) => {
   const navigate = useNavigate(); // Get the navigate function
 
@@ -52,23 +82,30 @@ const TopBar: React.FC<TopBarProps> = ({
           />
         </svg>
       </Link>
-      <Selector
-        className="road-image-selector"
-        options={availableRoadImagesTypes}
-        defaultValue={ImageType.ImageInt}
-        onSelect={(_idx: number, selected: string) => {
-          setSelectedType(selected);
-        }}
-        label={'Road Image Type'}
-      />
-      <MultiSelector
-        options={ConditionTypeOptions}
-        placeholder="Condition Types"
-        handleSelectionChange={(value: string[]) => {
-          graphIndicatorSet(value);
-        }}
-        defaultValue={ConditionTypeOptions[0]}
-      ></MultiSelector>
+      <div className="graph-type-selector">
+        <MultiSelector
+          options={makeOnlyAvailableOptionsClickable(
+            ConditionTypeOptions,
+            availableGraphIndicatorType,
+          )}
+          placeholder="Condition Types"
+          handleSelectionChange={(value: string[]) => {
+            graphIndicatorSet(value);
+          }}
+          defaultValue={ConditionTypeOptions[0]}
+          allowFullClear={false}
+        ></MultiSelector>
+      </div>
+      <div className="road-image-selector">
+        <Selector
+          options={availableRoadImagesTypes}
+          defaultValue={ImageType.ImageInt}
+          onSelect={(_idx: number, selected: string) => {
+            setSelectedType(selected);
+          }}
+          label={'Road Image Type'}
+        />
+      </div>
     </div>
   );
 };

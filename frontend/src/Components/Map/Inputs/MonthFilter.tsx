@@ -84,7 +84,7 @@ const MonthFilter: React.FC<MonthFilterProps> = ({
           customInput={React.createElement(CustomInput)}
           selectsEnd
           openToDate={maxDate}
-          minDate={minDate}
+          minDate={startDate}
           maxDate={maxDate}
           dateFormat="MM/yyyy"
           showMonthYearPicker
