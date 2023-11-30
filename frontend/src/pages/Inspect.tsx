@@ -186,6 +186,9 @@ const Inspect: FC = () => {
         setSelectedType={setSelectedType}
         availableRoadImagesTypes={availableImagesTypes}
         graphIndicatorSet={indicatorSet}
+        availableGraphIndicatorType={Array.from(
+          new Set(surveyData?.map((item) => item.type)),
+        )}
       />
       <Split
         mode="vertical"

@@ -13,7 +13,40 @@ interface TopBarProps {
   /** Callback to set the selected type for graph*/
   graphIndicatorSet: (type: string[]) => void;
   availableRoadImagesTypes: string[];
+  availableGraphIndicatorType: string[];
 }
+
+const makeOnlyAvailableOptionsClickable = (
+  options: { value: string; label: string }[],
+  availableOptions: string[],
+) => {
+  let newOptions: {
+    value: string;
+    label: string;
+    isDisabled?: boolean;
+  }[] = [];
+
+  //if we put this we show everything   otherwise we show only the available options
+  newOptions = options.map((item) => {
+    return {
+      value: item.value,
+      label: item.label,
+      isDisabled: true,
+    };
+  });
+
+  availableOptions.forEach((availableOption: string) => {
+    if (options.map((item) => item.value).includes(availableOption)) {
+      console.log('santi, availableOption: ', availableOption, ' is available');
+      newOptions.map((item) => {
+        if (item.value === availableOption) {
+          item.isDisabled = false;
+        }
+      });
+    }
+  });
+  return newOptions;
+};
 
 /**
  * The Topbar with return button and image type selector
@@ -27,6 +60,7 @@ const TopBar: React.FC<TopBarProps> = ({
   setSelectedType,
   availableRoadImagesTypes,
   graphIndicatorSet,
+  availableGraphIndicatorType,
 }) => {
   const navigate = useNavigate(); // Get the navigate function
 
@@ -62,7 +96,10 @@ const TopBar: React.FC<TopBarProps> = ({
         label={'Road Image Type'}
       />
       <MultiSelector
-        options={ConditionTypeOptions}
+        options={makeOnlyAvailableOptionsClickable(
+          ConditionTypeOptions,
+          availableGraphIndicatorType,
+        )}
         placeholder="Condition Types"
         handleSelectionChange={(value: string[]) => {
           graphIndicatorSet(value);

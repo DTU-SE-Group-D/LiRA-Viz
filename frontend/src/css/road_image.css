@@ -6,11 +6,13 @@
 .road-image {
   width: 100%;
 }
+
 /** Selector and information text **/
 
 /* for the selector of image type */
 .road-image-selector {
-  width: 9%;
+  position: relative;
+  width: 10%;
   height: 40px;
   margin-left: 50px;
 }
