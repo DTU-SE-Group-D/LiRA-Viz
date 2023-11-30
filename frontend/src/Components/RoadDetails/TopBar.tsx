@@ -20,28 +20,17 @@ const makeOnlyAvailableOptionsClickable = (
   options: { value: string; label: string }[],
   availableOptions: string[],
 ) => {
-  let newOptions: {
+  const newOptions: {
     value: string;
     label: string;
     isDisabled?: boolean;
   }[] = [];
 
-  //if we put this we show everything   otherwise we show only the available options
-  newOptions = options.map((item) => {
-    return {
-      value: item.value,
-      label: item.label,
-      isDisabled: true,
-    };
-  });
-
   availableOptions.forEach((availableOption: string) => {
     if (options.map((item) => item.value).includes(availableOption)) {
-      console.log('santi, availableOption: ', availableOption, ' is available');
-      newOptions.map((item) => {
-        if (item.value === availableOption) {
-          item.isDisabled = false;
-        }
+      newOptions.push({
+        value: availableOption,
+        label: availableOption,
       });
     }
   });

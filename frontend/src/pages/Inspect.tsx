@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import '../css/road_details.css'; // Import the CSS file
 import MapArea from '../Components/RoadDetails/MapArea';
@@ -63,6 +63,10 @@ const Inspect: FC = () => {
   const [availableImagesTypes, setAvailableImagesTypes] = useState<string[]>(
     [],
   );
+
+  const availableGraphIndicatorType = useMemo(() => {
+    return Array.from(new Set(surveyData?.map((item) => item.type)));
+  }, [surveyData]);
 
   const indicatorSet = useCallback((value: string[]) => {
     setGraphIndicatorType(
@@ -186,9 +190,7 @@ const Inspect: FC = () => {
         setSelectedType={setSelectedType}
         availableRoadImagesTypes={availableImagesTypes}
         graphIndicatorSet={indicatorSet}
-        availableGraphIndicatorType={Array.from(
-          new Set(surveyData?.map((item) => item.type)),
-        )}
+        availableGraphIndicatorType={availableGraphIndicatorType}
       />
       <Split
         mode="vertical"

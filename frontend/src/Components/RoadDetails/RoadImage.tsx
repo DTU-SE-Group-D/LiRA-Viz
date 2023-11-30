@@ -112,7 +112,6 @@ const RoadImage: React.FC<Props> = ({
     let availableTypes = allImages.map((image) => image.type.toString());
     availableTypes = Array.from(new Set(availableTypes));
 
-    console.log('santi56', availableTypes);
     setImagesTypes(availableTypes);
   }, [allImages, selectedType]);
 
