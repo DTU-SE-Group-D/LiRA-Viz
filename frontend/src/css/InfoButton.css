@@ -9,12 +9,13 @@
   height: 50px;
   border-radius: 25px;
   display: flex;
-  justify-content: center;
-  align-items: center;
   font-size: 1.5em;
   cursor: pointer;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
   z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .info-button:hover {
@@ -29,6 +30,7 @@
   color: white;
   width: 300px;
   padding: 20px;
+  padding-top: 10px;
   border-radius: 10px;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
   z-index: 1000;
@@ -66,7 +68,7 @@
   left: 0;
   right: 0;
   height: 20px;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
+  /* background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15)); */
   pointer-events: none;
 }
 
@@ -74,21 +76,29 @@
   display: inline-block;
   width: 12px;
   height: 12px;
-  margin-right: 10px;
+  margin-right: 1px;
   border-radius: 50%;
   vertical-align: middle;
 }
 
 .green {
-  background-color: green;
+  background-color: #3e812b;
 }
 
 .yellow {
-  background-color: yellow;
+  background-color: #fffd54;
 }
 
 .red {
   background-color: red;
+}
+
+.muBlue {
+  background-color: #73f8fc;
+}
+
+.eNorm {
+  background-color: #e63ff5;
 }
 
 .scroll-btn {
@@ -111,20 +121,46 @@
 
 .color-explanation {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 13px;
 }
 
 .color-detail {
   display: flex;
   align-items: center;
-  margin-bottom: 5px;
   justify-content: center;
+  height: 20px;
 }
 
-.info-box h3,
-.info-box p,
-.info-box ul,
-.info-box li {
+.info-box h3 {
+  font-size: 1.1em;
+  margin-top: 25px;
+  margin-bottom: 0px;
+  margin-left: 9px;
+  text-align: left;
+  font-weight: 700;
+}
+
+.info-box ul {
+  padding-left: 23px;
   font-size: 0.9em;
+  letter-spacing: 0.3px;
+}
+
+.info-box li {
+  text-align: left;
+  line-height: 19px;
+  margin-bottom: 8px;
+  letter-spacing: 0.3px;
+}
+
+.info-box p {
+  font-size: 0.9em;
+  letter-spacing: 0.3px;
+  margin-left: 3px;
 }

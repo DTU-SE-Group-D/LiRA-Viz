@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 interface ImageZoom {
   /** The URL of the image to display in the zoomed view. */
@@ -28,6 +28,29 @@ const ImageZoom: React.FC<ImageZoom> = ({
   // Check if the left/right navigation arrow should be disabled
   const isLeftDisabled = currentImageIndex === 0;
   const isRightDisabled = currentImageIndex === totalImages - 1;
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowLeft' && !isLeftDisabled) {
+        onNavigate(-1);
+      } else if (event.key === 'ArrowRight' && !isRightDisabled) {
+        onNavigate(1);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [
+    currentImageIndex,
+    totalImages,
+    onNavigate,
+    isLeftDisabled,
+    isRightDisabled,
+  ]);
 
   const handleClickOutside = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
