@@ -139,12 +139,6 @@ const ConditionsGraph: FC<Props> = ({ data, inspectedRoadDistanceArea }) => {
     useState<ChartData<'scatter', { x: number; y: number }[]>>();
 
   useEffect(() => {
-    if (ref.current === null) return;
-    const chart = ref.current;
-    chart.update();
-  }, [ref, data]);
-
-  useEffect(() => {
     if (
       !inspectedRoadDistanceArea ||
       inspectedRoadDistanceArea[0] > inspectedRoadDistanceArea[1]
@@ -264,6 +258,12 @@ const ConditionsGraph: FC<Props> = ({ data, inspectedRoadDistanceArea }) => {
       },
     };
   }, [data]);
+
+  useEffect(() => {
+    if (ref.current === null) return;
+    const chart = ref.current;
+    chart.update();
+  }, [ref, data, graphOptions]);
 
   return (
     <div className="road-conditions-graph">
