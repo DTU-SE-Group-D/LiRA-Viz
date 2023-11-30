@@ -11,7 +11,7 @@ interface MultiSelectProps {
   /** The text to show in the selector */
   placeholder: string;
   /** The default chosen value in the selector */
-  defaultValue: any;
+  defaultValue?: any;
   /** The children for the MultiSelector */
   children?: React.ReactNode;
 }

@@ -53,8 +53,9 @@ const makeOnlyAvailableOptionsClickable = (
  *
  * @param setSelectedType Callback to set the selected type
  * @param availableRoadImagesTypes The available types for the road images
- *
- * @author Chen, Hansen
+ * @param graphIndicatorSet Callback to set the selected type for graph
+ * @param availableGraphIndicatorType The available types for the graph
+ * @author Chen, Hansen, Muro
  */
 const TopBar: React.FC<TopBarProps> = ({
   setSelectedType,
@@ -104,7 +105,7 @@ const TopBar: React.FC<TopBarProps> = ({
         handleSelectionChange={(value: string[]) => {
           graphIndicatorSet(value);
         }}
-        defaultValue={ConditionTypeOptions[0]}
+        // defaultValue={availableGraphIndicatorType[0]}
       ></MultiSelector>
     </div>
   );
