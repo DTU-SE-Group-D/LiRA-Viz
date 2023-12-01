@@ -94,13 +94,13 @@ const GradientLine: FC<Props> = ({
       min: minValue
         ? minValue
         : data
-        ? Math.min(...data.map((item) => item.value))
-        : 0,
+          ? Math.min(...data.map((item) => item.value))
+          : 0,
       max: maxValue
         ? maxValue
         : data
-        ? Math.max(...data.map((item) => item.value))
-        : 0,
+          ? Math.max(...data.map((item) => item.value))
+          : 0,
     }),
     [palette, data, minValue, maxValue],
   );
