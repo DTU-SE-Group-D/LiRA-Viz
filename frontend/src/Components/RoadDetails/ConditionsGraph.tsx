@@ -138,6 +138,9 @@ const ConditionsGraph: FC<Props> = ({ data, inspectedRoadDistanceArea }) => {
   const [graphLines, setGraphLines] =
     useState<ChartData<'scatter', { x: number; y: number }[]>>();
 
+  // the indicators types that have been seen at least one time by this component. Use to remove empty axis
+  const [previousTypes, setPreviousTypes] = useState<string[]>([]);
+
   useEffect(() => {
     if (
       !inspectedRoadDistanceArea ||
@@ -192,6 +195,7 @@ const ConditionsGraph: FC<Props> = ({ data, inspectedRoadDistanceArea }) => {
       setGraphLines(undefined);
       return;
     }
+
     setGraphLines({
       datasets: data.map((item, index) => {
         return {
@@ -229,8 +233,18 @@ const ConditionsGraph: FC<Props> = ({ data, inspectedRoadDistanceArea }) => {
       },
     };
 
+    // hide every axis that have been seen until now
+    previousTypes.forEach((type) => {
+      if (scales.scales === undefined) return;
+      scales.scales[type] = {
+        display: false,
+      };
+    });
+
+    // show axis that currently have data
     data?.forEach((item) => {
       if (scales.scales === undefined) return;
+
       scales.scales[item.type] = {
         type: 'linear',
         position: 'left',
@@ -257,13 +271,22 @@ const ConditionsGraph: FC<Props> = ({ data, inspectedRoadDistanceArea }) => {
         console.log(pointIndex, event, elts);
       },
     };
-  }, [data]);
+  }, [data]); // don't update when previousTypes changes, bacause it's only use to store the previous show axis
+
+  // When graphOptions changes, update the previousTypes so that at the next update of data,
+  // the current axis will be hidden (except if they still have values).
+  useEffect(() => {
+    if (data === undefined) return;
+    setPreviousTypes(Array.from(new Set(data.map((item) => item.type))));
+  }, [graphOptions]);
 
   useEffect(() => {
     if (ref.current === null) return;
+
+    console.log(graphOptions);
     const chart = ref.current;
     chart.update();
-  }, [ref, graphLines, graphOptions]);
+  }, [ref, graphLines]);
 
   return (
     <div className="road-conditions-graph">
