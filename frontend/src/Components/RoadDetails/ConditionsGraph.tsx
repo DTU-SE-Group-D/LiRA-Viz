@@ -220,14 +220,29 @@ const ConditionsGraph: FC<Props> = ({ data, inspectedRoadDistanceArea }) => {
     const scales: DeepPartial<ScaleChartOptions<'scatter'>> = {
       scales: {
         x: {
+          grid: {
+            color: 'rgba(255,255,255,0.15)',
+          },
           title: {
             display: true,
             text: 'distance (m)',
+            color: 'white',
+            font: {
+              size: 14,
+            },
           },
           ticks: {
+            color: 'white',
             stepSize: 10,
             callback: (tick: string | number) =>
               Math.round(parseFloat(tick.toString())),
+            font: {
+              size: 13,
+            },
+          },
+          border: {
+            color: 'rgba(255,255,255,0.65)',
+            width: 2,
           },
         },
       },
@@ -246,6 +261,9 @@ const ConditionsGraph: FC<Props> = ({ data, inspectedRoadDistanceArea }) => {
       if (scales.scales === undefined) return;
 
       scales.scales[item.type] = {
+        grid: {
+          color: 'rgba(255,255,255,0.15)',
+        },
         type: 'linear',
         position: 'left',
         display: 'auto',
@@ -254,6 +272,20 @@ const ConditionsGraph: FC<Props> = ({ data, inspectedRoadDistanceArea }) => {
         title: {
           display: true,
           text: item.type,
+          color: 'white',
+          font: {
+            size: 14,
+          },
+        },
+        ticks: {
+          color: 'white',
+          font: {
+            size: 13,
+          },
+        },
+        border: {
+          color: 'rgba(255,255,255,0.65)',
+          width: 2,
         },
       };
     });
