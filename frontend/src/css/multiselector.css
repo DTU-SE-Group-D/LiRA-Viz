@@ -5,8 +5,6 @@
 
 .react-select-container {
   background-color: transparent;
-  max-width: 250px !important;
-  max-height: 45px !important;
 }
 
 .react-select__value-container {
@@ -16,9 +14,6 @@
 
 .react-select__control {
   font-size: small;
-  max-width: 250px !important;
-  max-height: 45px !important;
-  overflow-y: scroll;
 }
 
 .react-select__placeholder {

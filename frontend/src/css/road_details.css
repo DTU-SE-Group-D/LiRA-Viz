@@ -7,7 +7,7 @@
   height: 50px;
   display: flex; /* Enable flex layout */
   align-items: center; /* Vertically center content */
-  justify-content: flex-end; /* Align content to the right (40px margin) */
+  justify-content: flex-start; /* Align content to the left (40px margin) */
 }
 
 /* Define styles for the middle area */
