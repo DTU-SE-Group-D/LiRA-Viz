@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import '../../css/InfoButton.css';
 
 /**
@@ -7,9 +7,37 @@ import '../../css/InfoButton.css';
 
 const InfoButton: React.FC = () => {
   const [showInfo, setShowInfo] = useState(false);
+  const infoButtonRef = useRef<HTMLDivElement>(null);
+
+  // Toggle the visibility of the info box
 
   const handleInfoToggle = () => {
     setShowInfo(!showInfo);
+  };
+
+  // Close the info box if clicking outside
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      infoButtonRef.current &&
+      !infoButtonRef.current.contains(event.target as Node)
+    ) {
+      setShowInfo(false);
+    }
+  };
+
+  useEffect(() => {
+    // Add event listener for the click when the component is mounted
+    document.addEventListener('mousedown', handleClickOutside);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  // Stop the propagation of the click event to prevent handleClickOutside from being triggered
+  const stopPropagation = (event: React.MouseEvent) => {
+    event.stopPropagation();
   };
 
   return (
@@ -17,38 +45,54 @@ const InfoButton: React.FC = () => {
       <div className="info-button" onClick={handleInfoToggle}>
         i
       </div>
-      <div className={`info-box ${showInfo ? 'visible' : ''}`}>
-        <h3>Color Code Explanation:</h3>
-        <div className="color-explanation">
-          <div className="color-detail">
-            <span className="color-code green"></span>
-            <p>Green: Good condition</p>
+      {showInfo && (
+        <div
+          className="info-box visible"
+          ref={infoButtonRef}
+          onClick={stopPropagation} // This stops the click event from closing the info box
+        >
+          <h3 className="infotitle">Color Code Explanation</h3>
+          <div className="color-explanation">
+            <div className="color-detail">
+              <span className="color-code red"></span>
+              <p>KPI</p>
+            </div>
+            <div className="color-detail">
+              <span className="color-code green"></span>
+              <p>DI</p>
+            </div>
+            <div className="color-detail">
+              <span className="color-code yellow"></span>
+              <p>IRI</p>
+            </div>
+            <div className="color-detail">
+              <span className="color-code muBlue"></span>
+              <p>Mu</p>
+            </div>
+            <div className="color-detail">
+              <span className="color-code eNorm"></span>
+              <p>E_norm</p>
+            </div>
           </div>
-          <div className="color-detail">
-            <span className="color-code yellow"></span>
-            <p>Yellow: Medium condition</p>
-          </div>
-          <div className="color-detail">
-            <span className="color-code red"></span>
-            <p>Red: Critical condition</p>
-          </div>
+          <h3>User Help</h3>
+          <ul>
+            <li>
+              Click on a route or search a road to get detailed information
+            </li>
+            <li>
+              Access survey list by Hamburger button in the top left corner
+            </li>
+          </ul>
+          <h3>Go to the Inspect Page</h3>
+          <ul>
+            <li>Info Card appears upon selecting a road or survey</li>
+            <li>Highlighted path on the map</li>
+            <li>
+              "INSPECT" button is in Info Card for accessing the Inspect page
+            </li>
+          </ul>
         </div>
-        <h3>User Help:</h3>
-        <p>Click on a route to get detailed information.</p>
-        <h3>Go to the Inspect Page:</h3>
-        <ul>
-          <li>Info appears upon selecting a road or survey from the list.</li>
-          <li>Highlighted path on the map.</li>
-          <li>
-            "INSPECT" button appears on the top right for accessing the Inspect
-            page.
-          </li>
-        </ul>
-        <h3>Miscellaneous Features:</h3>
-        <ul>
-          <li>Hamburger button: Access survey list.</li>
-        </ul>
-      </div>
+      )}
     </>
   );
 };

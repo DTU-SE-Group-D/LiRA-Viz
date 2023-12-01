@@ -28,6 +28,7 @@ import '../css/navbar.css';
 import DetectMapClick from '../Components/Map/DetectMapClick';
 import RoadInfoCard from '../Components/Map/InfoCard';
 import { useNavigate } from 'react-router-dom';
+import InfoButton from '../Components/Conditions/InfoButton';
 
 /**
  * Component rendering the main page
@@ -301,6 +302,7 @@ const Main: FC = () => {
           selectedRoadIdx !== -1 && roads ? roads[selectedRoadIdx] : undefined
         }
       />
+      <InfoButton />
     </div>
   );
 };
