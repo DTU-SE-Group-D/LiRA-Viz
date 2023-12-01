@@ -27,6 +27,7 @@ import MultiSelector from '../Components/Map/Inputs/MultiSelector';
 import '../css/navbar.css';
 import DetectMapClick from '../Components/Map/DetectMapClick';
 import RoadInfoCard from '../Components/Map/InfoCard';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * Component rendering the main page
@@ -59,6 +60,8 @@ const Main: FC = () => {
   // Stores the minimum and maximum of the date range
   const [dateMin, setDateMin] = useState<Date>();
   const [dateMax, setDateMax] = useState<Date>();
+
+  const navigate = useNavigate(); // Get the navigate function
 
   /**
    *
@@ -268,9 +271,17 @@ const Main: FC = () => {
                 })
           }
           onSelectedPath={(index, _road, position) => {
-            // If no road is selected, select the road
+            if (roads === undefined) return;
+
             if (selectedRoadIdx === -1) {
+              // If no road is selected, select the road
               setSelectedRoadIdx(index);
+            } else {
+              // if a road is selected, go to the inspect page for the clicked road branch
+              navigate(
+                '/inspect/paths/' +
+                  roads[selectedRoadIdx].branches[index].join(','),
+              );
             }
             setMoveToPosition(position);
           }}
