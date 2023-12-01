@@ -15,9 +15,14 @@ interface Props {
 const InfoCard: React.FC<Props> = ({ hidden, roadData }) => {
   const navigate = useNavigate(); // Get the navigate function
 
+  // Navigate to the "Inspect" page
   const handleInspect = () => {
-    // Navigate to the "Inspect" page
-    navigate('/inspect/surveys/c8435e32-0627-46b9-90f6-52fc21862df3');
+    if (!roadData) return;
+    const biggestBranch = roadData?.branches.reduce((prev, curr) =>
+      prev.length > curr.length ? prev : curr,
+    );
+
+    navigate('/inspect/paths/' + biggestBranch.join(','));
   };
 
   if (hidden || !roadData) {
