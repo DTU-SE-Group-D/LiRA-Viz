@@ -51,7 +51,12 @@ const options = (
   plugins: {
     legend: {
       position: 'top' as const,
-      labels: { color: 'white' },
+      labels: {
+        font: {
+          size: 14,
+        },
+        color: 'white',
+      },
       onClick() {},
     },
     zoom: {
@@ -221,14 +226,14 @@ const ConditionsGraph: FC<Props> = ({ data, inspectedRoadDistanceArea }) => {
       scales: {
         x: {
           grid: {
-            color: 'rgba(255,255,255,0.15)',
+            color: 'rgba(255,255,255,0.1)',
           },
           title: {
             display: true,
             text: 'distance (m)',
             color: 'white',
             font: {
-              size: 14,
+              size: 15,
             },
           },
           ticks: {
@@ -262,7 +267,7 @@ const ConditionsGraph: FC<Props> = ({ data, inspectedRoadDistanceArea }) => {
 
       scales.scales[item.type] = {
         grid: {
-          color: 'rgba(255,255,255,0.15)',
+          color: 'rgba(255,255,255,0.1)',
         },
         type: 'linear',
         position: 'left',
@@ -274,7 +279,7 @@ const ConditionsGraph: FC<Props> = ({ data, inspectedRoadDistanceArea }) => {
           text: item.type,
           color: 'white',
           font: {
-            size: 14,
+            size: 15,
           },
         },
         ticks: {
