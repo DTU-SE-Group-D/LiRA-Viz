@@ -52,6 +52,7 @@ const InfoButton: React.FC = () => {
           onClick={stopPropagation} // This stops the click event from closing the info box
         >
           <h3 className="infotitle">Color Code Explanation</h3>
+          <h4>Condition Types</h4>
           <div className="color-explanation">
             <div className="color-detail">
               <span className="color-code red"></span>
@@ -72,6 +73,32 @@ const InfoButton: React.FC = () => {
             <div className="color-detail">
               <span className="color-code eNorm"></span>
               <p>E_norm</p>
+            </div>
+          </div>
+          <h4>Severity Types</h4>
+          <ul>
+            <li>
+              Given the selected road parameters, these can be further filtered
+              out by choosing the severity. The color coding changes, and only
+              the selected parameters with the desired road severity will show.
+            </li>
+          </ul>
+          <div className="color-explanation">
+            <div className="color-detail">
+              <span className="color-code low"></span>
+              <p>low</p>
+            </div>
+            <div className="color-detail">
+              <span className="color-code medium"></span>
+              <p>medium</p>
+            </div>
+            <div className="color-detail">
+              <span className="color-code high"></span>
+              <p>high</p>
+            </div>
+            <div className="color-detail">
+              <span className="color-code critical"></span>
+              <p>critical</p>
             </div>
           </div>
           <h3>User Help</h3>
