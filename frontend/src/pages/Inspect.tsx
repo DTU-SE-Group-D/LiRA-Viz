@@ -29,7 +29,7 @@ const halfSizeOfSplitBar = '5px';
 const palette: Palette = [
   { t: 0, r: 0, g: 0, b: 255 },
   { t: 0.9, r: 0, g: 0, b: 255 },
-  { t: 1, r: 0, g: 255, b: 0 },
+  { t: 1, r: 240, g: 255, b: 0 },
 ];
 
 /**
