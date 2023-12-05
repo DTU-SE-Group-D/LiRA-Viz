@@ -26,7 +26,7 @@ async function queryOSM<T>(
     () => controller.abort(),
     (OSM_API_TIMEOUT + 10) * 1000, // +10 seconds to be sure that the OSM API timeout (and the fetch request)
   );
-  const result = await fetch('https://overpass-api.de/api/interpreter', {
+  const result = await fetch(process.env.OSM_ENDPOINT, {
     method: 'POST',
     body: 'data=' + encodeURIComponent(query),
     signal: controller.signal,
