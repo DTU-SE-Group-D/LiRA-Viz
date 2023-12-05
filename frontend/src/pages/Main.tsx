@@ -29,6 +29,7 @@ import DetectMapClick from '../Components/Map/DetectMapClick';
 import RoadInfoCard from '../Components/Map/InfoCard';
 import { useNavigate } from 'react-router-dom';
 import InfoButton from '../Components/Conditions/InfoButton';
+import UploadPanel from '../Components/Conditions/UploadPanel';
 
 /**
  * Component rendering the main page
@@ -43,6 +44,8 @@ const Main: FC = () => {
 
   // describe the current state of the sidebar
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  // open upload panel
+  const [isUploadPanelOpened, setIsUploadPanelOpened] = useState(false);
 
   // The position to move too (used by the Search component)
   const [moveToPosition, setMoveToPosition] = useState<LatLng>();
@@ -183,7 +186,7 @@ const Main: FC = () => {
   }, []);
 
   return (
-    <div style={{ height: '95%' }}>
+    <>
       <div className="nav-wrapper">
         <Hamburger
           isOpen={isSidebarOpen}
@@ -246,6 +249,15 @@ const Main: FC = () => {
           />
           <p className="labelling"> Start Date → End Date</p>
         </div>
+        <div className="upload-btn-container">
+          <button
+            onClick={() => {
+              setIsUploadPanelOpened((prev) => !prev);
+            }}
+          >
+            Upload
+          </button>
+        </div>
       </div>
       <ConditionsMap
         multiMode={multiMode}
@@ -296,6 +308,13 @@ const Main: FC = () => {
         />
         <ForceMapUpdate position={moveToPosition} />
       </ConditionsMap>
+      {isUploadPanelOpened && (
+        <UploadPanel
+          close={() => {
+            setIsUploadPanelOpened(false);
+          }}
+        />
+      )}
       <RoadInfoCard
         hidden={selectedRoadIdx === -1}
         roadData={
@@ -303,7 +322,7 @@ const Main: FC = () => {
         }
       />
       <InfoButton />
-    </div>
+    </>
   );
 };
 
