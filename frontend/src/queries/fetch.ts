@@ -51,6 +51,21 @@ export function post<T>(
   axios.post(getPath(path), obj).then((res) => callback(res.data));
 }
 
+export function postForm(
+  path: string,
+  formData: FormData,
+  onSucess: (response: any) => void,
+  onError: (error: any) => void,
+): void {
+  axios
+    .post(getPath(path), formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then(onSucess, onError);
+}
+
 export const put = (path: string, obj: object): void => {
   axios.put(getPath(path), obj);
 };
