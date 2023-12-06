@@ -1,5 +1,8 @@
 import {
+  Body,
   Controller,
+  HttpException,
+  HttpStatus,
   InternalServerErrorException,
   Post,
   UploadedFile,
@@ -10,6 +13,7 @@ import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import * as fs from 'fs';
 
 @Controller('upload')
 export class UploadController {
@@ -29,7 +33,33 @@ export class UploadController {
       }),
     }),
   )
-  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+  async uploadFile(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() data: { password: string },
+  ) {
+    if (data.password !== process.env.UPLOAD_PASSWORD) {
+      console.warn('Wrong password. File wile be removed.');
+
+      fs.rm(`./uploads/${file.filename}`, (err) => {
+        if (err === null) {
+          console.log('File removed');
+        } else {
+          console.log('Error while removing file: ', err);
+        }
+      });
+
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'Wrong password.',
+        },
+        HttpStatus.FORBIDDEN,
+        {
+          cause: 'Wrong password.',
+        },
+      );
+    }
+
     try {
       await this.fileQueue.add('unzip-file', {
         filePath: `./uploads/${file.filename}`,
