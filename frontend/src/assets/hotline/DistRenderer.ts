@@ -8,6 +8,8 @@ import Edge from './Edge';
 /**
  * A renderer that allow the condition to be projected between two GPS points
  * (knowing the distance from the start of the path)
+ *
+ * @author LiraVis, Kerbourc'h
  */
 export default class DistRenderer extends Renderer<DistData> {
   conditions: DataPoint[];

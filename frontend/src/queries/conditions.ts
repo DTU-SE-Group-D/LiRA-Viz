@@ -3,6 +3,9 @@ import { FeatureCollection } from 'geojson';
 import { Survey } from '../models/models';
 import { SurveyList } from '../../../backend/src/models';
 
+/**
+ * @author Muro
+ */
 export const getSurveyData = (
   surveyId: string,
   setConditions: (data: Survey) => void,
@@ -19,6 +22,9 @@ export const getAllSurveyData = (callback: (surveys: SurveyList) => void) => {
   get('/surveys/all', callback);
 };
 
+/**
+ * @author LiraVis
+ */
 export const getAllConditions = (
   callback: (data: FeatureCollection) => void,
 ) => {

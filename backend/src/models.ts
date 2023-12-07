@@ -7,6 +7,16 @@ export interface LatLng {
 }
 
 /**
+ * Used in the data plot to show the condition of a road.
+ * The way_dist is the distance from the start of the way. It will be the x-axis in the plot.
+ * The value is the condition value. It will be the y-axis in the plot.
+ */
+export interface Condition {
+  way_dist: number;
+  value: number;
+}
+
+/**
  * Type of answer from backend for a survey.
  */
 export interface ISurvey {

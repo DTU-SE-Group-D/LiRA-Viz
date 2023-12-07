@@ -1,3 +1,6 @@
+/**
+ * @author LiraVis
+ */
 export default class Edge {
   r: number;
   g: number;

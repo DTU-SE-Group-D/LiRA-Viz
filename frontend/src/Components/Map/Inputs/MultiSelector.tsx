@@ -24,7 +24,6 @@ interface MultiSelectProps {
  *
  * @author Hansen
  */
-
 const MultiSelector: React.FC<MultiSelectProps> = ({
   handleSelectionChange,
   children,

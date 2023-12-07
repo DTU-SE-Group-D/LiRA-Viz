@@ -14,6 +14,8 @@ interface Props {
 
 /**
  * Create a file input (either using the default file selector or using drag 'n' drop)
+ *
+ * @author Kerbourc'h
  */
 const SingleFileInput: FC<Props> = ({
   displayName,

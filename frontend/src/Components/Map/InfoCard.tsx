@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../css/roadinfo_card.css';
 import { IRoad } from '../../models/path';
 
 interface Props {
-  hidden: boolean; // Prop to control visibility
+  /** To control visibility */
+  hidden: boolean;
+  /** The road data to display */
   roadData?: IRoad;
 }
 /**
@@ -16,14 +18,14 @@ const InfoCard: React.FC<Props> = ({ hidden, roadData }) => {
   const navigate = useNavigate(); // Get the navigate function
 
   // Navigate to the "Inspect" page
-  const handleInspect = () => {
+  const handleInspect = useCallback(() => {
     if (!roadData) return;
     const biggestBranch = roadData?.branches.reduce((prev, curr) =>
       prev.length > curr.length ? prev : curr,
     );
 
     navigate('/inspect/paths/' + biggestBranch.join(','));
-  };
+  }, [roadData, navigate]);
 
   if (hidden || !roadData) {
     return null; // Don't render anything if hidden is true

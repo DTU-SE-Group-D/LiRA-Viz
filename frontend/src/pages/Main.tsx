@@ -8,7 +8,7 @@ import { getAllConditions } from '../queries/conditions';
 
 import ConditionsMap from '../Components/Conditions/ConditionsMap';
 import Search from '../Components/Map/Inputs/Search';
-import ForceMapUpdate from '../Components/Map/ForceMapUpdate';
+import ForceMapUpdate from '../Components/Map/Hooks/ForceMapUpdate';
 import Paths from '../Components/Map/Paths';
 import {
   ConditionTypeOptions,
@@ -25,7 +25,7 @@ import {
 import MonthFilter from '../Components/Map/Inputs/MonthFilter';
 import MultiSelector from '../Components/Map/Inputs/MultiSelector';
 import '../css/navbar.css';
-import DetectMapClick from '../Components/Map/DetectMapClick';
+import DetectMapClick from '../Components/Map/Hooks/DetectMapClick';
 import RoadInfoCard from '../Components/Map/InfoCard';
 import { useNavigate } from 'react-router-dom';
 import InfoButton from '../Components/Conditions/InfoButton';
@@ -197,12 +197,10 @@ const Main: FC = () => {
             onPlaceSelect={(value: any) => {
               const osm_id = value?.properties?.datasource?.raw?.osm_id;
               if (osm_id && roads) {
-                console.debug(osm_id, roads.length);
                 for (let idx = 0; idx < roads.length; idx++) {
                   if (
                     Object.keys(roads[idx].geometries).includes(String(osm_id))
                   ) {
-                    console.debug('Found road', idx);
                     setSelectedRoadIdx(idx);
                     break;
                   }

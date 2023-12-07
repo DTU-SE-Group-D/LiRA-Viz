@@ -51,8 +51,6 @@ export class RoadService {
    * This executes the queries sequentially to avoid useless queries to OSM
    * and the database. This is especially useful when the ways are in the same road.
    *
-   * // TODO: change this a nest queue
-   *
    * @param wayIds
    *
    * @author Kerbourc'h
@@ -78,8 +76,6 @@ export class RoadService {
   /**
    * Will get the Way corresponding to the OSMWayId either from the database if
    * available or from OSM and insert the whole road containing it in the database.
-   *
-   * // TODO: change this a nest queue
    *
    * @param OSMWayId the osm id of a way in the road
    *

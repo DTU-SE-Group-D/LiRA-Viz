@@ -39,6 +39,8 @@ interface IDistHotline {
  * @param eventHandlers the default event handlers
  * @param event the event to handle
  * @param opacity the opacity to set to the line
+ *
+ * @author LiraVis
  */
 const handler = (
   eventHandlers: HotlineEventHandlers | undefined,
@@ -57,6 +59,8 @@ const handler = (
  * data in function of the distance of the beginning of a path.
  *
  * It uses the react-leaflet-hotline library.
+ *
+ * @author LiraVis, Kerbourc'h
  */
 const DistHotline: FC<IDistHotline> = ({
   geometry,

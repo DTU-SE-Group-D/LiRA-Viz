@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 interface ImageZoom {
   /** The URL of the image to display in the zoomed view. */
@@ -52,11 +52,14 @@ const ImageZoom: React.FC<ImageZoom> = ({
     isRightDisabled,
   ]);
 
-  const handleClickOutside = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
+  const handleClickOutside = useCallback(
+    (e: React.MouseEvent) => {
+      if (e.target === e.currentTarget) {
+        onClose();
+      }
+    },
+    [onClose],
+  );
 
   return (
     <div className="image-click-modal" onClick={handleClickOutside}>

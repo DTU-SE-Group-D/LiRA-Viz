@@ -61,6 +61,8 @@ export class ImageService {
    *
    * @param wayId the way id
    * @param isDashCam boolean to indicate if the images are dash camera images or road surface images
+   *
+   * @author Kerbourc'h
    */
   async getWayImages(
     wayId: OSMWayId,

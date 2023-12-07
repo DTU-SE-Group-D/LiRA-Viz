@@ -1,5 +1,5 @@
 // The TopBar for Inspect page
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Selector from '../Map/Inputs/Selector';
 
@@ -12,10 +12,15 @@ interface TopBarProps {
   setSelectedType: (type: string) => void;
   /** Callback to set the selected type for graph*/
   graphIndicatorSet: (type: string[]) => void;
+  /** The available types for the road images */
   availableRoadImagesTypes: string[];
+  /** The available types for the graph */
   availableGraphIndicatorType: string[];
 }
 
+/**
+ * @author Muro
+ */
 const makeOnlyAvailableOptionsClickable = (
   options: { value: string; label: string }[],
   availableOptions: string[],
@@ -60,10 +65,10 @@ const TopBar: React.FC<TopBarProps> = ({
 }) => {
   const navigate = useNavigate(); // Get the navigate function
 
-  const handleReturn = () => {
+  const handleReturn = useCallback(() => {
     // Navigate back to the home page when the button is clicked
     navigate('/');
-  };
+  }, [navigate]);
 
   return (
     <div className="top-bar topBar-container ">

@@ -13,6 +13,8 @@ import Main from './pages/Main';
 
 /**
  * Component rendering the whole application
+ *
+ * @author LiraVis, Muro, Kerbourc'h
  */
 const App: FC = () => {
   return (
