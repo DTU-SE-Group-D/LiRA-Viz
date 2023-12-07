@@ -26,7 +26,7 @@ import MonthFilter from '../Components/Map/Inputs/MonthFilter';
 import MultiSelector from '../Components/Map/Inputs/MultiSelector';
 import '../css/navbar.css';
 import DetectMapClick from '../Components/Map/Hooks/DetectMapClick';
-import RoadInfoCard from '../Components/Map/InfoCard';
+import InfoCard from '../Components/Map/InfoCard';
 import { useNavigate } from 'react-router-dom';
 import InfoButton from '../Components/Conditions/InfoButton';
 import UploadPanel from '../Components/Conditions/UploadPanel';
@@ -314,7 +314,7 @@ const Main: FC = () => {
           }}
         />
       )}
-      <RoadInfoCard
+      <InfoCard
         hidden={selectedRoadIdx === -1}
         roadData={
           selectedRoadIdx !== -1 && roads ? roads[selectedRoadIdx] : undefined

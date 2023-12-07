@@ -23,6 +23,7 @@ export interface ISurvey {
   id: string;
   geometry: number[][];
   data: SurveyConditions[];
+  timestamp: string;
 }
 
 /**

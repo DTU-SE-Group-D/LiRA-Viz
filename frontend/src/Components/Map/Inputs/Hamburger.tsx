@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import '../../../css/Sidebar.css';
 import { getAllSurveyData } from '../../../queries/conditions';
-import { SurveyList } from '../../../../../backend/src/models';
+import { ISurvey, SurveyList } from '../../../../../backend/src/models';
+import InfoCard from '../InfoCard';
 
 interface HamburgerProps {
   /** Indicates if the sidebar is currently open. */
@@ -20,26 +20,33 @@ interface HamburgerProps {
  *
  * @author Lyons
  */
+
+const HEIGHT_OF_EACH_SURVEY_ITEM = 40; // Define this constant if not defined elsewhere
+
 const Hamburger: React.FC<HamburgerProps> = ({ isOpen, toggle }) => {
-  const [surveys, setSurveys] = useState<SurveyList>([]);
-  const navigate = useNavigate();
+  const [surveys, setSurveys] = useState<ISurvey[]>([]);
+  const [selectedSurvey, setSelectedSurvey] = useState<ISurvey | null>(null);
+  const [, setSelectedSurveyPosition] = useState<number>(0);
 
   useEffect(() => {
     getAllSurveyData((data: SurveyList) => {
-      setSurveys(data);
+      const transformedData: ISurvey[] = data.map((survey) => ({
+        id: survey.id,
+        timestamp: survey.timestamp,
+        geometry: [],
+        data: [],
+      }));
+      setSurveys(transformedData);
     });
   }, []);
 
   const handleSurveyClick = useCallback(
-    (surveyId: string, index: number) => {
-      const path = `/inspect/surveys/${surveyId}`;
-      navigate(path, {
-        state: {
-          name: new Date(surveys[index].timestamp).toLocaleDateString(),
-        },
-      });
+    (_surveyId: string, surveyIndex: number) => {
+      setSelectedSurvey(surveys[surveyIndex]);
+      const topPosition = surveyIndex * HEIGHT_OF_EACH_SURVEY_ITEM;
+      setSelectedSurveyPosition(topPosition);
     },
-    [navigate, surveys],
+    [surveys],
   );
 
   return (
@@ -66,6 +73,9 @@ const Hamburger: React.FC<HamburgerProps> = ({ isOpen, toggle }) => {
           )}
         </div>
       </div>
+      {selectedSurvey && (
+        <InfoCard hidden={!isOpen} surveyData={selectedSurvey} />
+      )}
     </>
   );
 };
