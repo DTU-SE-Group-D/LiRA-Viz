@@ -4,18 +4,6 @@ import { IImage } from '../../models/path';
 import { getImagesForASurvey, getImagesForWays } from '../../queries/images';
 import { useParams } from 'react-router-dom';
 
-interface Image {
-  id: number;
-  url: string;
-}
-
-export const images = (cameraImages: IImage[]): Image[] => {
-  return cameraImages.map((ima, index) => ({
-    id: index + 1,
-    url: ima.image_path,
-  }));
-};
-
 /**
  * React functional component for the Image Gallery of Dash Camera image.
  * Image gallery is for show the real road image, and user can scroll to check
@@ -101,7 +89,7 @@ const ImageGallery: React.FC = () => {
         className="image-gallery-page"
         ref={galleryRef}
         style={{
-          justifyContent: images.length <= 9 ? 'center' : 'flex-start',
+          justifyContent: cameraImages.length <= 9 ? 'center' : 'flex-start',
         }}
       >
         {cameraImages.map((ima, index) => (

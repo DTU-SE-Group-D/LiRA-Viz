@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import '../../../css/month_filter.css';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -36,8 +36,9 @@ interface MonthFilterProps {
   onStartChange: (date: any) => void;
   /** function taking argument "date" for End date **/
   onEndChange: (date: any) => void;
-  /** The minimum & maximum date possible **/
+  /** The minimum date possible **/
   minDate: Date;
+  /** The maximum date possible **/
   maxDate: Date;
 }
 

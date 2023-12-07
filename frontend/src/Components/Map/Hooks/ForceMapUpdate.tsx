@@ -1,4 +1,4 @@
-import { LatLng } from '../../models/models';
+import { LatLng } from '../../../models/models';
 import { useMap } from 'react-leaflet';
 import React, { useEffect } from 'react';
 

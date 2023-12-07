@@ -33,6 +33,14 @@ export const getImagesForASurvey = (
   );
 };
 
+/**
+ *
+ * @param wayIds the way ids used to filter the images
+ * @param isDashCam boolean to indicate if the images are dash camera images or road surface images
+ * @param callback the function called back when the request is responded
+ *
+ * @author Kerbourc'h
+ */
 export const getImagesForWays = (
   wayIds: string[],
   isDashCam: boolean,

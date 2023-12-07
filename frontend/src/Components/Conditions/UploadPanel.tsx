@@ -11,6 +11,8 @@ interface Props {
 
 /**
  * Create a panel where the user can upload a zip file
+ *
+ * @author Kerbourc'h
  */
 const UploadPanel: FC<Props> = ({ close }) => {
   const [state, setState] = useState<
@@ -57,7 +59,7 @@ const UploadPanel: FC<Props> = ({ close }) => {
                   } else {
                     setState('sent-error');
                   }
-                  console.warn(error);
+                  console.warn('Error while uploading new survey: ', error);
                   setTimeout(() => setState('waiting'), 3000);
                 },
               );

@@ -1,29 +1,30 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import '../../css/InfoButton.css';
 
 /**
  * A small button showing information and instructions to use the webapp.
+ *
+ * @author Lyons, Chen, Muro
  */
-
 const InfoButton: React.FC = () => {
   const [showInfo, setShowInfo] = useState(false);
   const infoButtonRef = useRef<HTMLDivElement>(null);
 
   // Toggle the visibility of the info box
 
-  const handleInfoToggle = () => {
+  const handleInfoToggle = useCallback(() => {
     setShowInfo(!showInfo);
-  };
+  }, [showInfo]);
 
   // Close the info box if clicking outside
-  const handleClickOutside = (event: MouseEvent) => {
+  const handleClickOutside = useCallback((event: MouseEvent) => {
     if (
       infoButtonRef.current &&
       !infoButtonRef.current.contains(event.target as Node)
     ) {
       setShowInfo(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     // Add event listener for the click when the component is mounted
@@ -36,9 +37,9 @@ const InfoButton: React.FC = () => {
   }, []);
 
   // Stop the propagation of the click event to prevent handleClickOutside from being triggered
-  const stopPropagation = (event: React.MouseEvent) => {
+  const stopPropagation = useCallback((event: React.MouseEvent) => {
     event.stopPropagation();
-  };
+  }, []);
 
   return (
     <>

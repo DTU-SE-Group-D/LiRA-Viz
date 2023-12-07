@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../../css/Sidebar.css';
 import { getAllSurveyData } from '../../../queries/conditions';
@@ -26,15 +26,17 @@ const Hamburger: React.FC<HamburgerProps> = ({ isOpen, toggle }) => {
 
   useEffect(() => {
     getAllSurveyData((data: SurveyList) => {
-      console.log('Received survey data:', data);
       setSurveys(data);
     });
   }, []);
 
-  const handleSurveyClick = (surveyId: string, _index: number) => {
-    const path = `/inspect/surveys/${surveyId}`;
-    navigate(path);
-  };
+  const handleSurveyClick = useCallback(
+    (surveyId: string, _index: number) => {
+      const path = `/inspect/surveys/${surveyId}`;
+      navigate(path);
+    },
+    [navigate],
+  );
 
   return (
     <>

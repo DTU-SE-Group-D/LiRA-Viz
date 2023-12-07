@@ -39,7 +39,10 @@ export function getWithQueryParameters<T>(
   asyncGetWithQueryParameters<T>(path, obj)
     .then((res) => callback(res.data))
     .catch((err) => {
-      console.log(err);
+      console.warn(
+        'Error occurred with getting (GET) data with query parameters: ',
+        err,
+      );
     });
 }
 

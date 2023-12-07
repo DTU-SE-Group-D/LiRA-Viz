@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 interface Props {
+  /** The path of the image to display */
   src: string;
 }
 

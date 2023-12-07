@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useRef } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useRef } from 'react';
 import { GeoJSON } from 'react-leaflet';
 import L, { CircleMarkerOptions } from 'leaflet';
 import { FeatureCollection } from 'geojson';
@@ -147,13 +147,12 @@ const severityThreshold = (
       const isMedium = severity.mode.includes('Medium');
       const isLow = severity.mode.includes('Low');
 
-      const meetsSeverityConditions =
+      return (
         (isLow && (value <= thresholds[0] || value < thresholds[1])) ||
         (isMedium && thresholds[1] <= value && value <= thresholds[2]) ||
         (isHigh && thresholds[2] < value && value <= thresholds[3]) ||
-        (isCritical && thresholds[3] < value);
-
-      return meetsSeverityConditions;
+        (isCritical && thresholds[3] < value)
+      );
     }
   }
   return false;
@@ -190,10 +189,12 @@ const ConditionsMap: FC<ConditionsMapProps> = ({
   const geoJsonRef = useRef<any>();
 
   // The default data to show in the GeoJSON component
-  const defaultData: FeatureCollection = {
-    type: 'FeatureCollection',
-    features: [],
-  };
+  const defaultData: FeatureCollection = useMemo(() => {
+    return {
+      type: 'FeatureCollection',
+      features: [],
+    };
+  }, []);
 
   const setStyle = useCallback(
     (

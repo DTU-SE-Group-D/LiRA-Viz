@@ -1,3 +1,7 @@
+/**
+ * @author LiraVis
+ */
+
 // DistHotline
 export interface DistPoint {
   x: number;

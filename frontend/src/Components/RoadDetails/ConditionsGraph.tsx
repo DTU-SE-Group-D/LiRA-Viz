@@ -1,12 +1,9 @@
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  ActiveElement,
   CategoryScale,
   Chart,
   ChartData,
-  ChartEvent,
   ChartOptions,
-  ChartTypeRegistry,
   Legend,
   LinearScale,
   LineElement,
@@ -297,16 +294,6 @@ const ConditionsGraph: FC<Props> = ({ data, inspectedRoadDistanceArea }) => {
 
     return {
       ...options(data, scales.scales),
-      onClick: (
-        event: ChartEvent,
-        elts: ActiveElement[],
-        _chart: Chart<keyof ChartTypeRegistry, number[], unknown>,
-      ) => {
-        if (elts.length === 0) return;
-        const elt = elts[0]; // doesnt work if multiple datasets
-        const pointIndex = elt.index;
-        console.log(pointIndex, event, elts);
-      },
     };
   }, [data]); // don't update when previousTypes changes, bacause it's only use to store the previous show axis
 
@@ -320,7 +307,6 @@ const ConditionsGraph: FC<Props> = ({ data, inspectedRoadDistanceArea }) => {
   useEffect(() => {
     if (ref.current === null) return;
 
-    console.log(graphOptions);
     const chart = ref.current;
     chart.update();
   }, [ref, graphLines]);

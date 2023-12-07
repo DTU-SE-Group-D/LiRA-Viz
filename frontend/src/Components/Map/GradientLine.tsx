@@ -27,8 +27,7 @@ interface Props {
  * GradientLine component to render the path on the map. This path is colored
  * using a palette and the data provided.
  *
- *
- * @author LiRA Map (Called Ways), Kerbourc'h
+ * @author Kerbourc'h
  */
 const GradientLine: FC<Props> = ({
   geometry,

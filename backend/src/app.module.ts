@@ -37,7 +37,6 @@ const database = (config: any, name: string) => {
       serveRoot: '/cdn/',
     }),
   ],
-
   controllers: [
     AppController,
     RCController,

@@ -1,12 +1,15 @@
 import React from 'react';
 import ImageGallery from './ImageGallery';
 import MapWrapper from '../Map/MapWrapper';
-import ForceMapUpdate from '../Map/ForceMapUpdate';
+import ForceMapUpdate from '../Map/Hooks/ForceMapUpdate';
 import { LatLng } from '../../models/models';
 
 interface Props {
+  /** The trigger to update the map */
   triggerUpdate: number;
+  /** The children to display in the map */
   children?: React.ReactNode;
+  /** The center of the map */
   center?: LatLng;
 }
 /**

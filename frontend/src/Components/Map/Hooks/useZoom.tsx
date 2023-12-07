@@ -3,6 +3,8 @@ import { useMapEvents } from 'react-leaflet';
 
 /**
  * Zoom implementation on map events
+ *
+ * @author LiraVis
  */
 const useZoom = () => {
   const [zoom, setZoom] = useState<number>();

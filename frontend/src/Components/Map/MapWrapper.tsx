@@ -19,6 +19,8 @@ interface IMapWrapper {
 
 /**
  * MapWrapper is the component to show a map.
+ *
+ * @author LiraVis, Kerbourc'h, Hansen, Muro
  */
 const MapWrapper: FC<IMapWrapper> = ({ children }) => {
   const { center, zoom, minZoom, maxZoom, scaleWidth } = MAP_OPTIONS;
