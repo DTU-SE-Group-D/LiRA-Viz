@@ -1,18 +1,17 @@
 import { Controller, Get, Query } from '@nestjs/common';
-
-import { Condition } from 'src/models';
 import { RCService } from './rc.service';
 
 @Controller('conditions')
 export class RCController {
   constructor(private readonly service: RCService) {}
 
-  @Get('way')
-  getWayConditions(@Query() query: { dbId: string }): Promise<Condition[]> {
-    const { dbId } = query;
-    return this.service.getWayRoadConditions(dbId);
-  }
-
+  /**
+   * Get all the conditions in the database.
+   *
+   * @param query the parameters to filter the conditions
+   *
+   * @author Kerbourc'h
+   */
   @Get('')
   getConditions(
     @Query()
@@ -24,19 +23,10 @@ export class RCController {
       type: string;
       valid_before: string;
       valid_after: string;
-      computed_after: string;
     },
   ): Promise<any> {
-    const {
-      minLat,
-      maxLat,
-      minLng,
-      maxLng,
-      type,
-      valid_before,
-      valid_after,
-      computed_after,
-    } = query;
+    const { minLat, maxLat, minLng, maxLng, type, valid_before, valid_after } =
+      query;
     return this.service.getConditions(
       minLat,
       maxLat,
@@ -45,7 +35,6 @@ export class RCController {
       type,
       valid_before,
       valid_after,
-      computed_after,
     );
   }
 }
