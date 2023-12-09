@@ -7,7 +7,7 @@ import { AppService } from './app.service';
 
 import { KnexModule } from 'nestjs-knex';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { DB_LIRAMAP_CONFIG } from './database';
+import { DB_GROUPD_CONFIG } from './database';
 
 const database = (config: any, name: string) => {
   return KnexModule.forRootAsync(
@@ -23,10 +23,7 @@ describe('AppController', () => {
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
-      imports: [
-        ConfigModule.forRoot(),
-        database(DB_LIRAMAP_CONFIG, 'lira-map'),
-      ],
+      imports: [ConfigModule.forRoot(), database(DB_GROUPD_CONFIG, 'group-d')],
       controllers: [AppController],
       providers: [AppService, ConfigService],
     }).compile();

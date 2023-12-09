@@ -1,6 +1,6 @@
-import React, { FC, useEffect, useRef, useCallback } from 'react';
+import React, { FC, useCallback, useEffect, useRef } from 'react';
 import { GeoJSON } from 'react-leaflet';
-import { PathOptions } from 'leaflet';
+import L, { CircleMarkerOptions } from 'leaflet';
 import { FeatureCollection } from 'geojson';
 
 import MapWrapper from '../Map/MapWrapper';
@@ -11,10 +11,10 @@ import {
   IRI,
   IRInew,
   KPI,
+  lessOrEqualThan,
   Mu,
   MultiMode,
   SeverityMode,
-  lessOrEqualThan,
 } from '../../models/conditions';
 
 const getTypeColor = (type: string): string => {
@@ -190,7 +190,6 @@ const ConditionsMap: FC<ConditionsMapProps> = ({
   const geoJsonRef = useRef<any>();
 
   // The default data to show in the GeoJSON component
-
   const defaultData: FeatureCollection = {
     type: 'FeatureCollection',
     features: [],
@@ -201,11 +200,13 @@ const ConditionsMap: FC<ConditionsMapProps> = ({
       feature:
         | GeoJSON.Feature<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>
         | undefined,
-    ): PathOptions => {
+    ): CircleMarkerOptions => {
       // Set the style of the GeoJSON component (line color, opacity...)
-      const mapStyle: PathOptions = {
-        weight: 4,
-        opacity: 1,
+      const mapStyle: CircleMarkerOptions = {
+        weight: 0,
+        radius: 4,
+        fillOpacity: 0.7,
+        opacity: 0.7,
         color: 'grey',
       };
       if (
@@ -213,36 +214,19 @@ const ConditionsMap: FC<ConditionsMapProps> = ({
         feature.properties !== null &&
         feature.properties.type !== undefined
       ) {
-        // When in mode 'ALL' show dashline using a color for each type
         if (
           multiMode.mode.includes(feature.properties.type) &&
           !severitySelected.selected
         ) {
           mapStyle.color = getTypeColor(feature.properties.type);
-          mapStyle.opacity = 0.5;
-          switch (feature.properties.type) {
-            case KPI:
-              mapStyle.dashArray = '12 12';
-              break;
-            case DI:
-              mapStyle.dashArray = '20 20';
-              break;
-            case IRI:
-            case IRInew:
-              mapStyle.dashArray = '28 28';
-              break;
-            case Mu:
-              mapStyle.dashArray = '15 15';
-              break;
-            case Enrg:
-              mapStyle.dashArray = '22 22';
-          }
         } else if (multiMode.count === 0) {
           mapStyle.color = getTypeColor('default');
         } else if (severitySelected.selected) {
           mapStyle.color = getSeverityColor(feature.properties);
         }
       }
+      mapStyle.fillColor = mapStyle.color;
+
       return mapStyle;
     },
     [multiMode, severitySelected],
@@ -302,7 +286,13 @@ const ConditionsMap: FC<ConditionsMapProps> = ({
       <MapWrapper>
         {children}
         {dataAll !== undefined && (
-          <GeoJSON ref={geoJsonRef} data={defaultData} />
+          <GeoJSON
+            ref={geoJsonRef}
+            data={defaultData}
+            pointToLayer={(_feature, position) =>
+              L.circleMarker(position, undefined)
+            }
+          />
         )}
       </MapWrapper>
     </div>

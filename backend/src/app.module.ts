@@ -12,7 +12,7 @@ import { AppService } from './app.service';
 import { RCController } from './conditions/rc.controller';
 import { RCService } from './conditions/rc.service';
 
-import { DB_GROUPD_CONFIG, DB_LIRAMAP_CONFIG } from './database';
+import { DB_GROUPD_CONFIG } from './database';
 import { RoadController } from './roads/road.controller';
 import { RoadService } from './roads/road.service';
 import { ImageController } from './images/image.controller';
@@ -32,7 +32,6 @@ const database = (config: any, name: string) => {
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    database(DB_LIRAMAP_CONFIG, 'lira-map'),
     database(DB_GROUPD_CONFIG, 'group-d'),
     ServeStaticModule.forRoot({
       rootPath:

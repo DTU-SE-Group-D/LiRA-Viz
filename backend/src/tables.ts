@@ -2,39 +2,6 @@ import { Knex } from 'knex';
 import { Geometry, LineString } from 'geojson';
 import { ImageType, MeasurementType } from './models';
 
-//
-// ====================================== Tables of LiRAMap (LiraVis) database ======================================
-//
-
-export interface IConditionCoverage {
-  id: string;
-  fk_way_id: string;
-  type: string;
-  value: number;
-  section_geom: Geometry;
-  compute_time: Date;
-}
-
-export const Conditions = (k: Knex) =>
-  k.from<IConditionCoverage>('condition_coverages as cond1');
-
-export const CoverageValues = (k: Knex) =>
-  k.from<IConditionCoverage>('coverage_values');
-
-interface IWays {
-  OSM_Id: number[];
-  way_name: string;
-  section_geom: any;
-  node_start: number;
-  node_end: number;
-}
-
-export const Ways = (k: Knex) => k.from<IWays>('ways');
-
-//
-// ====================================== Tables of GroupD database ======================================
-//
-
 export interface IImage {
   id?: number;
   fk_survey_id: number;
@@ -56,6 +23,8 @@ export interface IMeasurement {
   value: number;
   fk_way_id: number;
   distance_way: number;
+  latitude: number;
+  longitude: number;
   timestamp: Date;
 }
 
