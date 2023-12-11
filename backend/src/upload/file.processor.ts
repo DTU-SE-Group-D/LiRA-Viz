@@ -1,39 +1,166 @@
 import { InjectQueue, Process, Processor } from '@nestjs/bull';
 import { Job, Queue } from 'bull';
+import * as process from 'process';
+import {
+  extract_measurements_data,
+  extractCoordinatesFromRSP,
+  find_surveys,
+} from './upload';
+import { UploadService } from './upload.service';
+import { extract_dashcam_image_data, extract_road_image_data } from './image';
+import * as path from 'path';
+import * as fs from 'fs';
+import * as unzip from 'unzip-stream';
 
-const decompress = require('decompress');
-
+/**
+ * This class handles the file processing queue, managing the extraction
+ * processing of uploaded files and importing their data into a database.
+ * @author Liu, Kerbourc'h
+ */
 @Processor('file-processing')
 export class FileProcessor {
-  constructor(@InjectQueue('file-processing') private fileQueue: Queue) {}
+  constructor(
+    @InjectQueue('file-processing') private fileQueue: Queue,
+    private readonly service: UploadService,
+  ) {}
+
   @Process('unzip-file')
   async unzip(job: Job<{ filePath: string }>) {
     try {
       const { filePath } = job.data;
-      console.log(`unzipping file: ${filePath}`);
+      console.log(`Unzipping file: ${filePath}`);
 
-      decompress(filePath, './uploads')
-        .then(
-          async (files: { path: string; type: ['file', 'directory'] }[]) => {
-            console.log(files);
-            await this.fileQueue.add('process-file', {
-              filePath: `./uploads/${files[0].path.split('/')[0]}/`,
-            });
-          },
-        )
-        .catch((error) => {
-          console.log(error);
+      // Create a temporary directory for unzipping
+      const tempUnzipPath = path.join(
+        './uploads',
+        `temp_${new Date().getTime()}`,
+      );
+      if (!fs.existsSync(tempUnzipPath)) {
+        fs.mkdirSync(tempUnzipPath, { recursive: true });
+      }
+
+      // Stream the zip file and extract to the temporary directory
+      fs.createReadStream(filePath)
+        .pipe(unzip.Extract({ path: tempUnzipPath }))
+        .on('error', (error) => {
+          console.error(`Error unzipping file: ${filePath}`, error);
+        })
+        .on('close', async () => {
+          await this.handleUnzippedContent(tempUnzipPath, filePath);
         });
     } catch (error) {
       console.error(`Error processing file: ${job.data.filePath}`, error);
     }
   }
 
+  /**
+   * @param tempUnzipPath the temp folder where the unzip folder is
+   * @param originalFilePath The original path to the unzip folder
+   * @author Liu
+   */
+  async handleUnzippedContent(tempUnzipPath, originalFilePath) {
+    const files = fs.readdirSync(tempUnzipPath);
+    if (files.length === 0) {
+      console.error('No files were found in the unzipped directory.');
+      return;
+    }
+
+    // Proceed with processing each file in the temp directory
+    for (const file of files) {
+      const filePath = path.join(tempUnzipPath, file);
+      await this.fileQueue.add('process-file', { filePath });
+    }
+
+    // Delete the original zip file
+    fs.unlink(originalFilePath, (err) => {
+      if (err) {
+        console.error(`Failed to delete ZIP file: ${originalFilePath}`, err);
+      } else {
+        console.log(`Deleted ZIP file: ${originalFilePath}`);
+      }
+    });
+  }
+
+  /**
+   * Processes the extracted file by finding surveys, extracting data, and uploading to the database.
+   * @author Liu, Kerbourc'h
+   */
   @Process('process-file')
   async handleFileProcessing(job: Job<{ filePath: string }>) {
     try {
       const { filePath } = job.data;
-      console.log(`Processing file: ${filePath}`);
+      const debug = process.env.IMPORT_DEBUG === 'true';
+      console.log(`Processing file: ${filePath} (job id: ${job.id})`);
+
+      //here we make sure that there is at least one RSP file and a HDC directory
+      let surveys = find_surveys(filePath, debug);
+      if (debug) {
+        console.debug(surveys);
+      }
+
+      if (surveys.length == 0) {
+        if (debug) {
+          console.log('No valid data found in directory: ' + filePath);
+        }
+      }
+
+      // TODO: split process here instead of for the all zip file (one process per survey)
+      for (let i = 0; i < surveys.length; i++) {
+        // find the geometry of the survey
+        surveys[i].geometry = extractCoordinatesFromRSP(surveys[i].RSP);
+
+        // upload the survey data and get the id back
+        surveys[i].fk_survey_id = await this.service.db_insert_survey_data(
+          surveys[i],
+          debug,
+        );
+
+        const data = extract_measurements_data(surveys[i], debug);
+        const roadImages = extract_road_image_data(surveys[i], debug);
+        const dashcameraImages = extract_dashcam_image_data(surveys[i], debug);
+
+        // TODO(Seb-sti1): (when rest working) add valhalla here
+
+        // Upload all data and images to the database
+        await Promise.all([
+          ...data.map(async (data) => {
+            await this.service.db_insert_measurement_data(
+              surveys[i].fk_survey_id,
+              data,
+              debug,
+            );
+          }),
+          ...roadImages.map(async (image) => {
+            await this.service.db_insert_image_data_and_move_to_image_store(
+              surveys[i].fk_survey_id,
+              image,
+              debug,
+            );
+          }),
+          ...dashcameraImages.map(async (image) => {
+            await this.service.db_insert_image_data_and_move_to_image_store(
+              surveys[i].fk_survey_id,
+              image,
+              debug,
+            );
+          }),
+        ]);
+      }
+
+      // Delete the unzipped file
+      try {
+        const tempFolderPath = path.dirname(job.data.filePath);
+        fs.rmSync(tempFolderPath, { recursive: true });
+        console.log(`Deleted extracted folder: ${job.data.filePath}`);
+      } catch (error) {
+        console.error(
+          `Error deleting extracted folder: ${job.data.filePath}`,
+          error,
+        );
+      }
+      console.log(
+        `File processed successfully and imported into Database: ${filePath}`,
+      );
     } catch (error) {
       console.error(`Error processing file: ${job.data.filePath}`, error);
     }

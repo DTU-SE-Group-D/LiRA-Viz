@@ -3,7 +3,7 @@ import { Geometry, LineString } from 'geojson';
 import { ImageType, MeasurementType } from './models';
 
 export interface IImage {
-  id?: number;
+  id?: string;
   fk_survey_id: string;
   distance_survey: number;
   image_path: string;
@@ -16,7 +16,7 @@ export interface IImage {
 export const Image = (k: Knex) => k.from<IImage>('image');
 
 export interface IMeasurement {
-  id?: number;
+  id?: string;
   fk_survey_id: string;
   distance_survey: number;
   type_index: MeasurementType;
@@ -31,9 +31,10 @@ export interface IMeasurement {
 export const Measurement = (k: Knex) => k.from<IMeasurement>('measurement');
 
 export interface ISurvey {
-  id?: number;
+  id?: string;
   section_geom: Geometry;
   timestamp: Date;
+  datasource: string;
   /** The Dynatest id of the surveys or null */
   survey_id: number;
 }
@@ -41,7 +42,7 @@ export interface ISurvey {
 export const Survey = (k: Knex) => k.from<ISurvey>('survey');
 
 export interface IWay<T = LineString> {
-  id?: number;
+  id?: string;
   way_name: string;
   osm_id: string; // This is because bigint is not supported by knex
   node_start: string; // See https://stackoverflow.com/questions/39168501/pg-promise-returns-integers-as-strings/39176670#39176670

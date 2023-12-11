@@ -18,6 +18,11 @@ import * as fs from 'fs';
 @Controller('upload')
 export class UploadController {
   constructor(@InjectQueue('file-processing') private fileQueue: Queue) {}
+
+  /**
+   * Handles file upload requests.
+   * @author Liu, Vejlgaard, Kerbourc'h
+   */
   @Post()
   @UseInterceptors(
     FileInterceptor('file', {
@@ -36,7 +41,7 @@ export class UploadController {
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
     @Body() data: { password: string },
-  ) {
+  ): Promise<{ message: string; filename: string }> {
     if (data.password !== process.env.UPLOAD_PASSWORD) {
       console.warn('Wrong password. File wile be removed.');
 
@@ -58,19 +63,20 @@ export class UploadController {
           cause: 'Wrong password.',
         },
       );
-    }
+    } else {
+      try {
+        await this.fileQueue.add('unzip-file', {
+          filePath: `./uploads/${file.filename}`,
+        });
+      } catch (error) {
+        console.error('Error uploading file', error);
+        throw new InternalServerErrorException('Error uploading file');
+      }
 
-    try {
-      await this.fileQueue.add('unzip-file', {
-        filePath: `./uploads/${file.filename}`,
-      });
       return {
         message: 'File uploaded and processing started!',
         filename: file.filename,
       };
-    } catch (error) {
-      console.error('Error uploading file', error);
-      throw new InternalServerErrorException('Error uploading file');
     }
   }
 }
