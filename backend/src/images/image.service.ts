@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectConnection, Knex } from 'nestjs-knex';
 import { IImage, Image, Way } from '../tables';
 import { OSMWayId } from '../models';
+import * as process from 'process';
 
 @Injectable()
 export class ImageService {
@@ -18,7 +19,10 @@ export class ImageService {
    * @author Kerbourc'h
    */
   formatImagePath(image: IImage) {
-    image.image_path = image.image_path.replace('/home/fish/images/', '/cdn/');
+    image.image_path = image.image_path.replace(
+      process.env.IMAGE_STORE_PATH,
+      '/cdn/',
+    );
     return image;
   }
 

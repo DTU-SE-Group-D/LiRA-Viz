@@ -19,6 +19,7 @@ import { ImageService } from './images/image.service';
 import { SurveyService } from './surveys/survey.service';
 import { SurveyController } from './surveys/survey.controller';
 import { UploadController } from './upload/upload.controller';
+import { UploadService } from './upload/upload.service';
 
 import { BullModule } from '@nestjs/bull';
 import { FileProcessor } from './upload/file.processor';
@@ -67,6 +68,7 @@ const database = (config: any, name: string) => {
     SurveyService,
     ImageService,
     FileProcessor,
+    UploadService,
   ],
 })
 export class AppModule {}
