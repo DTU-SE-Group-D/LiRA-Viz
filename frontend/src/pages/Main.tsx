@@ -66,6 +66,9 @@ const Main: FC = () => {
   const [dateMin, setDateMin] = useState<Date>();
   const [dateMax, setDateMax] = useState<Date>();
 
+  // Stores whether or not loading spinner should show
+  const [loading, setLoading] = useState<boolean>(true);
+
   const navigate = useNavigate(); // Get the navigate function
 
   /**
@@ -143,6 +146,7 @@ const Main: FC = () => {
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     // Load the conditions from the backend
     getAllConditions((data) => {
       const range: DateRange = {};
@@ -183,6 +187,8 @@ const Main: FC = () => {
 
       setDateMin(minDate);
       setDateMax(maxDate);
+
+      setLoading(false);
     });
   }, []);
 
@@ -257,7 +263,7 @@ const Main: FC = () => {
             Upload
           </button>
         </div>
-        <ProgressCircle isLoading={false} />
+        <ProgressCircle isLoading={loading} />
       </div>
       <ConditionsMap
         multiMode={multiMode}
