@@ -1,20 +1,36 @@
-// import React from "react";
+import React, { useState, useEffect } from 'react';
+import { CircularProgress } from '@nextui-org/react';
 
-// interface ProgressBarProps {
+interface ProgressBarProps {
+  /** Boolean to show that the progress bar isLoading (if true) */
+  isLoading: boolean;
+}
 
-// }
+/**
+ * ProgressBar is a component that is a circle
+ * that shows the progress of a task
+ *
+ * @author Hansen
+ */
+const ProgressBar: React.FC<ProgressBarProps> = ({ isLoading }) => {
+  const [loading, setLoading] = useState<boolean>(isLoading);
 
-// /**
-//  * MultiSelector is a component that is a dropdown list
-//  * that allows for multiple selection
-//  *
-//  * @author Hansen
-//  */
-// const ProgressBar: React.FC<ProgressBarProps> = ({
+  useEffect(() => {
+    setLoading(isLoading);
+  }, [isLoading]);
 
-// }) => {
-
-//     return (
-
-//     );
-// }
+  if (loading) {
+    return (
+      <CircularProgress color="primary" size="lg" aria-label="Loading..." />
+    );
+  } else {
+    return (
+      <CircularProgress
+        color="success"
+        size="lg"
+        aria-label="Complete"
+        value={100}
+      />
+    );
+  }
+};
