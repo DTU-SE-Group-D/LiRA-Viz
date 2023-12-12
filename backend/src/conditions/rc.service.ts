@@ -46,7 +46,7 @@ export class RCService {
           db.raw('ST_MakePoint(longitude,latitude) as section_geom'),
           'timestamp',
         )
-        .where('type_index', '<', MeasurementType['DI'])
+        .where('type_index', '<=', MeasurementType['DI'])
         .whereNotNull('latitude')
         .whereNotNull('longitude');
 
