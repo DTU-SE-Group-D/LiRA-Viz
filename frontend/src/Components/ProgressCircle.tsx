@@ -7,12 +7,12 @@ const override: CSSProperties = {
 };
 
 interface ProgressCircleProps {
-  /** Boolean to show that the progress bar isLoading (if true) */
+  /** Boolean to show the progress circle*/
   isLoading: boolean;
 }
 
 /**
- * ProgressBar is a component that is a circle
+ * ProgressCircle is a component that is a spinning dash-circle
  * that shows the progress of a task
  *
  * @author Hansen
