@@ -30,7 +30,7 @@ import RoadInfoCard from '../Components/Map/InfoCard';
 import { useNavigate } from 'react-router-dom';
 import InfoButton from '../Components/Conditions/InfoButton';
 import UploadPanel from '../Components/Conditions/UploadPanel';
-import { ProgressBar } from '../Components/ProgressBar';
+import ProgressBar from '../Components/ProgressBar';
 
 /**
  * Component rendering the main page
@@ -258,6 +258,7 @@ const Main: FC = () => {
           </button>
         </div>
         <div className="progress-bar-container">
+          {' '}
           <ProgressBar isLoading={true} />
         </div>
       </div>

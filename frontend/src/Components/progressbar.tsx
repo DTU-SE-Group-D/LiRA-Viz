@@ -39,14 +39,14 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ isLoading }) => {
 
   return (
     <>
-      <div className="progress-bar-container">
-        <CircularProgress
-          color={color}
-          size="lg"
-          aria-label={label}
-          value={value}
-        ></CircularProgress>
-      </div>
+      {/* <div className="progress-bar-container"> */}
+      <CircularProgress
+        color={color}
+        size="lg"
+        aria-label={label}
+        value={value}
+      ></CircularProgress>
+      {/* </div> */}
     </>
   );
 };

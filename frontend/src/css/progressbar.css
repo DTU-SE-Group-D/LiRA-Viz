@@ -2,10 +2,11 @@
   position: static;
   display: inline-block;
   position: relative;
-  width: fit-content;
+  width: 30px;
+  height: 30px;
   align-self: flex-start;
   justify-content: center;
   align-items: center;
   padding-bottom: 0;
-  z-index: 99999999;
+  z-index: 9999 !important;
 }
