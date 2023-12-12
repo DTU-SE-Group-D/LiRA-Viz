@@ -6,6 +6,7 @@ import Selector from '../Map/Inputs/Selector';
 import { ImageType } from '../../models/models'; // Import useNavigate
 import MultiSelector from '../Map/Inputs/MultiSelector';
 import { ConditionTypeOptions } from '../../models/conditions';
+import ProgressCircle from '../ProgressCircle';
 
 interface TopBarProps {
   /** Callback to set the selected type for roadimages*/
@@ -16,6 +17,8 @@ interface TopBarProps {
   availableRoadImagesTypes: string[];
   /** The available types for the graph */
   availableGraphIndicatorType: string[];
+  /** Boolean to show loading circle */
+  isLoading: boolean;
 }
 
 /**
@@ -62,6 +65,7 @@ const TopBar: React.FC<TopBarProps> = ({
   availableRoadImagesTypes,
   graphIndicatorSet,
   availableGraphIndicatorType,
+  isLoading,
 }) => {
   const navigate = useNavigate(); // Get the navigate function
 
@@ -111,6 +115,7 @@ const TopBar: React.FC<TopBarProps> = ({
           label={'Road Image Type'}
         />
       </div>
+      <ProgressCircle isLoading={isLoading} />
     </div>
   );
 };
