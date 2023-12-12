@@ -46,7 +46,7 @@ const ImageGallery: React.FC = () => {
   // Function to open the pop-up
   const openImageInPopup = useCallback(
     (imageId: number) => {
-      setCurrentImageIndex(imageId - 1); // Adjust for 0-based index
+      setCurrentImageIndex(imageId);
       setIsImageClickOpen(true);
     },
     [setCurrentImageIndex, setIsImageClickOpen],
