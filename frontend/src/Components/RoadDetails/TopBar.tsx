@@ -16,6 +16,7 @@ interface TopBarProps {
   availableRoadImagesTypes: string[];
   /** The available types for the graph */
   availableGraphIndicatorType: string[];
+  wayName: string;
 }
 
 /**
@@ -62,6 +63,7 @@ const TopBar: React.FC<TopBarProps> = ({
   availableRoadImagesTypes,
   graphIndicatorSet,
   availableGraphIndicatorType,
+  wayName,
 }) => {
   const navigate = useNavigate(); // Get the navigate function
 
@@ -110,6 +112,12 @@ const TopBar: React.FC<TopBarProps> = ({
           }}
           label={'Road Image Type'}
         />
+      </div>
+      <div
+        className="road-name"
+        style={{ fontSize: '20px', marginLeft: '60px' }}
+      >
+        <span className="road-name-text">Road Name: {wayName}</span>
       </div>
     </div>
   );

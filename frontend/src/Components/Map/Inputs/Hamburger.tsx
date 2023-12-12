@@ -33,7 +33,7 @@ const Hamburger: React.FC<HamburgerProps> = ({ isOpen, toggle }) => {
   const handleSurveyClick = useCallback(
     (surveyId: string, _index: number) => {
       const path = `/inspect/surveys/${surveyId}`;
-      navigate(path);
+      navigate(path, { state: { way_name: 'survey_' + _index } });
     },
     [navigate],
   );
