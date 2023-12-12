@@ -13,6 +13,7 @@ import { useParams } from 'react-router-dom';
 import {
   Conditions,
   ImageType,
+  IRangeForDashCam,
   LatLng,
   PathWithConditions,
 } from '../models/models';
@@ -113,6 +114,9 @@ const Inspect: FC = () => {
   /** Boolean to show loading circle */
   const [loading, setLoading] = useState<boolean>(true);
 
+  const [rangeForDashCamImages, setRangeForDashCamImages] =
+    useState<IRangeForDashCam>({ minRange: 0, maxRange: 0, maxRangeSurvey: 0 });
+
   const availableGraphIndicatorType = useMemo(() => {
     return Array.from(
       new Set(
@@ -122,6 +126,24 @@ const Inspect: FC = () => {
       ),
     );
   }, [data]);
+
+  useEffect(() => {
+    console.log('santi33', roadDistanceLeftToRight);
+    console.log('santi44', chartData);
+    if (
+      gradientLineData === undefined ||
+      roadDistanceLeftToRight === null ||
+      chartData === undefined
+    )
+      return;
+
+    setRangeForDashCamImages({
+      minRange: roadDistanceLeftToRight[0],
+      maxRange: roadDistanceLeftToRight[1],
+      maxRangeSurvey: Math.max(...chartData.map((item) => item.maxX)) + 1,
+    });
+    console.log('santi55 rangeForDashCamImages', rangeForDashCamImages);
+  }, [roadDistanceLeftToRight]);
 
   useEffect(() => {
     if (id === undefined || type === undefined) return;
@@ -261,7 +283,11 @@ const Inspect: FC = () => {
             <div
               style={{ width: `calc(${mapAreaSize}% - ${halfSizeOfSplitBar})` }}
             >
-              <MapArea triggerUpdate={triggerUpdate} center={mapCenter}>
+              <MapArea
+                triggerUpdate={triggerUpdate}
+                center={mapCenter}
+                rangeDashCamImages={rangeForDashCamImages}
+              >
                 <GradientLine
                   geometry={gradientLineData?.geometry}
                   data={gradientLineData?.data}
