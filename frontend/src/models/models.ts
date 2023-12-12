@@ -32,6 +32,7 @@ export interface IImageValuesForPixels {
   pixelWidth: number;
   firstVisiblePixelLeft: number;
   lastVisiblePixelRight: number;
+  absoluteIndex: number;
 }
 
 export interface Conditions {
