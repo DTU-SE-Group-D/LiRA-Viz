@@ -31,11 +31,15 @@ const Hamburger: React.FC<HamburgerProps> = ({ isOpen, toggle }) => {
   }, []);
 
   const handleSurveyClick = useCallback(
-    (surveyId: string, _index: number) => {
+    (surveyId: string, index: number) => {
       const path = `/inspect/surveys/${surveyId}`;
-      navigate(path);
+      navigate(path, {
+        state: {
+          name: new Date(surveys[index].timestamp).toLocaleDateString(),
+        },
+      });
     },
-    [navigate],
+    [navigate, surveys],
   );
 
   return (
@@ -53,7 +57,7 @@ const Hamburger: React.FC<HamburgerProps> = ({ isOpen, toggle }) => {
               <div
                 key={survey.id}
                 className="survey-block"
-                onClick={() => handleSurveyClick(survey.id, index + 1)}
+                onClick={() => handleSurveyClick(survey.id, index)}
               >
                 <h4>Survey {index + 1}</h4>
                 <p>Date: {new Date(survey.timestamp).toLocaleDateString()}</p>

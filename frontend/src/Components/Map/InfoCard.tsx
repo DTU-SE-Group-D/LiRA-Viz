@@ -24,7 +24,9 @@ const InfoCard: React.FC<Props> = ({ hidden, roadData }) => {
       prev.length > curr.length ? prev : curr,
     );
 
-    navigate('/inspect/paths/' + biggestBranch.join(','));
+    navigate('/inspect/paths/' + biggestBranch.join(','), {
+      state: { name: roadData.way_name },
+    });
   }, [roadData, navigate]);
 
   if (hidden || !roadData) {
