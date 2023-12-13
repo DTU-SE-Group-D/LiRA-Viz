@@ -1,6 +1,6 @@
 // The TopBar for Inspect page
 import React, { useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import Selector from '../Map/Inputs/Selector';
 
 import { ImageType } from '../../models/models'; // Import useNavigate
@@ -16,7 +16,6 @@ interface TopBarProps {
   availableRoadImagesTypes: string[];
   /** The available types for the graph */
   availableGraphIndicatorType: string[];
-  wayName: string;
 }
 
 /**
@@ -63,14 +62,20 @@ const TopBar: React.FC<TopBarProps> = ({
   availableRoadImagesTypes,
   graphIndicatorSet,
   availableGraphIndicatorType,
-  wayName,
 }) => {
   const navigate = useNavigate(); // Get the navigate function
+
+  const { type } = useParams();
+
+  const location = useLocation();
 
   const handleReturn = useCallback(() => {
     // Navigate back to the home page when the button is clicked
     navigate('/');
   }, [navigate]);
+
+  // Check if state exists and extract way_name
+  const wayName = location.state?.name || 'No way name found';
 
   return (
     <div className="top-bar topBar-container ">
@@ -115,9 +120,11 @@ const TopBar: React.FC<TopBarProps> = ({
       </div>
       <div
         className="road-name"
-        style={{ fontSize: '20px', marginLeft: '60px' }}
+        style={{ fontSize: '16px', marginLeft: '60px' }}
       >
-        <span className="road-name-text">Road Name: {wayName}</span>
+        <span className="road-name-text">
+          {type === 'paths' ? 'Road Name' : 'Survey Date'} : {wayName}
+        </span>
       </div>
     </div>
   );

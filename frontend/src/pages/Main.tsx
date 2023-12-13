@@ -292,6 +292,7 @@ const Main: FC = () => {
               navigate(
                 '/inspect/paths/' +
                   roads[selectedRoadIdx].branches[index].join(','),
+                { state: { name: roads[selectedRoadIdx].way_name } },
               );
             }
             setMoveToPosition(position);

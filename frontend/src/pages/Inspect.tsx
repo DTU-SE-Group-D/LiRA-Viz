@@ -9,7 +9,7 @@ import ConditionsGraph from '../Components/RoadDetails/ConditionsGraph';
 import '../css/split.css';
 import { ConditionsGraphData, conditionTypes } from '../models/conditions';
 import '../css/inspect_page.css';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
   Conditions,
   ImageType,
@@ -70,8 +70,6 @@ const Inspect: FC = () => {
   /** The id and type of the object to display (in the url) */
   const { id, type } = useParams();
 
-  const location = useLocation();
-
   /** The sizes for the split components */
   const [topPanelSize, setTopPanelSize] = useState(35);
   const [conditionsGraphSize, setConditionsGraphSize] = useState(
@@ -111,9 +109,6 @@ const Inspect: FC = () => {
   const [chartData, setChartData] = useState<ConditionsGraphData[]>();
   /** The data to display */
   const [data, setData] = useState<Conditions[]>();
-
-  // Check if state exists and extract way_name
-  const wayName = location.state?.way_name || 'No way name found';
 
   const availableGraphIndicatorType = useMemo(() => {
     return Array.from(
@@ -225,7 +220,6 @@ const Inspect: FC = () => {
           );
         }}
         availableGraphIndicatorType={availableGraphIndicatorType}
-        wayName={wayName}
       />
       <Split
         mode="vertical"
