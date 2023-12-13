@@ -247,9 +247,20 @@ const RoadImage: React.FC<Props> = ({
                   key={'div' + image.id}
                   className="road-image-surface-image"
                   data-image-id={image.id}
-                  ref={index === indexLastViewed ? surfaceContainerRef : null}
                 >
-                  <RotatedImage key={image.id} src={image.image_path} />
+                  <RotatedImage
+                    key={image.id}
+                    src={image.image_path}
+                    onLoad={() => {
+                      if (index === indexLastViewed) {
+                        setTimeout(() => {
+                          if (containerRef.current === null) return;
+                          const container = containerRef.current as HTMLElement;
+                          container.children[index].scrollIntoView();
+                        }, 20);
+                      }
+                    }}
+                  />
                 </div>
               ))
             : null}
