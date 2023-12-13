@@ -3,6 +3,7 @@ import Hamburger from '../Components/Map/Inputs/Hamburger';
 import { IRoad } from '../models/path';
 import { getRoadsPaths } from '../queries/road';
 import { LatLng } from '../models/models';
+import L from 'leaflet';
 import { FeatureCollection } from 'geojson';
 import { getAllConditions } from '../queries/conditions';
 
@@ -185,6 +186,97 @@ const Main: FC = () => {
     });
   }, []);
 
+  /**
+    /* Function to calculate the maximum distance
+    /*
+    /* @author Chen
+    */
+  const calculateMaxDistance = (selectedRoad: IRoad): number => {
+    const wayIds = Object.keys(selectedRoad.geometries);
+    let maxDistance = 0;
+    let farthestCoordinate: L.LatLng | null = null;
+
+    // Convert all coordinates to Leaflet LatLng objects and store in an array
+    const allLeafletCoordinates: L.LatLng[] = wayIds.flatMap((wayId) =>
+      selectedRoad.geometries[wayId].map(
+        (coord) => L.latLng(coord.lat, coord.lng), // Use the L.latLng function
+      ),
+    );
+    // If there are no coordinates, exit early
+    if (allLeafletCoordinates.length === 0) {
+      return 0;
+    }
+    // Initialize farthestCoordinate with the first coordinate, if available
+    if (allLeafletCoordinates.length > 0) {
+      farthestCoordinate = allLeafletCoordinates[0];
+    }
+    // Find the point farthest from the first coordinate
+    const firstLeafletCoordinate = allLeafletCoordinates[0];
+    allLeafletCoordinates.forEach((leafletCoordinate) => {
+      const distance = firstLeafletCoordinate.distanceTo(leafletCoordinate);
+      if (distance > maxDistance) {
+        maxDistance = distance;
+        farthestCoordinate = leafletCoordinate;
+      }
+    });
+
+    // Reset max distance for the second iteration
+    maxDistance = 0;
+
+    // Find the point farthest from the farthest point found in step 1
+    if (farthestCoordinate) {
+      allLeafletCoordinates.forEach((leafletCoordinate) => {
+        const distance = farthestCoordinate!.distanceTo(leafletCoordinate);
+        if (distance > maxDistance) {
+          maxDistance = distance;
+        }
+      });
+    }
+
+    return maxDistance;
+  };
+
+  /**
+    /* Function to calculate the zoom level
+    /*
+    /* @author Chen
+    */
+  const calculateZoomLevel = (maxDistance: number): number => {
+    let slope = -7.8e-5; // Default
+    let intercept = 12.6; // Default
+
+    if (maxDistance <= 900) {
+      slope = -7.8e-5;
+      intercept = 16.8;
+    } else if (Math.floor(maxDistance) == 50937) {
+      return 13; //For a road named 'Nordre Ringvej' that cannot get the correct MaxDistance
+    } else if (maxDistance > 900 && maxDistance <= 2500) {
+      slope = -7.8e-5;
+      intercept = 14.1;
+    } else if (maxDistance > 2500 && maxDistance <= 8000) {
+      slope = -7.8e-5;
+      intercept = 13.8;
+    } else if (maxDistance > 8000 && maxDistance <= 20000) {
+      slope = -7.8e-5;
+      intercept = 12.6;
+    } else if (maxDistance > 20000 && maxDistance <= 23000) {
+      return 11.9;
+    } else if (maxDistance > 23000 && maxDistance <= 26000) {
+      return 11.3;
+    } else if (maxDistance > 26000 && maxDistance <= 40000) {
+      slope = -9e-5;
+      intercept = 14.9;
+    } else {
+      slope = -9e-5;
+      intercept = 15.5;
+    }
+
+    const ZoomInParam = slope * maxDistance + intercept;
+    return ZoomInParam;
+  };
+
+  const [zoomLevel, setZoomLevel] = useState<number>(13); // Default zoom level
+
   return (
     <>
       <div className="nav-wrapper">
@@ -284,9 +376,20 @@ const Main: FC = () => {
           onSelectedPath={(index, _road, position) => {
             if (roads === undefined) return;
 
+            // Set selected road index and position
+            setSelectedRoadIdx(index);
+            setMoveToPosition(position);
+
             if (selectedRoadIdx === -1) {
               // If no road is selected, select the road
               setSelectedRoadIdx(index);
+
+              // Assuming roads[index] gives you the selected road
+              const selectedRoad = roads[index];
+              const maxDistance = calculateMaxDistance(selectedRoad);
+              // Use calculateZoomLevel to get the zoom level based on maxDistance
+              const zoom = calculateZoomLevel(maxDistance);
+              setZoomLevel(zoom);
             } else {
               // if a road is selected, go to the inspect page for the clicked road branch
               navigate(
@@ -304,7 +407,7 @@ const Main: FC = () => {
             }
           }}
         />
-        <ForceMapUpdate position={moveToPosition} />
+        <ForceMapUpdate position={moveToPosition} zoomLevel={zoomLevel} />
       </ConditionsMap>
       {isUploadPanelOpened && (
         <UploadPanel

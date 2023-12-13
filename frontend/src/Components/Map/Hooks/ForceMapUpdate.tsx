@@ -7,14 +7,20 @@ interface Props {
   triggerUpdate?: number;
   /** The coordinates of the map center*/
   position?: LatLng;
+  /** Zoom level for the map */
+  zoomLevel?: number;
 }
 
 /**
  * This component is used to force an update of the map. It is used in conjunction with the useMap hook.
  *
- * @author Kerbourc'h
+ * @author Kerbourc'h, Chen
  */
-const ForceMapUpdate: React.FC<Props> = ({ triggerUpdate, position }) => {
+const ForceMapUpdate: React.FC<Props> = ({
+  triggerUpdate,
+  position,
+  zoomLevel = 13, // Default value set here if zoomLevel is not provided
+}) => {
   const map = useMap();
 
   useEffect(() => {
@@ -24,9 +30,9 @@ const ForceMapUpdate: React.FC<Props> = ({ triggerUpdate, position }) => {
   // TODO: not working when moving too little
   useEffect(() => {
     if (position) {
-      map.flyTo(position);
+      map.flyTo(position, zoomLevel);
     }
-  }, [position]);
+  }, [position, zoomLevel]);
 
   return null;
 };
