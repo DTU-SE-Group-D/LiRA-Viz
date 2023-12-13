@@ -263,7 +263,6 @@ const Main: FC = () => {
             Upload
           </button>
         </div>
-        <ProgressCircle isLoading={loading} />
       </div>
       <ConditionsMap
         multiMode={multiMode}
@@ -327,6 +326,7 @@ const Main: FC = () => {
           selectedRoadIdx !== -1 && roads ? roads[selectedRoadIdx] : undefined
         }
       />
+      <ProgressCircle isLoading={loading} />
       <InfoButton />
     </>
   );

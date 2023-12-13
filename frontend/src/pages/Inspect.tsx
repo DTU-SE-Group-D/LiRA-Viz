@@ -22,6 +22,7 @@ import GradientLine from '../Components/Map/GradientLine';
 import { DataPoint } from '../models/path';
 import { getSurveyData } from '../queries/conditions';
 import { getRoadsData } from '../queries/road';
+import ProgressCircle from '../Components/ProgressCircle';
 
 // See in ../css/split.css
 const halfSizeOfSplitBar = '5px';
@@ -228,7 +229,6 @@ const Inspect: FC = () => {
           );
         }}
         availableGraphIndicatorType={availableGraphIndicatorType}
-        isLoading={loading}
       />
       <Split
         mode="vertical"
@@ -296,6 +296,7 @@ const Inspect: FC = () => {
           />
         </div>
       </Split>
+      <ProgressCircle isLoading={loading} />
     </div>
   );
 };
