@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "papaparse": "^5.4.1",
+    "pg": "^8.11.3",
+    "typescript": "^5.2.2",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.6.3"
+  },
+  "name": "xml_test",
+  "description": "## Missing features",
+  "version": "1.0.0",
+  "main": "database_functions.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
