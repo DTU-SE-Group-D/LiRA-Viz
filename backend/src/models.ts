@@ -107,6 +107,7 @@ export enum MeasurementType {
   E_areo_std = 30,
   E_norm_std = 31,
   mu_std = 32,
+  IRI = 33,
 }
 
 /** An array of surveys, identified by their id and timestamp. */
