@@ -181,11 +181,6 @@ const RoadImage: React.FC<Props> = ({
       }
     });
 
-    console.log(
-      'santi02 currentlyVisibleImagesForPixels: ',
-      currentlyVisibleImagesForPixels,
-    );
-
     if (currentlyVisibleImagesForPixels.length > 0) {
       console.log(
         'currentlyVisibleImagesForPixels[0].absoluteIndex',
