@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import '../../../css/Sidebar.css';
 import { getAllSurveyData } from '../../../queries/conditions';
-import { ISurvey, SurveyList } from '../../../../../backend/src/models';
+import { SurveyList, ISurvey } from '../../../../../backend/src/models';
 import InfoCard from '../InfoCard';
 
 interface HamburgerProps {
@@ -28,6 +28,42 @@ const Hamburger: React.FC<HamburgerProps> = ({ isOpen, toggle }) => {
   const [selectedSurvey, setSelectedSurvey] = useState<ISurvey | null>(null);
   const [, setSelectedSurveyPosition] = useState<number>(0);
 
+  const sidebarRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isOpen &&
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target as Node)
+      ) {
+        let node = event.target as Node | null;
+        let shouldCloseSidebar = true;
+
+        while (node instanceof HTMLElement) {
+          if (
+            node.classList.contains('hamburger') ||
+            node.classList.contains('inspect-button')
+          ) {
+            shouldCloseSidebar = false;
+            break;
+          }
+          node = node.parentNode;
+        }
+
+        if (shouldCloseSidebar) {
+          toggle();
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen, toggle]);
+
   useEffect(() => {
     getAllSurveyData((data: SurveyList) => {
       const transformedData: ISurvey[] = data.map((survey) => ({
@@ -40,21 +76,19 @@ const Hamburger: React.FC<HamburgerProps> = ({ isOpen, toggle }) => {
     });
   }, []);
 
-  const handleSurveyClick = useCallback(
-    (_surveyId: string, surveyIndex: number) => {
-      setSelectedSurvey(surveys[surveyIndex]);
-      const topPosition = surveyIndex * HEIGHT_OF_EACH_SURVEY_ITEM;
-      setSelectedSurveyPosition(topPosition);
-    },
-    [surveys],
-  );
+  const handleSurveyClick = (surveyId: string, surveyIndex: number) => {
+    const survey = surveys.find((s) => s.id === surveyId);
+    setSelectedSurvey(survey || null);
+    const topPosition = surveyIndex * HEIGHT_OF_EACH_SURVEY_ITEM;
+    setSelectedSurveyPosition(topPosition);
+  };
 
   return (
     <>
       <div className="hamburger" onClick={toggle}>
         &#9776;
       </div>
-      <div className={`sidebar ${isOpen ? 'open' : ''}`}>
+      <div ref={sidebarRef} className={`sidebar ${isOpen ? 'open' : ''}`}>
         <a href="#!" className="closebtn" onClick={toggle}>
           &times;
         </a>
@@ -64,7 +98,7 @@ const Hamburger: React.FC<HamburgerProps> = ({ isOpen, toggle }) => {
               <div
                 key={survey.id}
                 className="survey-block"
-                onClick={() => handleSurveyClick(survey.id, index)}
+                onClick={() => handleSurveyClick(survey.id, index + 1)}
               >
                 <h4>Survey {index + 1}</h4>
                 <p>Date: {new Date(survey.timestamp).toLocaleDateString()}</p>
