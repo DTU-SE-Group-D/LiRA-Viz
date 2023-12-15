@@ -22,6 +22,7 @@ import GradientLine from '../Components/Map/GradientLine';
 import { DataPoint } from '../models/path';
 import { getSurveyData } from '../queries/conditions';
 import { getRoadsData } from '../queries/road';
+import ProgressCircle from '../Components/ProgressCircle';
 
 // See in ../css/split.css
 const halfSizeOfSplitBar = '5px';
@@ -109,6 +110,8 @@ const Inspect: FC = () => {
   const [chartData, setChartData] = useState<ConditionsGraphData[]>();
   /** The data to display */
   const [data, setData] = useState<Conditions[]>();
+  /** Boolean to show loading circle */
+  const [loading, setLoading] = useState<boolean>(true);
 
   const availableGraphIndicatorType = useMemo(() => {
     return Array.from(
@@ -122,6 +125,7 @@ const Inspect: FC = () => {
 
   useEffect(() => {
     if (id === undefined || type === undefined) return;
+    setLoading(true);
 
     // The function called back when the data is fetched
     const dataCallback = (data: PathWithConditions) => {
@@ -150,11 +154,12 @@ const Inspect: FC = () => {
     } else if (type === 'paths') {
       getRoadsData(id.split(','), dataCallback);
     }
+    setLoading(false);
   }, [id, type]);
 
   useEffect(() => {
     if (data === undefined) return;
-
+    setLoading(true);
     const conditionsGraphAllDataSets: ConditionsGraphData[] = [];
 
     const indicatorTypeToShow = graphIndicatorType.includes(conditionTypes[0])
@@ -181,11 +186,14 @@ const Inspect: FC = () => {
       conditionsGraphAllDataSets.push(conditionsGraphSingleDataSet);
     }
     setChartData(conditionsGraphAllDataSets);
+    setLoading(false);
   }, [data, graphIndicatorType, availableGraphIndicatorType]);
 
   useEffect(() => {
     if (gradientLineData === undefined || roadDistanceLeftToRight === null)
       return;
+
+    setLoading(true);
 
     setGradientLineData({
       geometry: gradientLineData.geometry,
@@ -204,6 +212,7 @@ const Inspect: FC = () => {
               { value: 0, way_dist: roadDistanceLeftToRight[1] + 0.01 },
             ],
     });
+    setLoading(false);
   }, [roadDistanceLeftToRight]);
 
   return (
@@ -287,6 +296,7 @@ const Inspect: FC = () => {
           />
         </div>
       </Split>
+      <ProgressCircle isLoading={loading} />
     </div>
   );
 };

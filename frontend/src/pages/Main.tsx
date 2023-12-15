@@ -30,6 +30,7 @@ import InfoCard from '../Components/Map/InfoCard';
 import { useNavigate } from 'react-router-dom';
 import InfoButton from '../Components/Conditions/InfoButton';
 import UploadPanel from '../Components/Conditions/UploadPanel';
+import ProgressCircle from '../Components/ProgressCircle';
 
 /**
  * Component rendering the main page
@@ -64,6 +65,9 @@ const Main: FC = () => {
   // Stores the minimum and maximum of the date range
   const [dateMin, setDateMin] = useState<Date>();
   const [dateMax, setDateMax] = useState<Date>();
+
+  // Stores whether or not loading spinner should show
+  const [loading, setLoading] = useState<boolean>(true);
 
   const navigate = useNavigate(); // Get the navigate function
 
@@ -142,6 +146,7 @@ const Main: FC = () => {
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     // Load the conditions from the backend
     getAllConditions((data) => {
       const range: DateRange = {};
@@ -182,6 +187,8 @@ const Main: FC = () => {
 
       setDateMin(minDate);
       setDateMax(maxDate);
+
+      setLoading(false);
     });
   }, []);
 
@@ -320,6 +327,7 @@ const Main: FC = () => {
           selectedRoadIdx !== -1 && roads ? roads[selectedRoadIdx] : undefined
         }
       />
+      <ProgressCircle isLoading={loading} />
       <InfoButton />
     </>
   );
