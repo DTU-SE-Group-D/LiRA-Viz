@@ -4,25 +4,30 @@
 import { Module } from '@nestjs/common';
 import { KnexModule } from 'nestjs-knex';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ServeStaticModule } from '@nestjs/serve-static';
+
+import { DB_GROUPD_CONFIG } from './database';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+
 import { RCController } from './conditions/rc.controller';
 import { RCService } from './conditions/rc.service';
 
-import { DB_GROUPD_CONFIG } from './database';
 import { RoadController } from './roads/road.controller';
 import { RoadService } from './roads/road.service';
+
 import { ImageController } from './images/image.controller';
 import { ImageService } from './images/image.service';
+import { ServeStaticModule } from '@nestjs/serve-static';
+
 import { SurveyService } from './surveys/survey.service';
 import { SurveyController } from './surveys/survey.controller';
+
 import { UploadController } from './upload/upload.controller';
 import { UploadService } from './upload/upload.service';
-
 import { BullModule } from '@nestjs/bull';
 import { FileProcessor } from './upload/file.processor';
+
 import * as process from 'process';
 
 const database = (config: any, name: string) => {
