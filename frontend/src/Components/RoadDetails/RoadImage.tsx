@@ -123,7 +123,6 @@ const RoadImage: React.FC<Props> = ({
       setHasFiltered(true);
       return;
     }
-    console.log('santi00 selectedType: ', selectedType);
 
     setDisplayedImages(
       allImages.filter((image: IImage) => image.type === selectedType),
