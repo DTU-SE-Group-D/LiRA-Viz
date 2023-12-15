@@ -183,7 +183,6 @@ const RoadImage: React.FC<Props> = ({
 
     if (currentlyVisibleImagesForPixels.length > 0) {
       setIndexLastViewed(currentlyVisibleImagesForPixels[0].absoluteIndex);
-      console.log('santi03 indexLastViewed: ', indexLastViewed);
     }
 
     onRoadDistanceChange(getRoadDistances(currentlyVisibleImagesForPixels));
