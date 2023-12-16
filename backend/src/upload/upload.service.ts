@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectConnection, Knex } from 'nestjs-knex';
-import { SurveyData, SurveyImage, SurveyStructure } from './upload';
+import { SurveyImage, SurveyRoadParameters, SurveyStructure } from './upload';
 import { join } from 'path';
 import { copyFileSync, existsSync, mkdirSync } from 'fs';
 
@@ -19,13 +19,13 @@ export class UploadService {
   /**
    * Uploads one entry to the measurement table with the given parameters as data. Is meant for dynatest data.
    * @param {string} fk_survey_id the automatically generated uuid from the database for the corresponding survey entry in the survey table.
-   * @param {SurveyData} data the data to be uploaded to the database.
+   * @param {SurveyRoadParameters} data the data to be uploaded to the database.
    * @param {boolean} debug debug boolean for printing relevant information, and is false by default. It is highly recommended to set the debug boolean to false.
    * @author Vejlgaard, Liu
    */
   async db_insert_measurement_data(
     fk_survey_id: string,
-    data: SurveyData,
+    data: SurveyRoadParameters,
     debug: boolean,
   ): Promise<void> {
     try {

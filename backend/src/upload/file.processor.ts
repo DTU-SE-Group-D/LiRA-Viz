@@ -1,11 +1,7 @@
 import { InjectQueue, Process, Processor } from '@nestjs/bull';
 import { Job, Queue } from 'bull';
 import * as process from 'process';
-import {
-  extract_measurements_data,
-  extractCoordinatesFromRSP,
-  find_surveys,
-} from './upload';
+import { extract_measurements_data, find_surveys } from './upload';
 import { UploadService } from './upload.service';
 import { extract_dashcam_image_data, extract_road_image_data } from './image';
 import * as path from 'path';
@@ -111,9 +107,6 @@ export class FileProcessor {
 
       // TODO: split process here instead of for the all zip file (one process per survey)
       for (let i = 0; i < surveys.length; i++) {
-        // find the geometry of the survey
-        surveys[i].geometry = extractCoordinatesFromRSP(surveys[i].RSP);
-
         // upload the survey data and get the id back
         surveys[i].fk_survey_id = await this.service.db_insert_survey_data(
           surveys[i],
@@ -121,6 +114,7 @@ export class FileProcessor {
         );
 
         const data = extract_measurements_data(surveys[i], debug);
+
         const roadImages = extract_road_image_data(surveys[i], debug);
         const dashcameraImages = extract_dashcam_image_data(surveys[i], debug);
 

@@ -15,11 +15,6 @@ import { existsSync, lstatSync, readdirSync, readFileSync } from 'fs';
 import { join } from 'path';
 
 export interface SurveyData {
-  // data from the XML
-  /** the type of measurement, see MeasurementType enum (in models.ts) for description of numbers. */
-  type_index: number;
-  /**  the value for the measurement, can mean different things dependent on type of measurement */
-  value: number;
   /** the distance from the beginning of the survey */
   distance_survey: number;
   /** the date in format: year/month/day hour:minute:second.millisecond. */
@@ -33,21 +28,20 @@ export interface SurveyData {
   position?: LatLng;
 }
 
-export interface SurveyImage {
+export interface SurveyRoadParameters extends SurveyData {
+  // data from the XML
+  /** the type of measurement, see MeasurementType enum (in models.ts) for description of numbers. */
+  type_index: number;
+  /**  the value for the measurement, can mean different things dependent on type of measurement */
+  value: number;
+}
+
+export interface SurveyImage extends SurveyData {
   // data from the XML
   /** The type of image, for example, 'DashCamera'. */
   type: string;
   /** The file path where the image is stored. */
   image_path: string;
-  /** The distance from the beginning of the survey at which the image was captured. */
-  distance_survey: number;
-  /** The timestamp of the image capture in the format: year/month/day hour:minute:second.millisecond */
-  timestamp: string;
-  // data from Valhalla
-  /** the automatically generated uuid from the database for the corresponding way entry in the way table. */
-  fk_way_id?: string;
-  /** the distance from the beginning of the way */
-  distance_way?: number;
 }
 
 export interface XML {
@@ -64,10 +58,8 @@ export interface SurveyStructure {
   fk_survey_id?: string;
   /** the path to the directory */
   directory: string;
-  /** the path to the RSP file */
-  RSP: string;
   /** the geometry of the section */
-  geometry?: LatLng[];
+  geometry: LatLng[];
   /** the path to the HDC folder */
   HDC: string;
   /** The xmls */
@@ -161,7 +153,6 @@ export function find_surveys(
 
     surveys.push({
       directory: surveyDirectory,
-      RSP: surveyDirectory + '.RSP',
       HDC: surveyDirectory + '/HDC',
       XMLs: xmls.map((path) => {
         let content = readFileSync(path).toString();
@@ -175,6 +166,7 @@ export function find_surveys(
           distance: distance,
         };
       }),
+      geometry: extractCoordinatesFromRSP(surveyDirectory + '.RSP'),
       Cams: cams,
       dynatestId: dynatestId,
     });
@@ -215,13 +207,13 @@ export function extractCoordinatesFromRSP(rspFilePath: string): LatLng[] {
  * Uses the XML files to extract the measurement data.
  * @param {SurveyStructure} survey the survey structure for the dataset.
  * @param {boolean} debug debug boolean for printing relevant information, and is false by default.
- * @returns {SurveyData[]} The data extracted from the XML files.
+ * @returns {SurveyRoadParameters[]} The data extracted from the XML files.
  * @author Vejlgaard
  */
 export function extract_measurements_data(
   survey: SurveyStructure,
   debug: boolean,
-): SurveyData[] {
+): SurveyRoadParameters[] {
   try {
     if (debug) {
       console.log('Local variable for dataset: ' + survey.directory);
@@ -233,7 +225,7 @@ export function extract_measurements_data(
       console.log('date for dataset: ' + survey.XMLs[0].date);
       console.log('-----------------------------------');
     }
-    let data: SurveyData[] = [];
+    let data: SurveyRoadParameters[] = [];
 
     // for each xml file
     survey.XMLs.forEach((xml) => {
