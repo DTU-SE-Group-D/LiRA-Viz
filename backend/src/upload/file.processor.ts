@@ -88,21 +88,27 @@ export class FileProcessor {
    */
   @Process('process-file')
   async handleFileProcessing(job: Job<{ filePath: string }>) {
+    const printJobInfo = (...args: any[]) => {
+      console.log(`[${job.id} ${job.toJSON()['progress']}%]`, ...args);
+    };
+
+    const printJobError = (...args: any[]) => {
+      console.error(`[${job.id} ${job.toJSON()['progress']}%]`, ...args);
+    };
+
     try {
       const { filePath } = job.data;
       const debug = process.env.IMPORT_DEBUG === 'true';
-      console.log(`Processing file: ${filePath} (job id: ${job.id})`);
+      printJobInfo(`Processing file: ${filePath}`);
 
       //here we make sure that there is at least one RSP file and a HDC directory
       let surveys = find_surveys(filePath, debug);
       if (debug) {
-        console.debug(surveys);
+        printJobInfo(surveys);
       }
 
       if (surveys.length == 0) {
-        if (debug) {
-          console.log('No valid data found in directory: ' + filePath);
-        }
+        printJobInfo('No valid data found in directory: ' + filePath);
       }
 
       // TODO: split process here instead of for the all zip file (one process per survey)
@@ -114,11 +120,19 @@ export class FileProcessor {
         );
 
         const data = extract_measurements_data(surveys[i], debug);
+        if (!(await this.service.mapMatch(surveys[i], data))) {
+          printJobError('Failed to map match data.');
+        }
 
         const roadImages = extract_road_image_data(surveys[i], debug);
-        const dashcameraImages = extract_dashcam_image_data(surveys[i], debug);
+        if (!(await this.service.mapMatch(surveys[i], roadImages))) {
+          printJobError('Failed to map match road images.');
+        }
 
-        // TODO(Seb-sti1): (when rest working) add valhalla here
+        const dashcameraImages = extract_dashcam_image_data(surveys[i], debug);
+        if (!(await this.service.mapMatch(surveys[i], dashcameraImages))) {
+          printJobError('Failed to map match dashcam images.');
+        }
 
         await job.progress(65);
 
@@ -153,20 +167,20 @@ export class FileProcessor {
       try {
         const tempFolderPath = path.dirname(job.data.filePath);
         fs.rmSync(tempFolderPath, { recursive: true });
-        console.log(`Deleted extracted folder: ${job.data.filePath}`);
+        printJobInfo(`Deleted extracted folder: ${job.data.filePath}`);
       } catch (error) {
-        console.error(
+        printJobError(
           `Error deleting extracted folder: ${job.data.filePath}`,
           error,
         );
       }
-      console.log(
+      printJobInfo(
         `File processed successfully and imported into Database: ${filePath}`,
       );
       await job.progress(100);
       console.log(`Job ${job.id} completed`);
     } catch (error) {
-      console.error(`Error processing file: ${job.data.filePath}`, error);
+      printJobError(`Error processing file: ${job.data.filePath}`, error);
     }
   }
 }
