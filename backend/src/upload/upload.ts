@@ -194,10 +194,15 @@ export function extractCoordinatesFromRSP(rspFilePath: string): LatLng[] {
 
   for (let i = 0; i < datas.length; i++) {
     const row = datas[i];
-    coordinates.push({
-      lng: Number(`${parseFloat(row[6])}`),
-      lat: Number(`${parseFloat(row[5])}`),
-    });
+    // to fix bugged RSP file of Ballerup
+    const exist = coordinates.find(
+      (c) => c.lat == parseFloat(row[5]) && c.lng == parseFloat(row[6]),
+    );
+    if (!exist)
+      coordinates.push({
+        lng: Number(`${parseFloat(row[6])}`),
+        lat: Number(`${parseFloat(row[5])}`),
+      });
   }
 
   return coordinates;

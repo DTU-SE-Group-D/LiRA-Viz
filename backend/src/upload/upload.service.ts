@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectConnection, Knex } from 'nestjs-knex';
-import { SurveyImage, SurveyRoadParameters, SurveyStructure } from './upload';
+import {
+  SurveyData,
+  SurveyImage,
+  SurveyRoadParameters,
+  SurveyStructure,
+} from './upload';
 import { join } from 'path';
 import { copyFileSync, existsSync, mkdirSync } from 'fs';
 
@@ -9,6 +14,12 @@ import * as sharp from 'sharp';
 import { OSMWayId } from '../models';
 import { IWay, Way } from '../tables';
 import { getOSMWaysInARoad } from './osm';
+import {
+  distanceFromWayBeginningToShapePoint,
+  Edge,
+  getGpsPointAtDistance,
+  valhalla,
+} from './valhalla';
 
 @Injectable()
 export class UploadService {
@@ -199,8 +210,10 @@ export class UploadService {
 
   /**
    * Get or create the ways corresponding to the OSMWayIds.
-   * You should definitely use this function instead of getOrCreateWay if you
-   * have multiple ways to get.
+   *
+   * You should definitely use this function instead of getOrCreateWay if you have multiple ways that
+   * are likely on the same road.
+   *
    * This executes the queries sequentially to avoid useless queries to OSM
    * and the database. This is especially useful when the ways are in the same road.
    *
@@ -208,21 +221,16 @@ export class UploadService {
    *
    * @author Kerbourc'h
    */
-  async getOrCreateWays(wayIds: OSMWayId[]) {
+  async getOrCreateWays(wayIds: OSMWayId[]): Promise<IWay[]> {
     let tasks: any = wayIds.map((id, index) =>
       index === 0 ? this.getOrCreateWay(id).then((value: IWay) => [value]) : id,
     );
 
     return await tasks.reduce(async (cur: Promise<IWay[]>, next: string) => {
-      return cur.then(async (value: IWay[]) => {
-        if (((value.length / tasks.length) * 100) % 10 === 0)
-          console.info(
-            'Importation status',
-            `${(value.length / tasks.length) * 100}%`,
-          );
-
-        return [...value, await this.getOrCreateWay(next)];
-      });
+      return cur.then(async (value: IWay[]) => [
+        ...value,
+        await this.getOrCreateWay(next),
+      ]);
     });
   }
 
@@ -234,7 +242,7 @@ export class UploadService {
    *
    * @author Kerbourc'h
    */
-  async getOrCreateWay(OSMWayId: OSMWayId): Promise<IWay> {
+  async getOrCreateWay(OSMWayId: OSMWayId): Promise<IWay> | null {
     const way = await Way(this.knex_group_d)
       .select(
         'id',
@@ -280,5 +288,99 @@ export class UploadService {
     }
 
     return way[0];
+  }
+
+  /**
+   * Do the map matching of the data using valhalla.
+   * The result will directly be stored in the data array.
+   *
+   * @author Kerbourc'h
+   */
+  async mapMatch(survey: SurveyStructure, data: SurveyData[]) {
+    let geometry = survey.geometry;
+
+    // To have a good result for valhalla, first the point at the
+    // same distance from the beginning of the survey are removed
+    // the following arrays will allow to find back the corresponding data
+    let dataToPositionIndex: number[] = [];
+    let distances: number[] = [];
+
+    for (let i = 0; i < data.length; i++) {
+      const exist = distances.indexOf(data[i].distance_survey);
+
+      if (exist === -1) {
+        distances.push(data[i].distance_survey);
+        dataToPositionIndex.push(distances.length - 1);
+      } else {
+        dataToPositionIndex.push(exist);
+      }
+    }
+
+    // find the gps coordinates of the distances along the survey
+    let positions = distances.map((d) =>
+      getGpsPointAtDistance(geometry, d / 1000),
+    );
+
+    // use valhalla to map match that data (by construction matched_points.length === positions.length)
+    const matched = await valhalla(positions);
+    if (!matched) {
+      return false;
+    }
+
+    // get or create the ways (also inserting the road if needed) using osm
+    const ways = await this.getOrCreateWays(
+      matched.edges.map((m) => String(m.way_id)),
+    );
+
+    // for each edge, pair it with the corresponding way
+    // and determine the direction of the edge along the way and
+    // the distance from the beginning of the way to the beginning of the edge
+    const edges: Edge[] = matched.edges.map((e, idx) => {
+      // calculate the distance from the beginning of the way to the beginning of the edge
+      const distance_way_start_edge_start =
+        distanceFromWayBeginningToShapePoint(
+          e.begin_shape,
+          ways[idx].section_geom.coordinates.map((c) => ({
+            lat: c[1],
+            lng: c[0],
+          })),
+        );
+
+      // calculate the distance from the beginning of the way to the end of the edge
+      const distance_way_start_edge_end = distanceFromWayBeginningToShapePoint(
+        e.end_shape,
+        ways[idx].section_geom.coordinates.map((c) => ({
+          lat: c[1],
+          lng: c[0],
+        })),
+      );
+
+      return {
+        beginning_from_way_start: distance_way_start_edge_start,
+        way: ways[idx],
+        // apply a minus if the edge is not in the same direction as the way
+        length:
+          distance_way_start_edge_start < distance_way_start_edge_end
+            ? e.length
+            : -e.length,
+      };
+    });
+
+    for (let i = 0; i < data.length; i++) {
+      // find the corresponding matched data using dataToPositionIndex
+      const matched_data = matched.matched_points[dataToPositionIndex[i]];
+
+      // find corresponding edge
+      const edge = edges[matched_data.edge_index];
+
+      // edit data
+      data[i].fk_way_id = edge.way.id;
+      data[i].distance_way =
+        edge.beginning_from_way_start +
+        edge.length * matched_data.distance_ratio_along_edge;
+      data[i].position = matched_data.coordinates;
+    }
+
+    return true;
   }
 }
