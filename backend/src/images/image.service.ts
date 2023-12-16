@@ -19,10 +19,9 @@ export class ImageService {
    * @author Kerbourc'h
    */
   formatImagePath(image: IImage) {
-    image.image_path = image.image_path.replace(
-      process.env.IMAGE_STORE_PATH,
-      '/cdn/',
-    );
+    image.image_path = image.image_path
+      .replace(process.env.IMAGE_STORE_PATH, '/cdn/')
+      .replace('/home/fish/images/', '/cdn/');
     return image;
   }
 

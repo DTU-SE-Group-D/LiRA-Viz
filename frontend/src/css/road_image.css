@@ -54,6 +54,6 @@
   overflow-y: hidden;
 }
 
-.road-image-surface-image canvas {
+.road-image-surface-image {
   height: 100%;
 }

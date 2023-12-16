@@ -151,7 +151,7 @@ export class UploadService {
 
       const sourcePath = image.image_path;
       if (image.type !== 'DashCamera') {
-        await sharp(sourcePath).rotate(-90).toFile(destinationPath);
+        await sharp(sourcePath).rotate(90).toFile(destinationPath);
       } else {
         copyFileSync(sourcePath, destinationPath);
       }
