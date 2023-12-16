@@ -3,7 +3,6 @@ import { IImage, IImageValuesForPixels } from '../../models/models';
 import { getImagesForASurvey, getImagesForWays } from '../../queries/images';
 
 import '../../css/road_image.css';
-import RotatedImage from './RotatedImage';
 import { useParams } from 'react-router-dom';
 
 interface Props {
@@ -186,7 +185,7 @@ const RoadImage: React.FC<Props> = ({
     }
 
     onRoadDistanceChange(getRoadDistances(currentlyVisibleImagesForPixels));
-  }, [containerRef, onRoadDistanceChange, displayedImages]);
+  }, [onRoadDistanceChange, displayedImages, type]);
 
   useEffect(() => {
     if (!hasFiltered) return;
@@ -231,26 +230,24 @@ const RoadImage: React.FC<Props> = ({
       <div className="border-road-image-surface-container">
         <div ref={containerRef} className="road-image-surface-container">
           {displayedImages.length > 0
-            ? displayedImages.slice(0, 25).map((image, index) => (
-                <div
-                  key={'div' + image.id}
+            ? displayedImages.map((image, index) => (
+                <img
+                  draggable={false}
+                  key={image.id}
+                  src={image.image_path}
                   className="road-image-surface-image"
                   data-image-id={image.id}
-                >
-                  <RotatedImage
-                    key={image.id}
-                    src={image.image_path}
-                    onLoad={() => {
-                      if (index === indexLastViewed) {
-                        setTimeout(() => {
-                          if (containerRef.current === null) return;
-                          const container = containerRef.current as HTMLElement;
-                          container.children[index].scrollIntoView();
-                        }, 20);
-                      }
-                    }}
-                  />
-                </div>
+                  onLoad={() => {
+                    if (index === indexLastViewed) {
+                      setTimeout(() => {
+                        if (containerRef.current === null) return;
+                        const container = containerRef.current as HTMLElement;
+                        container.children[index].scrollIntoView();
+                      }, 20);
+                    }
+                  }}
+                  alt={`Image n°${index}`}
+                />
               ))
             : null}
         </div>
