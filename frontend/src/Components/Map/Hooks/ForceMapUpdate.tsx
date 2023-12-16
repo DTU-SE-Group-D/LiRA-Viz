@@ -7,6 +7,8 @@ interface Props {
   triggerUpdate?: number;
   /** The coordinates of the map center*/
   position?: LatLng;
+  /** Zoom level for the map */
+  zoomLevel?: number;
 }
 
 /**
@@ -14,7 +16,11 @@ interface Props {
  *
  * @author Kerbourc'h
  */
-const ForceMapUpdate: React.FC<Props> = ({ triggerUpdate, position }) => {
+const ForceMapUpdate: React.FC<Props> = ({
+  triggerUpdate,
+  position,
+  zoomLevel,
+}) => {
   const map = useMap();
 
   useEffect(() => {
@@ -24,9 +30,9 @@ const ForceMapUpdate: React.FC<Props> = ({ triggerUpdate, position }) => {
   // TODO: not working when moving too little
   useEffect(() => {
     if (position) {
-      map.flyTo(position);
+      map.flyTo(position, zoomLevel);
     }
-  }, [position]);
+  }, [position, zoomLevel]);
 
   return null;
 };
