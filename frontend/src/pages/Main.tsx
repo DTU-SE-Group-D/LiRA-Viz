@@ -2,7 +2,7 @@ import { FC, useCallback, useEffect, useState } from 'react';
 import Hamburger from '../Components/Map/Inputs/Hamburger';
 import { IRoad } from '../models/path';
 import { getRoadsPaths } from '../queries/road';
-import { LatLng } from '../models/models';
+import { LatLng, SurveyListItem } from '../models/models';
 import { FeatureCollection } from 'geojson';
 import { getAllConditions } from '../queries/conditions';
 
@@ -42,6 +42,10 @@ const Main: FC = () => {
   const [roads, setRoads] = useState<IRoad[]>();
   // Select road index
   const [selectedRoadIdx, setSelectedRoadIdx] = useState<number>(-1);
+  // Selected survey
+  const [selectedSurvey, setSelectedSurvey] = useState<SurveyListItem | null>(
+    null,
+  );
 
   // describe the current state of the sidebar
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -198,6 +202,13 @@ const Main: FC = () => {
         <Hamburger
           isOpen={isSidebarOpen}
           toggle={() => setIsSidebarOpen(!isSidebarOpen)}
+          setSelectedSurvey={(survey) => {
+            const coord =
+              survey.geometry[Math.floor(survey.geometry.length / 2)];
+            setMoveToPosition({ lat: coord[1], lng: coord[0] });
+
+            setSelectedSurvey(survey);
+          }}
         />
         <div className="nav-container">
           <Search
@@ -273,34 +284,51 @@ const Main: FC = () => {
       >
         <Paths
           paths={
-            selectedRoadIdx === -1 || roads === undefined
+            roads === undefined ||
+            (selectedRoadIdx === -1 && selectedSurvey == null)
               ? roads?.map((r) => Object.values(r.geometries))
-              : roads[selectedRoadIdx].branches.map((OSMIds) => {
-                  const path: LatLng[] = [];
+              : selectedSurvey == null
+                ? roads[selectedRoadIdx].branches.map((OSMIds) => {
+                    const path: LatLng[] = [];
 
-                  for (const OSMId of OSMIds) {
-                    path.push(
-                      ...Object.values(
-                        roads[selectedRoadIdx].geometries[OSMId],
-                      ),
-                    );
-                  }
-                  return path;
-                })
+                    for (const OSMId of OSMIds) {
+                      path.push(
+                        ...Object.values(
+                          roads[selectedRoadIdx].geometries[OSMId],
+                        ),
+                      );
+                    }
+                    return path;
+                  })
+                : [
+                    selectedSurvey.geometry.map((coord) => ({
+                      lat: coord[1],
+                      lng: coord[0],
+                    })),
+                  ]
           }
           onSelectedPath={(index, _road, position) => {
             if (roads === undefined) return;
 
-            if (selectedRoadIdx === -1) {
+            if (selectedRoadIdx === -1 && selectedSurvey == null) {
               // If no road is selected, select the road
               setSelectedRoadIdx(index);
-            } else {
+            } else if (selectedRoadIdx != -1) {
               // if a road is selected, go to the inspect page for the clicked road branch
               navigate(
                 '/inspect/paths/' +
                   roads[selectedRoadIdx].branches[index].join(','),
                 { state: { name: roads[selectedRoadIdx].way_name } },
               );
+            } else {
+              // if it was a survey that was selected
+              navigate(`/inspect/surveys/${selectedSurvey!.id}`, {
+                state: {
+                  name: `${selectedSurvey!.dynatest_id} (${new Date(
+                    selectedSurvey!.timestamp,
+                  ).toLocaleDateString()})`,
+                },
+              });
             }
             setMoveToPosition(position);
           }}
@@ -309,6 +337,10 @@ const Main: FC = () => {
           onClick={() => {
             if (selectedRoadIdx !== -1) {
               setSelectedRoadIdx(-1);
+            }
+
+            if (selectedSurvey != null) {
+              setSelectedSurvey(null);
             }
           }}
         />
@@ -322,10 +354,11 @@ const Main: FC = () => {
         />
       )}
       <InfoCard
-        hidden={selectedRoadIdx === -1}
+        hidden={selectedRoadIdx === -1 && selectedSurvey == null}
         roadData={
           selectedRoadIdx !== -1 && roads ? roads[selectedRoadIdx] : undefined
         }
+        surveyData={selectedSurvey == null ? undefined : selectedSurvey}
       />
       <ProgressCircle isLoading={loading} />
       <InfoButton />

@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../css/roadinfo_card.css';
 import { IRoad } from '../../models/path';
-import { ISurvey } from '../../../../backend/src/models';
+import { SurveyListItem } from '../../models/models';
 
 interface Props {
   /** To control visibility */
@@ -10,7 +10,7 @@ interface Props {
   /** The road data to display */
   roadData?: IRoad;
   /** The survey data to display */
-  surveyData?: ISurvey;
+  surveyData?: SurveyListItem;
 }
 /**
  * A components that renders the info card when users click on a road with data
@@ -31,7 +31,11 @@ const InfoCard: React.FC<Props> = ({ hidden, roadData, surveyData }) => {
       });
     } else if (surveyData) {
       navigate(`/inspect/surveys/${surveyData.id}`, {
-        state: { name: new Date(surveyData.timestamp).toLocaleDateString() },
+        state: {
+          name: `${surveyData.dynatest_id} (${new Date(
+            surveyData.timestamp,
+          ).toLocaleDateString()})`,
+        },
       });
     }
   }, [roadData, surveyData, navigate]);
@@ -42,32 +46,26 @@ const InfoCard: React.FC<Props> = ({ hidden, roadData, surveyData }) => {
 
   return (
     <div className="roadinfo-card-content">
-      {roadData && (
-        <div className="roadinfo-text-container">
-          <div className="roadinfo-card-text">
-            <span className="text-title">Road Name:</span>{' '}
-            <span className="card-road-name">{roadData.way_name}</span>
-          </div>
-          <div className="roadinfo-card-text">
-            <span className="text-title"> Branch Number: </span>
-            <span className="card-road-length">{roadData.branches.length}</span>
-          </div>
+      <div className="roadinfo-text-container">
+        <div className="roadinfo-card-text">
+          <span className="text-title">
+            {roadData ? 'Road Name:' : 'Dynatest survey id:'}
+          </span>{' '}
+          <span className="card-road-name">
+            {roadData ? roadData.way_name : surveyData!.dynatest_id}
+          </span>
         </div>
-      )}
-      {surveyData && (
-        <div className="roadinfo-text-container">
-          <div className="roadinfo-card-text">
-            <span className="text-title">Survey ID:</span>
-            <span className="card-road-name">{surveyData.id}</span>
-          </div>
-          <div className="roadinfo-card-text">
-            <span className="text-title">Last updated:</span>
-            <span className="card-road-length">
-              {new Date(surveyData.timestamp).toLocaleDateString()}
-            </span>
-          </div>
+        <div className="roadinfo-card-text">
+          <span className="text-title">
+            {roadData ? 'Branch Number:' : 'Date: '}
+          </span>
+          <span className="card-road-length">
+            {roadData
+              ? roadData.branches.length
+              : new Date(surveyData!.timestamp).toLocaleDateString()}
+          </span>
         </div>
-      )}
+      </div>
       <button onClick={handleInspect} className="inspect-button">
         Inspect
       </button>

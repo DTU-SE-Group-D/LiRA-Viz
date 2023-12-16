@@ -1,6 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
 
-import { ISurvey } from 'src/models';
+import { ISurvey, SurveyListItem } from 'src/models';
 import { SurveyService } from './survey.service';
 
 @Controller('surveys')
@@ -23,7 +23,7 @@ export class SurveyController {
    * @author Lyons
    */
   @Get('all')
-  getAllSurveys(): Promise<ISurvey[]> {
+  getAllSurveys(): Promise<SurveyListItem[]> {
     return this.service.getAllSurveys();
   }
 }
