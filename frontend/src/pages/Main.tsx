@@ -1,9 +1,8 @@
 import { FC, useCallback, useEffect, useState } from 'react';
 import Hamburger from '../Components/Map/Inputs/Hamburger';
-import { IRoad } from '../models/path';
-import { getRoadsPaths } from '../queries/road';
+import { IRoad, WayId } from '../models/path';
+import { getRoadsPaths, getWayLength } from '../queries/road';
 import { LatLng } from '../models/models';
-import L from 'leaflet';
 import { FeatureCollection } from 'geojson';
 import { getAllConditions } from '../queries/conditions';
 
@@ -40,6 +39,7 @@ import UploadPanel from '../Components/Conditions/UploadPanel';
 const Main: FC = () => {
   // The roads loaded from the database
   const [roads, setRoads] = useState<IRoad[]>();
+
   // Select road index
   const [selectedRoadIdx, setSelectedRoadIdx] = useState<number>(-1);
 
@@ -186,55 +186,9 @@ const Main: FC = () => {
     });
   }, []);
 
-  /**
-    /* Function to calculate the maximum distance
-    /*
-    /* @author Chen
-    */
-  const calculateMaxDistance = (selectedRoad: IRoad): number => {
-    const wayIds = Object.keys(selectedRoad.geometries);
-    let maxDistance = 0;
-    let farthestCoordinate: L.LatLng | null = null;
-
-    // Convert all coordinates to Leaflet LatLng objects and store in an array
-    const allLeafletCoordinates: L.LatLng[] = wayIds.flatMap((wayId) =>
-      selectedRoad.geometries[wayId].map(
-        (coord) => L.latLng(coord.lat, coord.lng), // Use the L.latLng function
-      ),
-    );
-    // If there are no coordinates, exit early
-    if (allLeafletCoordinates.length === 0) {
-      return 0;
-    }
-    // Initialize farthestCoordinate with the first coordinate, if available
-    if (allLeafletCoordinates.length > 0) {
-      farthestCoordinate = allLeafletCoordinates[0];
-    }
-    // Find the point farthest from the first coordinate
-    const firstLeafletCoordinate = allLeafletCoordinates[0];
-    allLeafletCoordinates.forEach((leafletCoordinate) => {
-      const distance = firstLeafletCoordinate.distanceTo(leafletCoordinate);
-      if (distance > maxDistance) {
-        maxDistance = distance;
-        farthestCoordinate = leafletCoordinate;
-      }
-    });
-
-    // Reset max distance for the second iteration
-    maxDistance = 0;
-
-    // Find the point farthest from the farthest point found in step 1
-    if (farthestCoordinate) {
-      allLeafletCoordinates.forEach((leafletCoordinate) => {
-        const distance = farthestCoordinate!.distanceTo(leafletCoordinate);
-        if (distance > maxDistance) {
-          maxDistance = distance;
-        }
-      });
-    }
-
-    return maxDistance;
-  };
+  // Control Zoom level by the length of roads when selecting a road on the map
+  const [zoomLevel, setZoomLevel] = useState<number>(13); // Default zoom level
+  const [wayLength, setWayLength] = useState<number | null>(null);
 
   /**
     /* Function to calculate the zoom level
@@ -248,8 +202,6 @@ const Main: FC = () => {
     if (maxDistance <= 900) {
       slope = -7.8e-5;
       intercept = 16.8;
-    } else if (Math.floor(maxDistance) == 50937) {
-      return 13; //For a road named 'Nordre Ringvej' that cannot get the correct MaxDistance
     } else if (maxDistance > 900 && maxDistance <= 2500) {
       slope = -7.8e-5;
       intercept = 14.1;
@@ -258,24 +210,51 @@ const Main: FC = () => {
       intercept = 13.8;
     } else if (maxDistance > 8000 && maxDistance <= 20000) {
       slope = -7.8e-5;
-      intercept = 12.6;
-    } else if (maxDistance > 20000 && maxDistance <= 23000) {
-      return 11.9;
-    } else if (maxDistance > 23000 && maxDistance <= 26000) {
-      return 11.3;
-    } else if (maxDistance > 26000 && maxDistance <= 40000) {
-      slope = -9e-5;
-      intercept = 14.9;
+      intercept = 13.8;
+    } else if (maxDistance > 20000 && maxDistance <= 40000) {
+      return 12.3;
+    } else if (maxDistance > 40000 && maxDistance <= 100000) {
+      slope = -7e-5;
+      intercept = 13.7;
     } else {
-      slope = -9e-5;
-      intercept = 15.5;
+      return 10;
     }
 
     const ZoomInParam = slope * maxDistance + intercept;
     return ZoomInParam;
   };
 
-  const [zoomLevel, setZoomLevel] = useState<number>(13); // Default zoom level
+  /**
+    /* Function to calculate the total length of roads
+    /*
+    /* @author Chen
+    */
+  const fetchAndSumWayLengths = async (branches: WayId[][]) => {
+    try {
+      const promises = branches.flat().map(
+        (wayId) =>
+          new Promise<number>((resolve) => {
+            getWayLength(wayId, resolve);
+          }),
+      );
+      const lengths = await Promise.all(promises);
+      const totalLength = lengths.reduce((sum, length) => sum + length, 0);
+      setWayLength(totalLength);
+      console.log('Road Length: ', totalLength);
+    } catch (error) {
+      console.error('Error fetching way lengths:', error);
+      setWayLength(0);
+    }
+  };
+
+  // Zoom in when calling onSelectedPath
+  useEffect(() => {
+    if (wayLength !== null) {
+      const zoom = calculateZoomLevel(wayLength);
+      console.log('ZoomLevel: ', zoom);
+      setZoomLevel(zoom);
+    }
+  }, [wayLength]);
 
   return (
     <>
@@ -376,20 +355,15 @@ const Main: FC = () => {
           onSelectedPath={(index, _road, position) => {
             if (roads === undefined) return;
 
-            // Set selected road index and position
-            setSelectedRoadIdx(index);
+            // Set selected road position
             setMoveToPosition(position);
 
             if (selectedRoadIdx === -1) {
               // If no road is selected, select the road
               setSelectedRoadIdx(index);
-
-              // Assuming roads[index] gives you the selected road
               const selectedRoad = roads[index];
-              const maxDistance = calculateMaxDistance(selectedRoad);
-              // Use calculateZoomLevel to get the zoom level based on maxDistance
-              const zoom = calculateZoomLevel(maxDistance);
-              setZoomLevel(zoom);
+              const Branches = selectedRoad.branches;
+              fetchAndSumWayLengths(Branches); // Call fetchAndSumWayLengths to calculate parameters and zoom in
             } else {
               // if a road is selected, go to the inspect page for the clicked road branch
               navigate(

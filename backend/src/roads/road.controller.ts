@@ -70,4 +70,21 @@ export class RoadController {
     if (isNaN(Number(id))) throw new BadRequestException('Invalid id');
     return await this.service.getOrCreateWay(id);
   }
+
+  /**
+   * Get the length of a specific way.
+   *
+   * @param wayId the OSM id of the way
+   * @returns the length of the way
+   *
+   * @author Chen
+   */
+  @Get('waylength/:wayId')
+  async getWayLength(
+    @Param('wayId') wayId: OSMWayId,
+  ): Promise<{ length: number }> {
+    const wayData = await this.service.getWayData(wayId);
+    // Only return the length part of the way data
+    return { length: wayData.length };
+  }
 }

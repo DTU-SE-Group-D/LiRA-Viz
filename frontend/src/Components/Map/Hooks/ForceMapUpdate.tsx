@@ -19,7 +19,7 @@ interface Props {
 const ForceMapUpdate: React.FC<Props> = ({
   triggerUpdate,
   position,
-  zoomLevel = 13, // Default value set here if zoomLevel is not provided
+  zoomLevel,
 }) => {
   const map = useMap();
 
