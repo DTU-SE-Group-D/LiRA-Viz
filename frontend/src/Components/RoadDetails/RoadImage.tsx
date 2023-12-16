@@ -85,6 +85,8 @@ const RoadImage: React.FC<Props> = ({
   const [allImages, setAllImages] = useState<IImage[]>([]);
   /** The image of the selected type */
   const [displayedImages, setDisplayedImages] = useState<IImage[]>([]);
+
+  const [indexLastViewed, setIndexLastViewed] = useState<number>(0);
   /** The type of image to display */
   const containerRef = useRef(null);
 
@@ -141,7 +143,7 @@ const RoadImage: React.FC<Props> = ({
     const images = container.querySelectorAll('.road-image-surface-image');
     const currentlyVisibleImagesForPixels: IImageValuesForPixels[] = [];
 
-    images.forEach((image) => {
+    images.forEach((image, index) => {
       const imageRect = image.getBoundingClientRect();
       if (
         imageRect.right >= containerRect.left &&
@@ -173,10 +175,16 @@ const RoadImage: React.FC<Props> = ({
               imageRect.right > roadSurfaceImageDivRightPixel
                 ? roadSurfaceImageDivRightPixel
                 : imageRect.right,
+            absoluteIndex: index,
           });
         }
       }
     });
+
+    if (currentlyVisibleImagesForPixels.length > 0) {
+      setIndexLastViewed(currentlyVisibleImagesForPixels[0].absoluteIndex);
+    }
+
     onRoadDistanceChange(getRoadDistances(currentlyVisibleImagesForPixels));
   }, [containerRef, onRoadDistanceChange, displayedImages]);
 
@@ -223,13 +231,25 @@ const RoadImage: React.FC<Props> = ({
       <div className="border-road-image-surface-container">
         <div ref={containerRef} className="road-image-surface-container">
           {displayedImages.length > 0
-            ? displayedImages.slice(0, 25).map((image) => (
+            ? displayedImages.slice(0, 25).map((image, index) => (
                 <div
                   key={'div' + image.id}
                   className="road-image-surface-image"
                   data-image-id={image.id}
                 >
-                  <RotatedImage key={image.id} src={image.image_path} />
+                  <RotatedImage
+                    key={image.id}
+                    src={image.image_path}
+                    onLoad={() => {
+                      if (index === indexLastViewed) {
+                        setTimeout(() => {
+                          if (containerRef.current === null) return;
+                          const container = containerRef.current as HTMLElement;
+                          container.children[index].scrollIntoView();
+                        }, 20);
+                      }
+                    }}
+                  />
                 </div>
               ))
             : null}
