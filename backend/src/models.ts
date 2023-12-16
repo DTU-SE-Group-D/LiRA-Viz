@@ -27,6 +27,16 @@ export interface ISurvey {
 }
 
 /**
+ * Type of answer from backend for a survey.
+ */
+export interface SurveyListItem {
+  id: string;
+  geometry: number[][];
+  timestamp: string;
+  dynatest_id: number;
+}
+
+/**
  * The data of a survey.
  */
 export interface SurveyConditions {
@@ -109,9 +119,3 @@ export enum MeasurementType {
   mu_std = 32,
   IRI = 33,
 }
-
-/** An array of surveys, identified by their id and timestamp. */
-export type SurveyList = {
-  id: string;
-  timestamp: string;
-}[];

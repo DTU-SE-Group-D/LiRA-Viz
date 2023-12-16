@@ -41,11 +41,20 @@ export interface Conditions {
   distance: number;
 }
 
-export interface PathWithConditions {
+export interface Path {
   geometry: number[][];
+}
+
+export interface PathWithConditions extends Path {
   data: Conditions[];
 }
 
 export interface Survey extends PathWithConditions {
   id: string;
+}
+
+export interface SurveyListItem extends Path {
+  id: string;
+  timestamp: string;
+  dynatest_id: number;
 }

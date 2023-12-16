@@ -123,7 +123,7 @@ const TopBar: React.FC<TopBarProps> = ({
         style={{ fontSize: '16px', marginLeft: '60px' }}
       >
         <span className="road-name-text">
-          {type === 'paths' ? 'Road Name' : 'Survey Date'} : {wayName}
+          {type === 'paths' ? 'Road Name' : 'Dynatest survey id'}: {wayName}
         </span>
       </div>
     </div>

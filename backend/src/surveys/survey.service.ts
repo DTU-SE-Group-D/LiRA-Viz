@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectConnection, Knex } from 'nestjs-knex';
 import { Measurement, Survey } from '../tables';
-import { ISurvey, MeasurementType } from '../models';
+import { ISurvey, MeasurementType, SurveyListItem } from '../models';
 
 @Injectable()
 export class SurveyService {
@@ -59,9 +59,21 @@ export class SurveyService {
   /**
    * Asynchronously retrieves all surveys from the database, including their IDs and timestamps.
    *
-   * @author Lyons
+   * @author Lyons, Kerbourc'h
    */
-  async getAllSurveys(): Promise<ISurvey[]> {
-    return Survey(this.knex_group_d).select('id', 'timestamp');
+  async getAllSurveys(): Promise<SurveyListItem[]> {
+    return Survey(this.knex_group_d)
+      .select(
+        'id',
+        'timestamp',
+        this.knex_group_d.raw('ST_AsGeoJSON(section_geom)::json as geometry'),
+        'survey_id as dynatest_id',
+      )
+      .then((result) =>
+        result.map((survey) => ({
+          ...survey,
+          geometry: survey.geometry.coordinates[0],
+        })),
+      );
   }
 }

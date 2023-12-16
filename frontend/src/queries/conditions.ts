@@ -1,7 +1,6 @@
 import { get, getWithQueryParameters } from './fetch';
 import { FeatureCollection } from 'geojson';
-import { Survey } from '../models/models';
-import { SurveyList } from '../../../backend/src/models';
+import { Survey, SurveyListItem } from '../models/models';
 
 /**
  * @author Muro
@@ -18,7 +17,9 @@ export const getSurveyData = (
  *
  * @author Lyons
  */
-export const getAllSurveyData = (callback: (surveys: SurveyList) => void) => {
+export const getAllSurveyData = (
+  callback: (surveys: SurveyListItem[]) => void,
+) => {
   get('/surveys/all', callback);
 };
 
