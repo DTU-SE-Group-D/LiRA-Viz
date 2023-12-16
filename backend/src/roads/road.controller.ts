@@ -1,11 +1,4 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { RoadService } from './road.service';
 import { OSMWayId } from '../models';
 
@@ -56,18 +49,5 @@ export class RoadController {
     }
 
     return { data: data, geometry: geometry };
-  }
-
-  /**
-   * Add a specific road to the database using the OSM id of a way in the road.
-   * **It might get removed in the future.**
-   *
-   * @param id the OSM id of a way in the road
-   * @author Kerbourc'h
-   */
-  @Get('getorcreateway/:id')
-  async insertRoad(@Param('id') id: string) {
-    if (isNaN(Number(id))) throw new BadRequestException('Invalid id');
-    return await this.service.getOrCreateWay(id);
   }
 }
