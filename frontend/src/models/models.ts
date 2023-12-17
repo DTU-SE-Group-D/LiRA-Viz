@@ -58,3 +58,12 @@ export interface SurveyListItem extends Path {
   timestamp: string;
   dynatest_id: number;
 }
+
+export interface UploadStatus {
+  id: number;
+  /** task name */
+  name: string;
+  timestamp: number;
+  status: 'waiting' | 'active' | 'completed' | 'failed';
+  progress: number;
+}

@@ -1,4 +1,5 @@
-import { postForm } from './fetch';
+import { get, postForm } from './fetch';
+import { UploadStatus } from '../models/models';
 
 /**
  * Uploads a survey to the backend.
@@ -20,4 +21,8 @@ export const uploadSurvey = (
   formData.append('file', file);
   formData.append('password', password);
   postForm('/upload', formData, onSuccess, onError);
+};
+
+export const getUploadStatus = (callback: (status: UploadStatus[]) => void) => {
+  get('/upload/status', callback);
 };

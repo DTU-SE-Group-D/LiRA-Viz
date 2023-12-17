@@ -17,10 +17,8 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  height: 22%;
-  width: 20%;
-  min-width: 360px;
-  min-height: 200px;
+  width: 30%;
+  min-width: 550px;
 }
 
 .upload-panel-container h1 {
@@ -30,7 +28,7 @@
 
 .upload-panel-container h1,
 .upload-panel-container button {
-  margin-left: 25px;
+  margin-left: 110px;
 }
 .upload-panel-top button {
   background: none;
@@ -39,7 +37,6 @@
   width: 25px;
   height: 25px;
   color: white;
-  margin-left: 10px;
 }
 
 .upload-panel-top {
@@ -61,8 +58,47 @@
   border-radius: 5px;
 }
 
+.upload-input-container {
+  padding: 0;
+  height: 89px;
+  width: 300px;
+}
+
 .upload-input {
   width: 300px;
-  height: 60px;
-  margin-bottom: 10px;
+  height: 50px;
+}
+
+.upload-status {
+  margin: 15px 0 15px 0;
+}
+
+.upload-status table {
+  width: 500px;
+}
+
+.upload-status table tr td {
+  padding: 5px 0 5px 0;
+}
+
+.upload-status-title-and-btn h4 {
+  margin: 10px 0 10px 0;
+  padding: 0;
+}
+
+.upload-status-title-and-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-status-title-and-btn span {
+  font-family: 'Lucida Sans Unicode', serif;
+  font-size: 30px;
+}
+
+.upload-status-title-and-btn h4,
+.upload-status-title-and-btn span {
+  margin-left: 50px;
 }
