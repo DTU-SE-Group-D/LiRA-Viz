@@ -39,7 +39,11 @@ export class FileProcessor {
         fs.mkdirSync(tempUnzipPath, { recursive: true });
       }
 
+      // Start the unzip process with a progress of 0%
+      await job.progress(0);
+
       // Stream the zip file and extract to the temporary directory
+
       fs.createReadStream(filePath)
         .pipe(unzip.Extract({ path: tempUnzipPath }))
         .on('error', (error) => {
@@ -47,6 +51,7 @@ export class FileProcessor {
         })
         .on('close', async () => {
           await this.handleUnzippedContent(tempUnzipPath, filePath);
+          await job.progress(60);
         });
     } catch (error) {
       console.error(`Error processing file: ${job.data.filePath}`, error);
@@ -121,6 +126,8 @@ export class FileProcessor {
 
         // TODO(Seb-sti1): (when rest working) add valhalla here
 
+        await job.progress(65);
+
         // Upload all data and images to the database
         await Promise.all([
           ...data.map(async (data) => {
@@ -145,6 +152,7 @@ export class FileProcessor {
             );
           }),
         ]);
+        await job.progress(99);
       }
 
       // Delete the unzipped file
@@ -161,6 +169,8 @@ export class FileProcessor {
       console.log(
         `File processed successfully and imported into Database: ${filePath}`,
       );
+      await job.progress(100);
+      console.log(`Job ${job.id} completed`);
     } catch (error) {
       console.error(`Error processing file: ${job.data.filePath}`, error);
     }
