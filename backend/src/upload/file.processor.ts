@@ -46,8 +46,9 @@ export class FileProcessor {
           console.error(`Error unzipping file: ${filePath}`, error);
         })
         .on('close', async () => {
-          await this.handleUnzippedContent(tempUnzipPath, filePath);
           await job.progress(60);
+          await this.handleUnzippedContent(tempUnzipPath, filePath);
+          await job.progress(100);
         });
     } catch (error) {
       console.error(`Error processing file: ${job.data.filePath}`, error);
@@ -103,6 +104,7 @@ export class FileProcessor {
 
       //here we make sure that there is at least one RSP file and a HDC directory
       let surveys = find_surveys(filePath, debug);
+      await job.progress(10);
       if (debug) {
         printJobInfo(surveys);
       }
@@ -111,7 +113,6 @@ export class FileProcessor {
         printJobInfo('No valid data found in directory: ' + filePath);
       }
 
-      // TODO: split process here instead of for the all zip file (one process per survey)
       for (let i = 0; i < surveys.length; i++) {
         // upload the survey data and get the id back
         surveys[i].fk_survey_id = await this.service.db_insert_survey_data(
@@ -120,21 +121,40 @@ export class FileProcessor {
         );
 
         const data = extract_measurements_data(surveys[i], debug);
+        await job.progress(
+          (95 - 10) * ((i + 1) / surveys.length) * (1 / 7) + 10,
+        );
+
         if (!(await this.service.mapMatch(surveys[i], data))) {
           printJobError('Failed to map match data.');
         }
+        await job.progress(
+          (95 - 10) * ((i + 1) / surveys.length) * (2 / 7) + 10,
+        );
 
         const roadImages = extract_road_image_data(surveys[i], debug);
+        await job.progress(
+          (95 - 10) * ((i + 1) / surveys.length) * (3 / 7) + 10,
+        );
+
         if (!(await this.service.mapMatch(surveys[i], roadImages))) {
           printJobError('Failed to map match road images.');
         }
+        await job.progress(
+          (95 - 10) * ((i + 1) / surveys.length) * (4 / 7) + 10,
+        );
 
         const dashcameraImages = extract_dashcam_image_data(surveys[i], debug);
+        await job.progress(
+          (95 - 10) * ((i + 1) / surveys.length) * (5 / 7) + 10,
+        );
+
         if (!(await this.service.mapMatch(surveys[i], dashcameraImages))) {
           printJobError('Failed to map match dashcam images.');
         }
-
-        await job.progress(65);
+        await job.progress(
+          (95 - 10) * ((i + 1) / surveys.length) * (6 / 7) + 10,
+        );
 
         // Upload all data and images to the database
         await Promise.all([
@@ -160,8 +180,12 @@ export class FileProcessor {
             );
           }),
         ]);
-        await job.progress(99);
+
+        await job.progress(
+          (95 - 10) * ((i + 1) / surveys.length) * (7 / 7) + 10,
+        );
       }
+      await job.progress(95);
 
       // Delete the unzipped file
       try {

@@ -1,13 +1,13 @@
 import {
   Body,
   Controller,
+  Get,
   HttpException,
   HttpStatus,
   InternalServerErrorException,
   Post,
   UploadedFile,
   UseInterceptors,
-  Get,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { InjectQueue } from '@nestjs/bull';
@@ -88,17 +88,14 @@ export class UploadController {
       'completed',
       'failed',
     ]);
-    const jobStatus = await Promise.all(
+    return await Promise.all(
       jobs.map(async (job) => ({
         id: job.id,
         name: job.name,
         timestamp: job.timestamp,
-        jobData: job.data,
         status: await job.getState(),
         progress: await job.progress(),
       })),
     );
-    console.log('Job Status:', jobStatus);
-    return jobStatus;
   }
 }
