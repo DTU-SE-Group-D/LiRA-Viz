@@ -23,3 +23,18 @@ export const getRoadsData = (
 ) => {
   post('/roads/data', wayIds, callback);
 };
+
+/**
+ * Fetch the length of a specific way by its OSMWayId.
+ * @param wayId the OSMWayId of the way
+ *
+ * @author Chen
+ */
+export const getWayLength = (
+  wayId: string,
+  callback: (length: number) => void,
+) => {
+  get(`/roads/paths/${wayId}`, (data: { length: number }) => {
+    callback(data.length);
+  });
+};

@@ -9,11 +9,18 @@ export class RoadController {
   /**
    * Get all the roads in the database.
    *
-   * @author Kerbourc'h
+   * @author Kerbourc'h, Chen
    */
-  @Get('paths')
-  async getRoadsPaths() {
-    return await this.service.getRoadsPaths();
+  @Get('paths/:wayId?')
+  async getRoadsInfo(@Param('wayId') wayId?: OSMWayId) {
+    if (wayId) {
+      // Get the length of the specific way
+      const wayData = await this.service.getWayData(wayId);
+      return { length: wayData.length };
+    } else {
+      // Get all roads if no specific wayId is provided
+      return await this.service.getRoadsPaths();
+    }
   }
 
   /**
