@@ -14,13 +14,21 @@ export class RoadController {
   constructor(private readonly service: RoadService) {}
 
   /**
+   * Get the length of a specific way
    * Get all the roads in the database.
    *
-   * @author Kerbourc'h
+   * @author Kerbourc'h, Chen
    */
-  @Get('paths')
-  async getRoadsPaths() {
-    return await this.service.getRoadsPaths();
+  @Get('paths/:wayId?')
+  async getRoadsInfo(@Param('wayId') wayId?: OSMWayId) {
+    if (wayId) {
+      // Get the length of the specific way
+      const wayData = await this.service.getWayData(wayId);
+      return { length: wayData.length };
+    } else {
+      // Get all roads if no specific wayId is provided
+      return await this.service.getRoadsPaths();
+    }
   }
 
   /**
@@ -69,22 +77,5 @@ export class RoadController {
   async insertRoad(@Param('id') id: string) {
     if (isNaN(Number(id))) throw new BadRequestException('Invalid id');
     return await this.service.getOrCreateWay(id);
-  }
-
-  /**
-   * Get the length of a specific way.
-   *
-   * @param wayId the OSM id of the way
-   * @returns the length of the way
-   *
-   * @author Chen
-   */
-  @Get('waylength/:wayId')
-  async getWayLength(
-    @Param('wayId') wayId: OSMWayId,
-  ): Promise<{ length: number }> {
-    const wayData = await this.service.getWayData(wayId);
-    // Only return the length part of the way data
-    return { length: wayData.length };
   }
 }

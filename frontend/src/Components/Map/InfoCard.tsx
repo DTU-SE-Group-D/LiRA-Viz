@@ -21,6 +21,7 @@ const InfoCard: React.FC<Props> = ({ hidden, roadData, surveyData }) => {
   const navigate = useNavigate(); // Get the navigate function
 
   const handleInspect = useCallback(() => {
+    console.log('Branches: ', roadData?.branches);
     // Determine whether to navigate to road or survey inspect page
     if (roadData) {
       const biggestBranch = roadData.branches.reduce((prev, curr) =>
@@ -50,14 +51,7 @@ const InfoCard: React.FC<Props> = ({ hidden, roadData, surveyData }) => {
           </div>
           <div className="roadinfo-card-text">
             <span className="text-title"> Branch Number: </span>
-            <span className="card-road-length">
-              {' '}
-              {roadData.branches.reduce(
-                (totalLength, branch) => totalLength + branch.length,
-                0,
-              )}{' '}
-              {/* roadData.branches is a 2D array */}
-            </span>
+            <span className="card-road-length">{roadData.branches.length}</span>
           </div>
         </div>
       )}

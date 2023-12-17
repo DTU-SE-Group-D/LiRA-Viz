@@ -33,6 +33,41 @@ import UploadPanel from '../Components/Conditions/UploadPanel';
 import ProgressCircle from '../Components/ProgressCircle';
 
 /**
+/* Function to calculate the zoom level
+/*
+/* @author Chen
+*/
+const calculateZoomLevel = (maxDistance: number): number => {
+  let slope = -7.8e-5; // Default
+  let intercept = 12.6; // Default
+
+  if (maxDistance <= 900) {
+    slope = -7.8e-5;
+    intercept = 16.5;
+  } else if (maxDistance > 900 && maxDistance <= 2500) {
+    slope = -7.8e-5;
+    intercept = 14.1;
+  } else if (maxDistance > 2500 && maxDistance <= 8000) {
+    slope = -7.9e-5;
+    intercept = 13.8;
+  } else if (maxDistance > 8000 && maxDistance <= 20000) {
+    slope = -7.8e-5;
+    intercept = 14;
+  } else if (maxDistance > 20000 && maxDistance <= 40000) {
+    slope = -6.7e-5;
+    intercept = 14;
+  } else if (maxDistance > 40000 && maxDistance <= 100000) {
+    slope = -5e-5;
+    intercept = 14;
+  } else {
+    return 10;
+  }
+
+  const ZoomInParam = slope * maxDistance + intercept;
+  return ZoomInParam;
+};
+
+/**
  * Component rendering the main page
  *
  * @author Hansen, Kerbourc'h
@@ -197,68 +232,34 @@ const Main: FC = () => {
   const [wayLength, setWayLength] = useState<number | null>(null);
 
   /**
-      /* Function to calculate the zoom level
-      /*
-      /* @author Chen
-      */
-  const calculateZoomLevel = (maxDistance: number): number => {
-    let slope = -7.8e-5; // Default
-    let intercept = 12.6; // Default
-
-    if (maxDistance <= 900) {
-      slope = -7.8e-5;
-      intercept = 16.5;
-    } else if (maxDistance > 900 && maxDistance <= 2500) {
-      slope = -7.8e-5;
-      intercept = 14.1;
-    } else if (maxDistance > 2500 && maxDistance <= 8000) {
-      slope = -7.9e-5;
-      intercept = 13.8;
-    } else if (maxDistance > 8000 && maxDistance <= 20000) {
-      slope = -7.8e-5;
-      intercept = 14;
-    } else if (maxDistance > 20000 && maxDistance <= 40000) {
-      slope = -6.7e-5;
-      intercept = 14;
-    } else if (maxDistance > 40000 && maxDistance <= 100000) {
-      slope = -5e-5;
-      intercept = 14;
-    } else {
-      return 10;
-    }
-
-    const ZoomInParam = slope * maxDistance + intercept;
-    return ZoomInParam;
-  };
-
-  /**
     /* Function to calculate the total length of roads
     /*
     /* @author Chen
     */
-  const fetchAndSumWayLengths = async (branches: WayId[][]) => {
-    try {
-      const promises = branches.flat().map(
-        (wayId) =>
-          new Promise<number>((resolve) => {
-            getWayLength(wayId, resolve);
-          }),
-      );
-      const lengths = await Promise.all(promises);
-      const totalLength = lengths.reduce((sum, length) => sum + length, 0);
-      setWayLength(totalLength);
-      console.log('Road Length: ', totalLength);
-    } catch (error) {
-      console.error('Error fetching way lengths:', error);
-      setWayLength(0);
-    }
-  };
+  const fetchAndSumWayLengths = useCallback(
+    async (branches: WayId[][]) => {
+      try {
+        const promises = branches.flat().map(
+          (wayId) =>
+            new Promise<number>((resolve) => {
+              getWayLength(wayId, resolve);
+            }),
+        );
+        const lengths = await Promise.all(promises);
+        const totalLength = lengths.reduce((sum, length) => sum + length, 0);
+        setWayLength(totalLength);
+      } catch (error) {
+        console.error('Error fetching way lengths:', error);
+        setWayLength(0);
+      }
+    },
+    [getWayLength, setWayLength],
+  );
 
   // Zoom in when calling onSelectedPath
   useEffect(() => {
     if (wayLength !== null) {
       const zoom = calculateZoomLevel(wayLength);
-      console.log('ZoomLevel: ', zoom);
       setZoomLevel(zoom);
     }
   }, [wayLength]);

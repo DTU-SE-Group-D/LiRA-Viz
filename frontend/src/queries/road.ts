@@ -37,7 +37,7 @@ export const getWayLength = (
   wayId: string,
   callback: (length: number) => void,
 ) => {
-  get(`/roads/waylength/${wayId}`, (data: { length: number }) => {
+  get(`/roads/paths/${wayId}`, (data: { length: number }) => {
     callback(data.length);
   });
 };
