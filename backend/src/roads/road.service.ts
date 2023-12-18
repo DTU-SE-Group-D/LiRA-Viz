@@ -97,7 +97,18 @@ export class RoadService {
     Object.values(ways).forEach((way) => {
       geometries[way.osm_id] = way.section_geom;
     });
-    return { way_name: wayName, branches: branches, geometries: geometries };
+
+    const sumLength = longestBranches.reduce(
+      (total, branch) => total + branch.length,
+      0,
+    );
+
+    return {
+      way_name: wayName,
+      branches: branches,
+      geometries: geometries,
+      length: sumLength,
+    };
   }
 
   /**

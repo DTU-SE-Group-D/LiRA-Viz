@@ -3,6 +3,7 @@ import Hamburger from '../Components/Map/Inputs/Hamburger';
 import { IRoad } from '../models/path';
 import { getRoadsPaths } from '../queries/road';
 import { LatLng, SurveyListItem } from '../models/models';
+import { LatLng as LatLngLeaflet } from 'leaflet';
 import { FeatureCollection } from 'geojson';
 import { getAllConditions } from '../queries/conditions';
 
@@ -31,6 +32,39 @@ import { useNavigate } from 'react-router-dom';
 import InfoButton from '../Components/Conditions/InfoButton';
 import UploadPanel from '../Components/Conditions/UploadPanel';
 import ProgressCircle from '../Components/ProgressCircle';
+
+/**
+/* Function to calculate the zoom level
+/*
+/* @author Chen
+*/
+const calculateZoomLevel = (maxDistance: number): number => {
+  let slope = -7.8e-5; // Default
+  let intercept = 12.6; // Default
+  if (maxDistance <= 900) {
+    slope = -7.8e-5;
+    intercept = 16.5;
+  } else if (maxDistance > 900 && maxDistance <= 2500) {
+    slope = -7.8e-5;
+    intercept = 14.1;
+  } else if (maxDistance > 2500 && maxDistance <= 8000) {
+    slope = -7.9e-5;
+    intercept = 13.8;
+  } else if (maxDistance > 8000 && maxDistance <= 20000) {
+    slope = -7.8e-5;
+    intercept = 14;
+  } else if (maxDistance > 20000 && maxDistance <= 40000) {
+    slope = -6.7e-5;
+    intercept = 14;
+  } else if (maxDistance > 40000 && maxDistance <= 100000) {
+    slope = -5e-5;
+    intercept = 14;
+  } else {
+    return 10;
+  }
+  const ZoomInParam = slope * maxDistance + intercept;
+  return ZoomInParam;
+};
 
 /**
  * Component rendering the main page
@@ -196,6 +230,9 @@ const Main: FC = () => {
     });
   }, []);
 
+  // Control Zoom level by the length of roads when selecting a road on the map
+  const [zoomLevel, setZoomLevel] = useState<number>(13); // Default zoom level
+
   return (
     <>
       <div className="nav-wrapper">
@@ -206,6 +243,17 @@ const Main: FC = () => {
             const coord =
               survey.geometry[Math.floor(survey.geometry.length / 2)];
             setMoveToPosition({ lat: coord[1], lng: coord[0] });
+
+            const path = survey.geometry.map(
+              (coord) => new LatLngLeaflet(coord[1], coord[0]),
+            );
+
+            let len = 0;
+            for (let i = 0; i < path.length - 1; i++) {
+              len += path[i].distanceTo(path[i + 1]);
+            }
+            const zoomParam = calculateZoomLevel(len);
+            setZoomLevel(zoomParam);
 
             setSelectedSurvey(survey);
           }}
@@ -313,6 +361,11 @@ const Main: FC = () => {
             if (selectedRoadIdx === -1 && selectedSurvey == null) {
               // If no road is selected, select the road
               setSelectedRoadIdx(index);
+              // Get information of road branches for Zoom in
+              const selectedRoad = roads[index];
+              const sumLength = selectedRoad.length;
+              const zoomParam = calculateZoomLevel(sumLength);
+              setZoomLevel(zoomParam);
             } else if (selectedRoadIdx != -1) {
               // if a road is selected, go to the inspect page for the clicked road branch
               navigate(
@@ -344,7 +397,7 @@ const Main: FC = () => {
             }
           }}
         />
-        <ForceMapUpdate position={moveToPosition} />
+        <ForceMapUpdate position={moveToPosition} zoomLevel={zoomLevel} />
       </ConditionsMap>
       {isUploadPanelOpened && (
         <UploadPanel
