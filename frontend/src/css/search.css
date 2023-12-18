@@ -21,7 +21,7 @@
   border-radius: 5px;
   overflow: hidden;
   box-shadow: 0px 2px 10px 2px rgba(0, 0, 0, 0.1);
-  z-index: calc(var(--navbar-z-index)+20);
+  z-index: 99999;
 }
 
 .geoapify-autocomplete-items div {

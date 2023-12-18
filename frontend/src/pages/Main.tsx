@@ -224,7 +224,6 @@ const Main: FC = () => {
                   }
                 }
               }
-
               const coordinates = value?.geometry?.coordinates;
               if (coordinates) {
                 const position = {
