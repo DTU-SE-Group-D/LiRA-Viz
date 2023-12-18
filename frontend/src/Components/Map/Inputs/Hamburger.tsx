@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import '../../../css/sidebar.css';
+import '../../../css/siderbar.css';
 import { getAllSurveyData } from '../../../queries/conditions';
 import { SurveyListItem } from '../../../models/models';
 

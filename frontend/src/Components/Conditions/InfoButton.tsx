@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import '../../css/infoButton.css';
+import '../../css/infobutton.css';
 
 /**
  * A small button showing information and instructions to use the webapp.
