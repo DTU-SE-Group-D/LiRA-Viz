@@ -2,7 +2,7 @@ import React from 'react';
 import ImageGallery from './ImageGallery';
 import MapWrapper from '../Map/MapWrapper';
 import ForceMapUpdate from '../Map/Hooks/ForceMapUpdate';
-import { LatLng } from '../../models/models';
+import { IRangeForDashCam, LatLng } from '../../models/models';
 
 interface Props {
   /** The trigger to update the map */
@@ -11,11 +11,19 @@ interface Props {
   children?: React.ReactNode;
   /** The center of the map */
   center?: LatLng;
+  /** The distance from left to right displayed on surface images */
+  rangeDashCamImages?: IRangeForDashCam | null;
 }
+
 /**
  * The map area op the road details(road inspect) page
  */
-const MapArea: React.FC<Props> = ({ triggerUpdate, children, center }) => {
+const MapArea: React.FC<Props> = ({
+  triggerUpdate,
+  children,
+  center,
+  rangeDashCamImages,
+}) => {
   return (
     <div
       className="map-area"
@@ -31,10 +39,15 @@ const MapArea: React.FC<Props> = ({ triggerUpdate, children, center }) => {
         className="imageGallery_container"
         style={{ height: '95px', overflow: 'hidden' }}
       >
-        <ImageGallery /> {/* Use the imageGallery component */}
+        <ImageGallery rangeDashCamImages={rangeDashCamImages} />{' '}
+        {/* Use the imageGallery component */}
       </div>
     </div>
   );
 };
+
+// {rangeDashCamImages !== undefined && rangeDashCamImages !== null ? (
+//     <ImageGallery rangeDashCamImages={rangeDashCamImages} />
+// ) : null}  should we put something like this?
 
 export default MapArea;

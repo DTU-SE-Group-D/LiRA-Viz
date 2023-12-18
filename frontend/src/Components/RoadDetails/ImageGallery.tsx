@@ -3,14 +3,19 @@ import ImageZoom from './ImageAbleZoom';
 import { IImage } from '../../models/path';
 import { getImagesForASurvey, getImagesForWays } from '../../queries/images';
 import { useParams } from 'react-router-dom';
+import { IRangeForDashCam } from '../../models/models';
 
+interface Props {
+  /** The distance from left to right displayed on surface images to display nearby dashcam images*/
+  rangeDashCamImages?: IRangeForDashCam | null;
+}
 /**
  * React functional component for the Image Gallery of Dash Camera image.
  * Image gallery is for show the real road image, and user can scroll to check
  *
  * @author: Chen, Lyons
  */
-const ImageGallery: React.FC = () => {
+const ImageGallery: React.FC<Props> = ({ rangeDashCamImages }) => {
   /** The id and type of the object to display (in the url) */
   const { id, type } = useParams();
 
@@ -34,14 +39,30 @@ const ImageGallery: React.FC = () => {
 
     if (type === 'surveys') {
       getImagesForASurvey(id, true, (images) => {
-        setCameraImages(images);
+        setCameraImages(
+          images.filter((image) => {
+            if (rangeDashCamImages === undefined || rangeDashCamImages === null)
+              return true;
+            return (
+              image.distance_survey >=
+                (rangeDashCamImages.minRange - 5 > 0
+                  ? rangeDashCamImages.minRange - 5
+                  : 0) &&
+              image.distance_survey <=
+                (rangeDashCamImages.maxRange + 5 <
+                rangeDashCamImages.maxRangeSurvey
+                  ? rangeDashCamImages.maxRange + 5
+                  : rangeDashCamImages.maxRangeSurvey)
+            );
+          }),
+        );
       });
     } else if (type === 'paths') {
       getImagesForWays(id.split(','), true, (images) => {
         setCameraImages(images);
       });
     }
-  }, [id]);
+  }, [id, rangeDashCamImages]);
 
   // Function to open the pop-up
   const openImageInPopup = useCallback(

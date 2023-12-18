@@ -41,6 +41,12 @@ export interface Conditions {
   distance: number;
 }
 
+export interface IRangeForDashCam {
+  minRange: number;
+  maxRange: number;
+  maxRangeSurvey: number;
+}
+
 export interface Path {
   geometry: number[][];
 }
