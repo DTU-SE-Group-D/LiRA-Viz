@@ -128,8 +128,6 @@ const Inspect: FC = () => {
   }, [data]);
 
   useEffect(() => {
-    console.log('santi33', roadDistanceLeftToRight);
-    console.log('santi44', chartData);
     if (
       gradientLineData === undefined ||
       roadDistanceLeftToRight === null ||
@@ -142,7 +140,6 @@ const Inspect: FC = () => {
       maxRange: roadDistanceLeftToRight[1],
       maxRangeSurvey: Math.max(...chartData.map((item) => item.maxX)) + 1,
     });
-    console.log('santi55 rangeForDashCamImages', rangeForDashCamImages);
   }, [roadDistanceLeftToRight]);
 
   useEffect(() => {

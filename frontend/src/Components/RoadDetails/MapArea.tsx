@@ -14,6 +14,7 @@ interface Props {
   /** The distance from left to right displayed on surface images */
   rangeDashCamImages?: IRangeForDashCam | null;
 }
+
 /**
  * The map area op the road details(road inspect) page
  */
@@ -44,5 +45,9 @@ const MapArea: React.FC<Props> = ({
     </div>
   );
 };
+
+// {rangeDashCamImages !== undefined && rangeDashCamImages !== null ? (
+//     <ImageGallery rangeDashCamImages={rangeDashCamImages} />
+// ) : null}  should we put something like this?
 
 export default MapArea;

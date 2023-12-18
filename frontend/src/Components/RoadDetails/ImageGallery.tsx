@@ -41,15 +41,14 @@ const ImageGallery: React.FC<Props> = ({ rangeDashCamImages }) => {
       getImagesForASurvey(id, true, (images) => {
         setCameraImages(
           images.filter((image) => {
-            console.log('santi0', rangeDashCamImages);
             if (rangeDashCamImages === undefined || rangeDashCamImages === null)
               return true;
             return (
-              image.distance_way >=
+              image.distance_survey >=
                 (rangeDashCamImages.minRange - 5 > 0
                   ? rangeDashCamImages.minRange - 5
                   : 0) &&
-              image.distance_way <=
+              image.distance_survey <=
                 (rangeDashCamImages.maxRange + 5 <
                 rangeDashCamImages.maxRangeSurvey
                   ? rangeDashCamImages.maxRange + 5
@@ -57,7 +56,6 @@ const ImageGallery: React.FC<Props> = ({ rangeDashCamImages }) => {
             );
           }),
         );
-        console.log('santiVIVA', cameraImages);
       });
     } else if (type === 'paths') {
       getImagesForWays(id.split(','), true, (images) => {

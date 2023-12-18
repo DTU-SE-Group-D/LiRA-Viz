@@ -42,9 +42,9 @@ export interface Conditions {
 }
 
 export interface IRangeForDashCam {
-    minRange: number;
-    maxRange: number;
-    maxRangeSurvey: number;
+  minRange: number;
+  maxRange: number;
+  maxRangeSurvey: number;
 }
 
 export interface Path {
