@@ -22,7 +22,7 @@ interface Props {
  */
 const Search: React.FC<Props> = ({ onPlaceSelect }) => {
   return (
-    <GeoapifyContext apiKey="bb524d9939ae497688b9b2dddc5cf0a2">
+    <GeoapifyContext apiKey="278562afd6274f1484c58a79d37c76af">
       <GeoapifyGeocoderAutocomplete
         placeholder="Enter address here"
         type={'street'}
