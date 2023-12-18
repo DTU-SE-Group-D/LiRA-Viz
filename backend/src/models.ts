@@ -66,6 +66,7 @@ export interface Road {
   way_name: string;
   branches: OSMWayId[][];
   geometries: Record<OSMWayId, LatLng[]>;
+  length: number;
 }
 
 /**

@@ -1,8 +1,9 @@
 import { FC, useCallback, useEffect, useState } from 'react';
 import Hamburger from '../Components/Map/Inputs/Hamburger';
-import { IRoad, WayId } from '../models/path';
-import { getRoadsPaths, getWayLength } from '../queries/road';
+import { IRoad } from '../models/path';
+import { getRoadsPaths } from '../queries/road';
 import { LatLng, SurveyListItem } from '../models/models';
+import { LatLng as LatLngLeaflet } from 'leaflet';
 import { FeatureCollection } from 'geojson';
 import { getAllConditions } from '../queries/conditions';
 
@@ -231,40 +232,6 @@ const Main: FC = () => {
 
   // Control Zoom level by the length of roads when selecting a road on the map
   const [zoomLevel, setZoomLevel] = useState<number>(13); // Default zoom level
-  const [wayLength, setWayLength] = useState<number | null>(null);
-
-  /**
-     /* Function to calculate the total length of roads
-     /*
-     /* @author Chen
-     */
-  const fetchAndSumWayLengths = useCallback(
-    async (branches: WayId[][]) => {
-      try {
-        const promises = branches.flat().map(
-          (wayId) =>
-            new Promise<number>((resolve) => {
-              getWayLength(wayId, resolve);
-            }),
-        );
-        const lengths = await Promise.all(promises);
-        const totalLength = lengths.reduce((sum, length) => sum + length, 0);
-        setWayLength(totalLength);
-      } catch (error) {
-        console.error('Error fetching way lengths:', error);
-        setWayLength(0);
-      }
-    },
-    [getWayLength, setWayLength],
-  );
-
-  // Zoom in when calling onSelectedPath
-  useEffect(() => {
-    if (wayLength !== null) {
-      const zoom = calculateZoomLevel(wayLength);
-      setZoomLevel(zoom);
-    }
-  }, [wayLength]);
 
   return (
     <>
@@ -276,6 +243,17 @@ const Main: FC = () => {
             const coord =
               survey.geometry[Math.floor(survey.geometry.length / 2)];
             setMoveToPosition({ lat: coord[1], lng: coord[0] });
+
+            const path = survey.geometry.map(
+              (coord) => new LatLngLeaflet(coord[1], coord[0]),
+            );
+
+            let len = 0;
+            for (let i = 0; i < path.length - 1; i++) {
+              len += path[i].distanceTo(path[i + 1]);
+            }
+            const zoomParam = calculateZoomLevel(len);
+            setZoomLevel(zoomParam);
 
             setSelectedSurvey(survey);
           }}
@@ -385,8 +363,9 @@ const Main: FC = () => {
               setSelectedRoadIdx(index);
               // Get information of road branches for Zoom in
               const selectedRoad = roads[index];
-              const Branches = selectedRoad.branches;
-              fetchAndSumWayLengths(Branches); // Call fetchAndSumWayLengths to calculate parameters and zoom in
+              const sumLength = selectedRoad.length;
+              const zoomParam = calculateZoomLevel(sumLength);
+              setZoomLevel(zoomParam);
             } else if (selectedRoadIdx != -1) {
               // if a road is selected, go to the inspect page for the clicked road branch
               navigate(

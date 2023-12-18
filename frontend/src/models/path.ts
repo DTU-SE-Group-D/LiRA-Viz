@@ -47,6 +47,7 @@ export interface IRoad {
   branches: WayId[][];
   // the geometry of each way
   geometries: Record<WayId, LatLng[]>;
+  length: number;
 }
 
 export enum ImageType {
