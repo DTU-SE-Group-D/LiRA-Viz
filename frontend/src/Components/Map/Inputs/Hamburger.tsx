@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import '../../../css/siderbar.css';
 import { getAllSurveyData } from '../../../queries/conditions';
 import { SurveyListItem } from '../../../models/models';
+
+import '../../../css/sidebar.css';
 
 interface HamburgerProps {
   /** Indicates if the sidebar is currently open. */
