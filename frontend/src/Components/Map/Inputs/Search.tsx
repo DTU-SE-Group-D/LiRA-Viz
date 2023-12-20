@@ -26,7 +26,7 @@ const Search: React.FC<Props> = ({ onPlaceSelect }) => {
       <GeoapifyGeocoderAutocomplete
         placeholder="Enter address here"
         type={'street'}
-        filterByCountryCode={['dk', 'sa']} // Denmark and Saudi Arabia
+        filterByCountryCode={['dk', 'sa', 'it']} // Denmark and Saudi Arabia
         placeSelect={onPlaceSelect}
       />
     </GeoapifyContext>
